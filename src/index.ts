@@ -1,5 +1,4 @@
-import replace from './tools/replace';
-import Dectalk from './tools/dectalk';
+import * as token from './token.json'
 
 // const baseString = 'hello {0} my name is {1} and i am here to {2}';
 // const values = ['everyone', 'bob' , 'destroy everyone and all '];
@@ -11,4 +10,4 @@ import Dectalk from './tools/dectalk';
 
 import Bot from './classes/Bot';
 
-const bot = new Bot('.','NTczMDU5MzA3NzY4MjUwNDA4.XMlVFg.BaXm3I8JOhU9aqOcZHFxAnuoNhs');
+const bot = new Bot('.',token.token);
