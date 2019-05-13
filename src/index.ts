@@ -9,6 +9,6 @@ import Dectalk from './tools/dectalk';
 //
 // Dectalk(replace(baseString, values), '1235');
 
-import Bot from './classes/bot';
+import Bot from './classes/Bot';
 
 const bot = new Bot('.','NTczMDU5MzA3NzY4MjUwNDA4.XMlVFg.BaXm3I8JOhU9aqOcZHFxAnuoNhs');

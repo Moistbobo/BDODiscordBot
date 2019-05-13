@@ -1,6 +1,8 @@
 import Dectalk from "../tools/dectalk";
+import Command from "../classes/Command";
+import CommandArgs from "../classes/CommandArgs";
 
-const tts = (args) =>{
+const tts = (args: CommandArgs) =>{
     const voiceChannel = args.message.member.voiceChannel;
 
     if(voiceChannel){
@@ -8,7 +10,7 @@ const tts = (args) =>{
             Dectalk(args.message.content, args.message.guild.id).then(res=>{
                 console.log('playing sound');
                 // args.bot.client.voiceChannel.playFile(`./${args.message.guild.id}.wav`);
-                const dispatcher = connection.playFile(`./${args.message.guild.id}.wav`);
+                const dispatcher = connection.playFile(`./dectalk/${args.message.guild.id}.wav`);
             });
 
         })

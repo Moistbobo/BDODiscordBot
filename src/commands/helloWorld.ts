@@ -1,5 +1,6 @@
+import CommandArgs from "../classes/CommandArgs";
 
-const helloWorld = (args) => {
+const helloWorld = (args: CommandArgs) => {
     const strings = args.strings.helloWorld;
     console.log(strings);
     console.log(strings.action);

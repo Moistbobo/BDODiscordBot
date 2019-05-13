@@ -1,6 +1,7 @@
 import * as fs from 'fs';
+import CommandArgs from "../classes/CommandArgs";
 
-const setChannel = (args) =>{
+const setChannel = (args: CommandArgs) =>{
 
 };
 

@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js'
 import * as fs from 'fs';
-import Command from "./command";
-import DatabaseHelper from "./databasehelper";
+import Command from "./Command";
+import DatabaseHelper from "./DatabaseHelper";
+import CommandArgs from "./CommandArgs";
 
 class Bot {
     strings: object;
@@ -75,8 +76,13 @@ class Bot {
         msg.content = msg.content.substring(1+command.toLowerCase().length);
 
         if(cmd){
+            const commandArgs = {
+                bot: this,
+                strings: this.strings,
+                message: msg
+            };
             if(cmd.hasOwnProperty('action')){
-                cmd.action({bot: this, strings: this.strings, message: msg});
+                cmd.action(commandArgs);
             }else{
                 console.log(command + ' is missing a command action');
             }
