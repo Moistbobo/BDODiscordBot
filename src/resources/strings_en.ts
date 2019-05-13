@@ -8,6 +8,10 @@ const strings = {
         action: '',
         description: 'Makes bot speak a text to speech in the voice channel you are in',
         trigger: 'tts'
+    },
+    leave:{
+        description: 'Makes bot leave voice channel',
+        trigger: 'leave'
     }
 };
 

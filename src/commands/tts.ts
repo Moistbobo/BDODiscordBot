@@ -9,6 +9,7 @@ const tts = (args: CommandArgs) =>{
         voiceChannel.join().then(connection =>{
             Dectalk(args.message.content, args.message.guild.id).then(res=>{
                 console.log('playing sound');
+                args.bot.voiceSessions[args.message.guild.id] = voiceChannel;
                 // args.bot.client.voiceChannel.playFile(`./${args.message.guild.id}.wav`);
                 const dispatcher = connection.playFile(`./dectalk/${args.message.guild.id}.wav`);
             });

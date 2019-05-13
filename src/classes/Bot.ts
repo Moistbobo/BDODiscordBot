@@ -23,6 +23,7 @@ class Bot {
         this.strings = require('../resources/strings_en').Strings;
         this.client.login(token);
         this.test = require('../commands/helloWorld');
+        this.voiceSessions = {};
     }
 
     // Init
