@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js'
 import * as fs from 'fs';
 import Command from "./command";
+import DatabaseHelper from "./databasehelper";
 
 class Bot {
     strings: object;
@@ -9,12 +10,15 @@ class Bot {
     commands: Command[];
     config: any;
     voiceSessions: any;
+    dbHelper : DatabaseHelper;
 
     constructor(prefix: string, token: string) {
         this.client = new Discord.Client();
+        this.dbHelper = new DatabaseHelper();
         this.client.on('message', this.onMessage);
         this.client.on('error', this.onError);
         this.client.on('ready', this.onReady);
+        this.client.on('guildCreate', this.onGuildCreate);
         this.strings = require('../resources/strings_en').Strings;
         this.client.login(token);
         this.test = require('../commands/helloWorld');
@@ -78,6 +82,11 @@ class Bot {
             }
         }
     };
+
+    onGuildCreate = (guild) =>{
+        console.log(guild);
+        this.dbHelper.createNewConfig(guild.id);
+    }
 
 }
 

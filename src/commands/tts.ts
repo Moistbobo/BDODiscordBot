@@ -1,11 +1,11 @@
-import callDecTalk from "../tools/callDecTalk";
+import Dectalk from "../tools/dectalk";
 
 const tts = (args) =>{
     const voiceChannel = args.message.member.voiceChannel;
 
     if(voiceChannel){
         voiceChannel.join().then(connection =>{
-            callDecTalk(args.message.content, args.message.guild.id).then(res=>{
+            Dectalk(args.message.content, args.message.guild.id).then(res=>{
                 console.log('playing sound');
                 // args.bot.client.voiceChannel.playFile(`./${args.message.guild.id}.wav`);
                 const dispatcher = connection.playFile(`./${args.message.guild.id}.wav`);

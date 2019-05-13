@@ -10,9 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/mongoose": "^5.3.27",
     "@types/node": "^11.13.8",
     "discord.js": "^11.4.2",
     "ffmpeg-binaries": "^4.0.0",
+    "mongodb": "^3.2.3",
+    "mongoose": "^5.5.5",
     "opusscript": "0.0.6"
   }
 }

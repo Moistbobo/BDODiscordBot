@@ -1,5 +1,5 @@
 import replace from './tools/replace';
-import callDecTalk from './tools/callDecTalk';
+import Dectalk from './tools/dectalk';
 
 // const baseString = 'hello {0} my name is {1} and i am here to {2}';
 // const values = ['everyone', 'bob' , 'destroy everyone and all '];
@@ -7,7 +7,7 @@ import callDecTalk from './tools/callDecTalk';
 //
 // console.log('hello world');
 //
-// callDecTalk(replace(baseString, values), '1235');
+// Dectalk(replace(baseString, values), '1235');
 
 import Bot from './classes/bot';
 

@@ -1,4 +1,4 @@
-const callDecTalk = (textToSpeak:string, serverID: string) => {
+const Dectalk = (textToSpeak:string, serverID: string) => {
     return new Promise((resolve)=>{
         const execFile = require('child_process').execFile;
         execFile('./say.exe', ['-w', `./dectalk/${serverID}.wav`, textToSpeak], (err, stdout, sterr)=>{
@@ -13,4 +13,4 @@ const callDecTalk = (textToSpeak:string, serverID: string) => {
     });
 };
 
-export default callDecTalk;
+export default Dectalk;
