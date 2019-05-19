@@ -1,13 +1,13 @@
 import * as mongoose from 'mongoose';
 
-const configSchema = new mongoose.Schema({
-    serverID: {type: String, unique: true, dropDups: true, required: true},
+const serverSchema = new mongoose.Schema({
+    id: {type: String, unique: true, dropDups: true, required: true},
     ttsRoles: [String],
     censoredWords: [String],
     warChannels: [{
-        name: String,
-        channel: String
+        channelID: String,
+        warRoleID: [String]
     }]
 });
 
-export default configSchema;
+export default serverSchema;

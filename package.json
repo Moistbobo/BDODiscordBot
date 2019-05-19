@@ -17,8 +17,7 @@
     "mongodb": "^3.2.3",
     "mongoose": "^5.5.5",
     "opusscript": "0.0.6",
-    "node-opus" :"0.2.7",
-    "sodium" : "2.0.3",
-    "libsodium-wrappers" : "0.7.3"
+    "node-opus": "0.2.7",
+    "libsodium-wrappers": "0.7.3"
   }
 }

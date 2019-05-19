@@ -78,4 +78,4 @@ tests/baselines/reference/dt
 TEST-results.xml
 package-lock.json
 dist/*
-./src/token.json
+src/token.json

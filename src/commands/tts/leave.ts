@@ -1,4 +1,4 @@
-import CommandArgs from "../classes/CommandArgs";
+import CommandArgs from "../../classes/CommandArgs";
 
 const leave = (args: CommandArgs) =>{
     const guildID = args.message.guild.id;

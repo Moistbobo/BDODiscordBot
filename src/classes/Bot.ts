@@ -2,7 +2,6 @@ import * as Discord from 'discord.js'
 import * as fs from 'fs';
 import Command from "./Command";
 import DatabaseHelper from "./DatabaseHelper";
-import CommandArgs from "./CommandArgs";
 
 class Bot {
     strings: object;
@@ -13,7 +12,7 @@ class Bot {
     voiceSessions: any;
     dbHelper : DatabaseHelper;
 
-    constructor(prefix: string, token: string) {
+    constructor(prefix: string, token: string, config: any) {
         this.client = new Discord.Client();
         this.dbHelper = new DatabaseHelper();
         this.client.on('message', this.onMessage);
@@ -22,8 +21,8 @@ class Bot {
         this.client.on('guildCreate', this.onGuildCreate);
         this.strings = require('../resources/strings_en').Strings;
         this.client.login(token);
-        this.test = require('../commands/helloWorld');
         this.voiceSessions = {};
+        this.config = config;
     }
 
     // Init
@@ -31,26 +30,33 @@ class Bot {
         const commandPath = './commands/';
         this.commands = [];
 
-        fs.readdir(commandPath, (err, commandNames) => {
-            if (err) {
-                console.log(err);
+        fs.readdir(commandPath, (err, folderNames) => {
+            err? console.error(err):null;
+            console.log(folderNames);
+            folderNames.forEach((folder)=>{
+                fs.readdir(`${commandPath}${folder}/`, (err, commandNames) =>{
+                    err? console.error(err):null;
+                    this.extractCommand(`${commandPath}${folder}/`, commandNames);
+                })
+            });
+        })
+    };
+
+    extractCommand = (commandPath: String, commandNames : String[]) =>{
+        commandNames.forEach((cmd) => {
+
+            const commandName = cmd.replace('.js', '');
+            const stringResources = this.strings[commandName];
+
+            if (stringResources !== undefined) {
+                let command = new Command;
+                command.action = require(`.${commandPath}${commandName}`).action;
+                command.trigger = stringResources.trigger.split(',');
+                command.description = stringResources.description;
+                this.commands.push(command);
+            } else {
+                console.log('Check that the following command has strings for description, and trigger ', cmd);
             }
-
-            commandNames.forEach((cmd) => {
-                const commandName = cmd.replace('.js', '');
-                const stringResources = this.strings[commandName];
-
-                if (stringResources !== undefined) {
-                    let command = new Command;
-                    command.action = require(`.${commandPath}${commandName}`).action;
-                    command.trigger = stringResources.trigger.split(',');
-                    command.description = stringResources.description;
-                    this.commands.push(command);
-                } else {
-                    console.log('Check that the following command has strings for description, and trigger ', cmd);
-                }
-
-            })
         })
     };
 
@@ -83,7 +89,11 @@ class Bot {
                 message: msg
             };
             if(cmd.hasOwnProperty('action')){
-                cmd.action(commandArgs);
+                try{
+                    cmd.action(commandArgs);
+                }catch(exception){
+                    console.error(exception);
+                }
             }else{
                 console.log(command + ' is missing a command action');
             }
