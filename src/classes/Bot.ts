@@ -74,6 +74,9 @@ class Bot {
     };
 
     onMessage = (msg) => {
+        // if(msg.author.id !== '184186982631473153'){
+        //     return;
+        // }
         const command = msg.content.substring(1).split(' ')[0];
 
         const cmd = this.commands.find((x) =>

@@ -12,10 +12,6 @@ const strings = {
     leave:{
         description: 'Makes bot leave voice channel',
         trigger: 'leave'
-    },
-    googletts:{
-        description: 'Makes bot speak text generated using google api',
-        trigger: 'gtts'
     }
 };
 

@@ -4,7 +4,7 @@ const Dectalk = (textToSpeak:string, serverID: string) => {
         if(process.platform === 'linux'){
             const exec = require('child_process').exec;
 
-            exec(`DISPLAY:=0.0 wine ./say.exe -w ./dectalk/${serverID}.wav "${textToSpeak}"`, (err, stdout, sterr)=>{
+            exec(`DISPLAY=:0.0 wine ./say.exe -w ./dectalk/${serverID}.wav "${textToSpeak}"`, (err, stdout, sterr)=>{
                 console.log('[CALLDECTALK FUNCTION]');
                 console.log(err);
                 console.log(stdout);

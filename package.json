@@ -10,14 +10,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/uws": "^11.149.1",
     "@google-cloud/text-to-speech": "^1.0.0",
     "@types/mongoose": "^5.3.27",
     "@types/node": "^11.13.8",
     "discord.js": "github:discordjs/discord.js",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "ffmpeg-static": "^2.4.0",
+    "libsodium-wrappers": "^0.7.4",
     "mongodb": "^3.2.3",
     "mongoose": "^5.5.5",
-    "opusscript": "0.0.6",
-    "node-opus": "0.2.7",
-    "libsodium-wrappers": "0.7.3"
+    "node-gyp": "^4.0.0",
+    "node-opus": "^0.3.1",
+    "rebuild": "^0.1.2",
+    "sodium": "^3.0.2"
   }
 }
