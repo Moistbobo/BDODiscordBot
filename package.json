@@ -7,6 +7,17 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node index.js"
   },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testPathIgnorePatterns": [
+      "/dist/"
+    ]
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -24,5 +35,11 @@
     "node-opus": "^0.3.1",
     "rebuild": "^0.1.2",
     "sodium": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5"
   }
 }
