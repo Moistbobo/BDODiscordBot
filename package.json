@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "node index.js"
+    "debug": "node index.js",
+    "build": "tsc && cp -r ./src/dockerfiles/. ./dist"
   },
   "author": "",
   "license": "ISC",
@@ -15,9 +16,10 @@
     "@types/mongoose": "^5.3.27",
     "@types/node": "^11.13.8",
     "discord.js": "github:discordjs/discord.js",
+    "libsodium-wrappers": "0.7.3",
     "mongodb": "^3.2.3",
     "mongoose": "^5.5.11",
-    "node-opus": "0.3.1",
-    "libsodium-wrappers": "0.7.3"
-  }
+    "node-opus": "0.3.1"
+  },
+  "devDependencies": {}
 }
