@@ -6,20 +6,42 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node index.js",
-    "build": "tsc && cp -r ./src/dockerfiles/. ./dist"
+    "build": "tsc && cp -r ./src/dockerfiles/. ./dist && cp ./src/package.json ./dist"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testPathIgnorePatterns": [
+      "/dist/"
+    ]
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/uws": "^11.149.1",
     "@google-cloud/text-to-speech": "^1.0.0",
     "@shelf/jest-mongodb": "^1.0.1",
-    "@types/mongoose": "^5.3.27",
-    "@types/node": "^11.13.8",
     "discord.js": "github:discordjs/discord.js",
-    "libsodium-wrappers": "0.7.3",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "ffmpeg-static": "^2.4.0",
+    "libsodium-wrappers": "^0.7.4",
     "mongodb": "^3.2.3",
     "mongoose": "^5.5.11",
-    "node-opus": "0.3.1"
+    "node-gyp": "^4.0.0",
+    "node-opus": "^0.3.1",
+    "rebuild": "^0.1.2",
+    "sodium": "^3.0.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5",
+    "@types/mongoose": "^5.3.27",
+    "@types/node": "^11.13.8"
+  }
 }
