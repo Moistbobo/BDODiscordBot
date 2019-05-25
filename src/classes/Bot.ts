@@ -1,20 +1,17 @@
 import * as Discord from 'discord.js'
 import * as fs from 'fs';
 import Command from "./Command";
-import DatabaseHelper from "./DatabaseHelper";
+import DatabaseTools from '../tools/DatabaseTools';
 
 class Bot {
     strings: object;
     client: Discord.Client;
-    test: any;
     commands: Command[];
     config: any;
     voiceSessions: any;
-    dbHelper : DatabaseHelper;
 
     constructor(prefix: string, token: string, config: any) {
         this.client = new Discord.Client();
-        this.dbHelper = new DatabaseHelper();
         this.client.on('message', this.onMessage);
         this.client.on('error', this.onError);
         this.client.on('ready', this.onReady);
@@ -29,20 +26,25 @@ class Bot {
     loadCommands = () => {
         const commandPath = './commands/';
         this.commands = [];
+        // fs.readdir(commandPath, (err, folderNames) => {
+        //     err ? console.error(err) : null;
+        //     console.log(folderNames);
+        //     folderNames.forEach((folder) => {
+        //         fs.readdir(`${commandPath}${folder}/`, (err, commandNames) => {
+        //             err ? console.error(err) : null;
+        //             this.extractCommand(`${commandPath}${folder}/`, commandNames);
+        //         })
+        //     });
+        // });
 
-        fs.readdir(commandPath, (err, folderNames) => {
-            err? console.error(err):null;
-            console.log(folderNames);
-            folderNames.forEach((folder)=>{
-                fs.readdir(`${commandPath}${folder}/`, (err, commandNames) =>{
-                    err? console.error(err):null;
-                    this.extractCommand(`${commandPath}${folder}/`, commandNames);
-                })
-            });
-        })
+        const folderNames = fs.readdirSync(commandPath);
+        folderNames.forEach((folder) => {
+            const commandNames = fs.readdirSync(`${commandPath}${folder}/`);
+            this.extractCommand(`${commandPath}${folder}/`, commandNames);
+        });
     };
 
-    extractCommand = (commandPath: String, commandNames : String[]) =>{
+    extractCommand = (commandPath: String, commandNames: String[]) => {
         commandNames.forEach((cmd) => {
 
             const commandName = cmd.replace('.js', '');
@@ -64,7 +66,6 @@ class Bot {
 
     onReady = () => {
         this.loadCommands();
-
         console.log('Bot ready');
     };
 
@@ -80,29 +81,29 @@ class Bot {
             x.trigger.includes(command.toLowerCase())
         );
 
-        msg.content = msg.content.substring(1+command.toLowerCase().length);
+        msg.content = msg.content.substring(1 + command.toLowerCase().length);
 
-        if(cmd){
+        if (cmd) {
             const commandArgs = {
                 bot: this,
                 strings: this.strings,
                 message: msg
             };
-            if(cmd.hasOwnProperty('action')){
-                try{
+            if (cmd.hasOwnProperty('action')) {
+                try {
                     cmd.action(commandArgs);
-                }catch(exception){
+                } catch (exception) {
                     console.error(exception);
                 }
-            }else{
+            } else {
                 console.log(command + ' is missing a command action');
             }
         }
     };
 
-    onGuildCreate = (guild) =>{
+    onGuildCreate = (guild) => {
         console.log(guild);
-        this.dbHelper.createNewConfig(guild.id);
+        DatabaseTools.createNewServer(guild.id);
     }
 
 }

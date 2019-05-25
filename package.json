@@ -11,13 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/text-to-speech": "^1.0.0",
+    "@shelf/jest-mongodb": "^1.0.1",
     "@types/mongoose": "^5.3.27",
     "@types/node": "^11.13.8",
     "discord.js": "github:discordjs/discord.js",
     "mongodb": "^3.2.3",
-    "mongoose": "^5.5.5",
-    "opusscript": "0.0.6",
-    "node-opus": "0.2.7",
+    "mongoose": "^5.5.11",
+    "node-opus": "0.3.1",
     "libsodium-wrappers": "0.7.3"
   }
 }
