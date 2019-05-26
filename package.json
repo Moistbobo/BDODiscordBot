@@ -33,8 +33,7 @@
     "mongoose": "^5.5.11",
     "node-gyp": "^4.0.0",
     "node-opus": "^0.3.1",
-    "rebuild": "^0.1.2",
-    "sodium": "^3.0.2"
+    "rebuild": "^0.1.2"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
