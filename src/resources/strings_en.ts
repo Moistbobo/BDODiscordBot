@@ -20,6 +20,10 @@ const strings = {
     CreateNewServerConfig:{
         description: 'Create a new config on the db for the current server',
         trigger: 'createnewserverconfig,cnsc,csc'
+    },
+    patchnotes:{
+        description: 'Retrieve latest BDO patchnotes',
+        trigger: 'patchnotes,pn'
     }
 };
 

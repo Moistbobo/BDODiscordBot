@@ -26,17 +26,6 @@ class Bot {
     loadCommands = () => {
         const commandPath = './commands/';
         this.commands = [];
-        // fs.readdir(commandPath, (err, folderNames) => {
-        //     err ? console.error(err) : null;
-        //     console.log(folderNames);
-        //     folderNames.forEach((folder) => {
-        //         fs.readdir(`${commandPath}${folder}/`, (err, commandNames) => {
-        //             err ? console.error(err) : null;
-        //             this.extractCommand(`${commandPath}${folder}/`, commandNames);
-        //         })
-        //     });
-        // });
-
         const folderNames = fs.readdirSync(commandPath);
         folderNames.forEach((folder) => {
             const commandNames = fs.readdirSync(`${commandPath}${folder}/`);
@@ -60,6 +49,15 @@ class Bot {
                 console.log('Check that the following command has strings for description, and trigger ', cmd);
             }
         })
+    };
+
+    // Utility functions
+    sendMessageOK = (contents: string, footer?:any) =>{
+
+    };
+
+    sendMessageError = (contents: string, footer:any) =>{
+
     };
 
     // Listeners
