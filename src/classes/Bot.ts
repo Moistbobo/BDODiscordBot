@@ -47,7 +47,9 @@ class Bot {
                 command.description = stringResources.description;
                 this.commands.push(command);
             } else {
-                console.log('Check that the following command has strings for description, and trigger ', cmd);
+                if(!cmd.includes('js.map')){
+                    console.log('Check that the following command has strings for description, and trigger ', cmd);
+                }
             }
         })
     };
