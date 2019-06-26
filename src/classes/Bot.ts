@@ -2,6 +2,7 @@ import * as Discord from 'discord.js'
 import * as fs from 'fs';
 import Command from "./Command";
 import DatabaseTools from '../tools/DatabaseTools';
+import * as BotConfig from '../config.json'
 
 class Bot {
     strings: object;
@@ -52,11 +53,19 @@ class Bot {
     };
 
     // Utility functions
-    sendMessageOK = (contents: string, footer?:any) =>{
+    createOKEmbed = (contents: string, title: any = null, footer: any = null, author: any = null, url: any = null)
+        : Discord.MessageEmbed => {
+        let embed = new Discord.MessageEmbed();
+        embed.setColor(BotConfig.successMessageColor);
+        embed.setFooter(footer);
+        embed.setDescription(contents);
+        embed.setAuthor(author);
+        url ? embed.setURL(url) : null;
 
+        return embed;
     };
 
-    sendMessageError = (contents: string, footer:any) =>{
+    createErrorEmbed = (contents: string, footer: any) => {
 
     };
 

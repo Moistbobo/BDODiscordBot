@@ -2,5 +2,7 @@
   "gtts_enabled_guilds": [
     "159467701113192448",
     "333037240970117120"
-  ]
+  ],
+  "successMessageColor":"#499369",
+  "errorMessageColor": "#f08080"
 }

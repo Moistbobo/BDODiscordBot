@@ -24,6 +24,10 @@ const strings = {
     patchnotes:{
         description: 'Retrieve latest BDO patchnotes',
         trigger: 'patchnotes,pn'
+    },
+    embed:{
+        description:'Send a test embed message',
+        trigger: 'embed,em'
     }
 };
 
