@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node index.js",
     "build": "tsc && cp -r ./src/dockerfiles/. ./dist && cp ./src/package.json ./dist",
-    "start": "cd dist && node index.js"
+    "start": "cd dist && node index.js",
+    "deployTest" : "sh deployTest.sh"
   },
   "jest": {
     "roots": [
@@ -23,7 +24,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/uws": "^11.149.1",
     "@google-cloud/text-to-speech": "^1.0.0",
     "@shelf/jest-mongodb": "^1.0.1",
     "discord.js": "github:discordjs/discord.js",

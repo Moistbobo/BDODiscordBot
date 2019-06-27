@@ -8,9 +8,18 @@
     "target": "es2017",            // specify ECMAScript target version
     "allowJs": true,             // allow a partial TypeScript and JavaScript codebase
     "resolveJsonModule": true,
-    "removeComments": true
+    "removeComments": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ]
+    }
   },
   "include": [
     "./src/**/*"
+  ],
+  "exclude": [
+    "./src/__tests__"
   ]
 }
