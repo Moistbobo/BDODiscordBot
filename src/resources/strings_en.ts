@@ -25,9 +25,9 @@ const strings = {
         description: 'Retrieve latest BDO patchnotes',
         trigger: 'patchnotes,pn'
     },
-    embed:{
-        description:'Send a test embed message',
-        trigger: 'embed,em'
+    value:{
+        description: 'Get the value of marketplace items',
+        trigger: 'val, value'
     }
 };
 
