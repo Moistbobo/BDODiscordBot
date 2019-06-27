@@ -18,9 +18,11 @@ class Bot {
         this.client.on('ready', this.onReady);
         this.client.on('guildCreate', this.onGuildCreate);
         this.strings = require('../resources/strings_en').Strings;
+        console.log('logging in...');
         this.client.login(token);
         this.voiceSessions = {};
         this.config = config;
+        console.log('constructor end');
     }
 
     // Init
@@ -30,6 +32,7 @@ class Bot {
         const folderNames = fs.readdirSync(commandPath);
         folderNames.forEach((folder) => {
             const commandNames = fs.readdirSync(`${commandPath}${folder}/`);
+            console.log('Loading ', commandPath, folder, commandNames);
             this.extractCommand(`${commandPath}${folder}/`, commandNames);
         });
     };
@@ -52,6 +55,7 @@ class Bot {
                 }
             }
         })
+        console.log('commands loaded');
     };
 
     // Utility functions
