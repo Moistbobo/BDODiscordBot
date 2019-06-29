@@ -109,7 +109,7 @@ class Bot {
                 try {
                     cmd.action(commandArgs);
                 } catch (exception) {
-                    console.error(exception);
+                    console.log(exception);
                 }
             } else {
                 console.log(command + ' is missing a command action');
