@@ -15,7 +15,7 @@ const tts = (args: CommandArgs) => {
     const voiceChannel = args.message.member.voice.channel;
 
     if (!voiceChannel) {
-        return args.send('You need to be in a voice channel to use this command');
+        return args.sendErrorEmbed({contents:'You need to be in a voice channel to use this command'});
     }
 
     makeTTSFolderIfNotExist();

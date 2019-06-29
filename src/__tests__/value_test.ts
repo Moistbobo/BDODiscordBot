@@ -28,4 +28,17 @@ describe('Value Command', () => {
             expect(valueTest.toHumanReadable(input)).toBe(expectedResult);
         })
     });
+
+    describe('startsWithNumber', () => {
+        test.each`
+        input | expectedResult
+        ${'100bil'} | ${true}
+        ${'b'} | ${false}
+        ${'kkkkkkk2'} | ${false}
+        ${12321321321} | ${true}
+        ${'12123            2jkjl'} | ${true}
+        `('Check if $input starts with a number', ({input, expectedResult}) => {
+            expect(valueTest.startsWithNumber(input)).toBe(expectedResult);
+        })
+    })
 });

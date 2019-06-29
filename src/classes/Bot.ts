@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import Command from "./Command";
 import DatabaseTools from '../tools/DatabaseTools';
 import * as BotConfig from '../config.json'
+import EmbedArgs from '../classes/EmbedArgs';
 
 class Bot {
     strings: object;
@@ -50,29 +51,37 @@ class Bot {
                 command.description = stringResources.description;
                 this.commands.push(command);
             } else {
-                if(!cmd.includes('js.map')){
+                if (!cmd.includes('js.map')) {
                     console.log('Check that the following command has strings for description, and trigger ', cmd);
                 }
             }
-        })
+        });
         console.log('commands loaded');
     };
 
     // Utility functions
-    createOKEmbed = (contents: string, title: any = null, footer: any = null, author: any = null, url: any = null)
+    createOKEmbed = (args: EmbedArgs)
         : Discord.MessageEmbed => {
         let embed = new Discord.MessageEmbed();
         embed.setColor(BotConfig.successMessageColor);
-        embed.setFooter(footer);
-        embed.setDescription(contents);
-        embed.setAuthor(author);
-        url ? embed.setURL(url) : null;
-
+        args.footer ? embed.setFooter(args.footer) : null;
+        args.contents ? embed.setDescription(args.contents) : null;
+        args.author ? embed.setAuthor(args.author) : null;
+        args.url ? embed.setURL(args.url) : null;
+        args.title? embed.setTitle(args.title): null;
         return embed;
     };
 
-    createErrorEmbed = (contents: string, footer: any) => {
-
+    createErrorEmbed = (args: EmbedArgs)
+        : Discord.MessageEmbed => {
+        let embed = new Discord.MessageEmbed();
+        embed.setColor(BotConfig.errorMessageColor);
+        args.footer ? embed.setFooter(args.footer) : null;
+        args.contents ? embed.setDescription(args.contents) : null;
+        args.author ? embed.setAuthor(args.author) : null;
+        args.url ? embed.setURL(args.url) : null;
+        args.title? embed.setTitle(args.title): null;
+        return embed;
     };
 
     // Listeners
@@ -88,9 +97,6 @@ class Bot {
     };
 
     onMessage = (msg) => {
-        // if(msg.author.id !== '184186982631473153'){
-        //     return;
-        // }
         const command = msg.content.substring(1).split(' ')[0];
 
         const cmd = this.commands.find((x) =>
@@ -104,7 +110,9 @@ class Bot {
                 bot: this,
                 strings: this.strings,
                 message: msg,
-                send: (content)=>msg.channel.send(content)
+                send: (content) => msg.channel.send(content),
+                sendOKEmbed: (args) => msg.channel.send(this.createOKEmbed(args)),
+                sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args))
             };
             if (cmd.hasOwnProperty('action')) {
                 try {

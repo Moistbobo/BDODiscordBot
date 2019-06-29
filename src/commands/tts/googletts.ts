@@ -44,9 +44,9 @@ const googletts = (args: CommandArgs) => {
 
     // Content is required to generate tts
     if (!args.message.content || args.message.content.split(' ').length < 1) {
-        return args.send('You need to specify some text to speak');
+        return args.sendErrorEmbed({contents: 'You need to specify some text to speak'});
     } else if (!voiceChannel) {
-        return args.send('You need to be in a voice channel to use this command');
+        return args.sendErrorEmbed({contents: 'You need to be in a voice channel to use this command'});
     }
 
     const language = args.message.content.split(' ')[1];

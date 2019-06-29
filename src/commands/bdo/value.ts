@@ -40,6 +40,15 @@ const toMachineReadable = (num: String): number => {
     }
 };
 
+/**
+ * Check if the provided value starts with a number
+ * @param content
+ */
+const startsWithNumber = (content: string): boolean => {
+    const regex = /^[0-9]/;
+    return regex.test(content);
+};
+
 const value = (args: CommandArgs) => {
     const originalValue = args.message.content.split(' ')[1].toLowerCase();
 
@@ -52,8 +61,8 @@ const value = (args: CommandArgs) => {
         originalValue.includes('k')) {
         // Maybe its a shorthand number (i.e 5bil)
         sellingPrice = toMachineReadable(priceBeforeConversion);
-        if (sellingPrice === -1) {
-            return args.message.channel.send("Enter a valid number.");
+        if (sellingPrice === -1 || !startsWithNumber(originalValue)) {
+            return args.sendErrorEmbed({contents: 'Enter a valid number.'});
         }
     } else {
         sellingPrice = parseFloat(priceBeforeConversion);
@@ -65,7 +74,7 @@ const value = (args: CommandArgs) => {
     // only insert human readable if base sell price is greater than 1mil
     const needHumanReadable = baseSellPrice > 1000000;
     // TODO: reduce this to something shorter
-    args.message.channel.send(`An item sold for \`${formatNumber(sellingPrice)}\` will earn\n\`${formatNumber(baseSellPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(baseSellPrice)) : ' '}without value pack\n\`${formatNumber(valuePackPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(valuePackPrice)) : ' '}with value pack\n\nThis is not adjusted for the extra fame bonus.`)
+    args.sendOKEmbed({contents: `An item sold for \`${formatNumber(sellingPrice)}\` will earn\n\`${formatNumber(baseSellPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(baseSellPrice)) : ' '}without value pack\n\`${formatNumber(valuePackPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(valuePackPrice)) : ' '}with value pack\n\nThis is not adjusted for the extra fame bonus.`});
 };
 
 export const action = value;
@@ -73,5 +82,6 @@ export const action = value;
 export const valueTest = {
     formatNumber,
     toHumanReadable,
-    toMachineReadable
+    toMachineReadable,
+    startsWithNumber
 };
