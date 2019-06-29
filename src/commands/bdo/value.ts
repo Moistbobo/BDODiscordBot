@@ -14,13 +14,17 @@ const toHumanReadable = (num: number): String => {
     const numString = num.toString();
     let returnString = '';
 
-    if (num > 1000000000) {
-        returnString = ` \`(${parseFloat(numString) / 1000000000}bil)\` `;
-    } else if (num > 1000000) {
-        returnString = ` \`(${parseFloat(numString) / 1000000}mil)\` `;
+    if (num >= 1000000000) {
+        returnString = `${(parseFloat(numString) / 1000000000)}bil`;
+    } else if (num >= 1000000) {
+        returnString = `${(parseFloat(numString) / 1000000)}mil`;
     }
 
     return returnString
+};
+
+const wrapInputWithFormatting = (str: String): String => {
+    return ` \`(${str})\` `
 };
 
 const toMachineReadable = (num: String): number => {
@@ -43,8 +47,8 @@ const value = (args: CommandArgs) => {
     let sellingPrice = 0;
 
     // if (isNaN(parseFloat(priceBeforeConversion))) {
-    if (originalValue.includes('bil') ||
-        originalValue.includes('mil') ||
+    if (originalValue.includes('b') ||
+        originalValue.includes('m') ||
         originalValue.includes('k')) {
         // Maybe its a shorthand number (i.e 5bil)
         sellingPrice = toMachineReadable(priceBeforeConversion);
@@ -61,7 +65,13 @@ const value = (args: CommandArgs) => {
     // only insert human readable if base sell price is greater than 1mil
     const needHumanReadable = baseSellPrice > 1000000;
     // TODO: reduce this to something shorter
-    args.message.channel.send(`An item sold for \`${formatNumber(sellingPrice)}\` will earn\n\`${formatNumber(baseSellPrice)}\`${needHumanReadable ? toHumanReadable(baseSellPrice) : ' '}without value pack\n\`${formatNumber(valuePackPrice)}\`${needHumanReadable ? toHumanReadable(valuePackPrice) : ' '}with value pack\n\nThis is not adjusted for the extra fame bonus.`)
+    args.message.channel.send(`An item sold for \`${formatNumber(sellingPrice)}\` will earn\n\`${formatNumber(baseSellPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(baseSellPrice)) : ' '}without value pack\n\`${formatNumber(valuePackPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(valuePackPrice)) : ' '}with value pack\n\nThis is not adjusted for the extra fame bonus.`)
 };
 
 export const action = value;
+
+export const valueTest = {
+    formatNumber,
+    toHumanReadable,
+    toMachineReadable
+};
