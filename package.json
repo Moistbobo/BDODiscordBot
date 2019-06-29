@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node index.js",
     "build": "tsc && cp -r ./src/dockerfiles/. ./dist && cp ./src/package.json ./dist",
-    "start": "cd dist && node index.js",
-    "deployTest" : "sh deployTest.sh"
+    "start": "cd dist && nodemon index.js",
+    "deployTest": "sh deployTest.sh"
   },
   "jest": {
     "roots": [
@@ -42,6 +42,7 @@
     "@types/mongoose": "^5.3.27",
     "@types/node": "^11.13.15",
     "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5"
   }
