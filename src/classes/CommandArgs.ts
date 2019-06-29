@@ -3,7 +3,8 @@ import Bot from "./Bot";
 interface CommandArgs{
     bot: Bot;
     strings: any;
-    message: Discord.Message
+    message: Discord.Message,
+    send: any;
 };
 
 export default CommandArgs;

@@ -103,7 +103,8 @@ class Bot {
             const commandArgs = {
                 bot: this,
                 strings: this.strings,
-                message: msg
+                message: msg,
+                send: (content)=>msg.channel.send(content)
             };
             if (cmd.hasOwnProperty('action')) {
                 try {

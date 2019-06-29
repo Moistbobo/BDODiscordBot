@@ -2,7 +2,7 @@
 A discord bot for the Black Desert Online (BDO) guild ChoNation
 
 # Setup
-1. Set a bobobotToken enivironment variable equal to your bot's public token
+1. Set a bobobotToken environment variable equal to your bot's public token
 (if you want googletts functionality) Set up a google cloud api key (more information here: https://cloud.google.com/text-to-speech/)
 
 2. Build the typescript files

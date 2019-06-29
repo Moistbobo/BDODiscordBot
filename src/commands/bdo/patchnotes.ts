@@ -14,7 +14,7 @@ const patchnotes = (args: CommandArgs) =>{
                 result.json()
                     .then((json)=>{
                         const patchnotes = json.items;
-                        args.message.channel.send(`${patchnotes[0].title}\n${patchnotes[0].url} `)
+                        args.send(`${patchnotes[0].title}\n${patchnotes[0].url} `)
                     })
                     .catch(err=>{
                         console.log(`[PATCHNOTES COMMAND]:\n${err}`);
@@ -22,13 +22,13 @@ const patchnotes = (args: CommandArgs) =>{
                     })
             }else{
                 console.log('err');
-                args.message.channel.send(`An error occurred retrieving patchnotes`);
+                args.send(`A network error occurred while retrieving patchnotes`);
                 console.log(result);
             }
         })
         .catch((err)=>{
             console.log('err');
-            args.message.channel.send(`There was an error retrieving patchnoes`)
+            args.send(`There was an error retrieving patchnoes`)
         })
 };
 
