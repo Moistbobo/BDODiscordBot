@@ -2,6 +2,10 @@
 A discord bot for the Black Desert Online (BDO) guild ChoNation
 
 # Setup
+
+First make sure you have windows-build-tools and visualcppbuildtools set up.
+Make sure you are using node 10. Some of the dependencies do not support node 12 yet.
+
 1. Set a bobobotToken environment variable equal to your bot's public token
 (if you want googletts functionality) Set up a google cloud api key (more information here: https://cloud.google.com/text-to-speech/)
 
