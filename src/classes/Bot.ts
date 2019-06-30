@@ -14,26 +14,28 @@ class Bot {
 
     constructor(prefix: string, token: string, config: any) {
         this.client = new Discord.Client();
+        this.setListeners();
+        this.strings = require('../resources/strings_en').Strings;
+        this.client.login(token);
+        this.voiceSessions = {};
+        this.config = config;
+        DatabaseTools.connectToMongoDB();
+    }
+
+    // Init
+    setListeners = () =>{
         this.client.on('message', this.onMessage);
         this.client.on('error', this.onError);
         this.client.on('ready', this.onReady);
         this.client.on('guildCreate', this.onGuildCreate);
-        this.strings = require('../resources/strings_en').Strings;
-        console.log('logging in...');
-        this.client.login(token);
-        this.voiceSessions = {};
-        this.config = config;
-        console.log('constructor end');
-    }
+    };
 
-    // Init
     loadCommands = () => {
         const commandPath = './commands/';
         this.commands = [];
         const folderNames = fs.readdirSync(commandPath);
         folderNames.forEach((folder) => {
             const commandNames = fs.readdirSync(`${commandPath}${folder}/`);
-            console.log('Loading ', commandPath, folder, commandNames);
             this.extractCommand(`${commandPath}${folder}/`, commandNames);
         });
     };
@@ -48,6 +50,7 @@ class Bot {
                 let command = new Command;
                 command.action = require(`.${commandPath}${commandName}`).action;
                 command.trigger = stringResources.trigger.split(',');
+                command.trigger = command.trigger.map((e) => e.trim());
                 command.description = stringResources.description;
                 this.commands.push(command);
             } else {
@@ -56,7 +59,6 @@ class Bot {
                 }
             }
         });
-        console.log('commands loaded');
     };
 
     // Utility functions
@@ -68,7 +70,7 @@ class Bot {
         args.contents ? embed.setDescription(args.contents) : null;
         args.author ? embed.setAuthor(args.author) : null;
         args.url ? embed.setURL(args.url) : null;
-        args.title? embed.setTitle(args.title): null;
+        args.title ? embed.setTitle(args.title) : null;
         return embed;
     };
 
@@ -80,7 +82,7 @@ class Bot {
         args.contents ? embed.setDescription(args.contents) : null;
         args.author ? embed.setAuthor(args.author) : null;
         args.url ? embed.setURL(args.url) : null;
-        args.title? embed.setTitle(args.title): null;
+        args.title ? embed.setTitle(args.title) : null;
         return embed;
     };
 
@@ -102,7 +104,7 @@ class Bot {
         const cmd = this.commands.find((x) =>
             x.trigger.includes(command.toLowerCase())
         );
-
+        // Trim the command args off the message contents
         msg.content = msg.content.substring(1 + command.toLowerCase().length);
 
         if (cmd) {
@@ -128,7 +130,6 @@ class Bot {
 
     onGuildCreate = (guild) => {
         console.log(guild);
-        DatabaseTools.createNewServer(guild.id);
     }
 
 }
