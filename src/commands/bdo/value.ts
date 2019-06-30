@@ -74,7 +74,7 @@ const value = (args: CommandArgs) => {
     // only insert human readable if base sell price is greater than 1mil
     const needHumanReadable = baseSellPrice > 1000000;
     // TODO: reduce this to something shorter
-    args.sendOKEmbed({contents: `An item sold for \`${formatNumber(sellingPrice)}\` will earn\n\`${formatNumber(baseSellPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(baseSellPrice)) : ' '}without value pack\n\`${formatNumber(valuePackPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(valuePackPrice)) : ' '}with value pack\n\nThis is not adjusted for the extra fame bonus.`});
+    args.sendOKEmbed({contents: `An item sold for \`${formatNumber(sellingPrice)}\` will earn\n\n\`${formatNumber(baseSellPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(baseSellPrice)) : ' '}without value pack\n\`${formatNumber(valuePackPrice)}\`${needHumanReadable ? wrapInputWithFormatting(toHumanReadable(valuePackPrice)) : ' '}with value pack\n\nThis is not adjusted for the extra fame bonus.`});
 };
 
 export const action = value;
