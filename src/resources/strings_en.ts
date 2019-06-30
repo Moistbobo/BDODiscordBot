@@ -36,6 +36,10 @@ const strings = {
     alive:{
         description: 'Check if bot is alive',
         trigger: 'alive'
+    },
+    checkttschannel:{
+        description: 'Check the gtts enabled channel on the server',
+        trigger: 'checkttschannel, ctc'
     }
 };
 
