@@ -29,10 +29,6 @@ const strings = {
         description: 'Get the value of marketplace items',
         trigger: 'val, value'
     },
-    embed:{
-        description: 'Send a test embed message',
-        trigger: 'em, embed'
-    },
     setchannel:{
         description: 'Set a gtts enabled channel',
         trigger: 'sc, setchannel'
