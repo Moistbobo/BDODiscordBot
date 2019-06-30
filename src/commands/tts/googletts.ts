@@ -1,4 +1,5 @@
 import CommandArgs from "../../classes/CommandArgs";
+import GTTSChannel, {IGttsChannel} from "../../models/gttsChannel";
 
 /**
  * Generate TTS using google cloud services
@@ -39,16 +40,18 @@ const writeTTSBinaryToWAV = (ttsByteArray: any, serverID: string): Promise<any> 
     return writeFile(`./gtts/${serverID}.wav`, audio.audioContent, 'binary');
 };
 
-const googletts = (args: CommandArgs) => {
-    const voiceChannel = args.message.member.voice.channel;
+const checkGTTSChannel = (serverID: string) => {
+    GTTSChannel.findOne({serverID})
+        .then((gttsChannel) => {
+            return gttsChannel;
+        })
+        .catch((err) => {
+            console.log(err);
+            return null;
+        })
+};
 
-    // Content is required to generate tts
-    if (!args.message.content || args.message.content.split(' ').length < 1) {
-        return args.sendErrorEmbed({contents: 'You need to specify some text to speak'});
-    } else if (!voiceChannel) {
-        return args.sendErrorEmbed({contents: 'You need to be in a voice channel to use this command'});
-    }
-
+const googlettsMainFunction = (args: CommandArgs, voiceChannel: any, serverID: string) => {
     const language = args.message.content.split(' ')[1];
 
     let lang: string;
@@ -59,7 +62,6 @@ const googletts = (args: CommandArgs) => {
         lang = language;
     }
 
-    const serverID = args.message.guild.id;
     makeGTTSFolderIfNotExist();
     makeTTSRequest(lang, args.message.content).then(res => {
         return writeTTSBinaryToWAV(res, serverID);
@@ -74,6 +76,32 @@ const googletts = (args: CommandArgs) => {
         console.log('Something went wrong generating tts');
         console.log(err);
     })
+};
+
+const googletts = (args: CommandArgs) => {
+    const voiceChannel = args.message.member.voice.channel;
+    const serverID = args.message.guild.id;
+
+    if (!args.message.content || args.message.content.split(' ').length < 1) {
+        return args.sendErrorEmbed({contents: 'You need to specify some text to speak'});
+    } else if (!voiceChannel) {
+        return args.sendErrorEmbed({contents: 'You need to be in a voice channel to use this command'});
+    }
+
+    GTTSChannel.findOne({serverID})
+        .then((gttsChannel) => {
+            if (!gttsChannel) {
+                return args.sendErrorEmbed({contents: 'No gtts channel specified on server'});
+            }else if(gttsChannel.channelID !== args.message.channel.id){
+                console.log(gttsChannel.channelID, args.message.channel.id);
+                return args.sendErrorEmbed({contents:'This channel is not gtts enabled'});
+            }
+            googlettsMainFunction(args, voiceChannel, serverID);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
 };
 
 export const action = googletts;
