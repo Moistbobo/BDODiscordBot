@@ -52,6 +52,10 @@ const strings = {
     suggestanime:{
         description: 'Suggest a random anime based on genre',
         trigger: 'suggestanime, sa'
+    },
+    iqtest :{
+        description:'Check your iq',
+        trigger:'iqtest, iq'
     }
     // manga: {
     //     description: 'Get information for a single manga',
