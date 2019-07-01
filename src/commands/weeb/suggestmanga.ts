@@ -19,7 +19,7 @@ const getRandomGenre = (): string => {
 
 const suggestmanga = (args: CommandArgs) => {
     // .suggestManga [genre] [genre2?] [page]
-        args.message.channel.startTyping();
+    args.message.channel.startTyping();
     let queryString = args.message.content;
 
     if (queryString.split(' ').length > 4) {
@@ -44,7 +44,13 @@ const suggestmanga = (args: CommandArgs) => {
 
     fetch(apiURL)
         .then((response) => {
-            return response.json();
+            if (response.ok) {
+                return response.json();
+            } else if (response.status === 429) {
+                args.sendErrorEmbed({contents: 'Request was rate limited. Please try again later'});
+            } else if (response.status > 400){
+                args.sendErrorEmbed({contents: 'Error retrieving manga list'});
+            }
         })
         .then((json) => {
             const mangalist = json.manga;
@@ -54,15 +60,14 @@ const suggestmanga = (args: CommandArgs) => {
                 title: suggestedManga.title,
                 contents: `\n\n**Synopsis**: ${suggestedManga.synopsis}\n\n**Volumes**: ${suggestedManga.volumes}`,
                 url: suggestedManga.url,
-                footer: `**Rating**: ${suggestedManga.score? suggestedManga.score:' No rating data available'}`,
+                footer: `Rating: ${suggestedManga.score ? suggestedManga.score : ' No rating data available'}`,
                 image: suggestedManga.image_url
             });
         })
         .catch((err) => {
             console.log(err);
-            args.sendErrorEmbed({contents: 'Error retrieving manga list'});
-        })
-            args.message.channel.stopTyping();
+        });
+    args.message.channel.stopTyping();
 };
 
 export const action = suggestmanga;

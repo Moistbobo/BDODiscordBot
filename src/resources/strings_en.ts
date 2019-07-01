@@ -9,45 +9,49 @@ const strings = {
         description: 'Makes bot speak a text to speech in the voice channel you are in',
         trigger: 'tts'
     },
-    leave:{
+    leave: {
         description: 'Makes bot leave voice channel',
         trigger: 'leave'
     },
-    googletts:{
+    googletts: {
         description: 'Makes bot speak text generated using google api',
         trigger: 'gtts'
     },
-    CreateNewServerConfig:{
+    CreateNewServerConfig: {
         description: 'Create a new config on the db for the current server',
         trigger: 'createnewserverconfig,cnsc,csc'
     },
-    patchnotes:{
+    patchnotes: {
         description: 'Retrieve latest BDO patchnotes',
         trigger: 'patchnotes,pn'
     },
-    value:{
+    value: {
         description: 'Get the value of marketplace items',
         trigger: 'val, value'
     },
-    setchannel:{
+    setchannel: {
         description: 'Set a gtts enabled channel',
         trigger: 'sc, setchannel'
     },
-    alive:{
+    alive: {
         description: 'Check if bot is alive',
         trigger: 'alive, a'
     },
-    checkttschannel:{
+    checkttschannel: {
         description: 'Check the gtts enabled channel on the server',
         trigger: 'checkttschannel, ctc'
     },
-    suggestmanga:{
+    suggestmanga: {
         description: 'Suggest a random manga based on genre. If no genre is specified, it will be randomized',
         trigger: 'suggestmanga, sm'
     },
-    getgenrelist:{
-        description:'Get list of valid genres',
-        trigger:'getgenrelist, ggl'
+    getgenrelist: {
+        description: 'Get list of valid genres',
+        trigger: 'getgenrelist, ggl'
+    },
+    manga: {
+        description: 'Get information for a single manga',
+        trigger: 'manga, m'
     }
 };
 
