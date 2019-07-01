@@ -19,7 +19,7 @@ const getRandomGenre = (): string => {
 
 const suggestmanga = (args: CommandArgs) => {
     // .suggestManga [genre] [genre2?] [page]
-
+        args.message.channel.startTyping();
     let queryString = args.message.content;
 
     if (queryString.split(' ').length > 4) {
@@ -62,7 +62,7 @@ const suggestmanga = (args: CommandArgs) => {
             console.log(err);
             args.sendErrorEmbed({contents: 'Error retrieving manga list'});
         })
-
+            args.message.channel.stopTyping();
 };
 
 export const action = suggestmanga;
