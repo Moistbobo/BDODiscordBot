@@ -49,10 +49,14 @@ const strings = {
         description: 'Get list of valid genres',
         trigger: 'getgenrelist, ggl'
     },
-    manga: {
-        description: 'Get information for a single manga',
-        trigger: 'manga, m'
+    suggestanime:{
+        description: 'Suggest a random anime based on genre',
+        trigger: 'suggestanime, sa'
     }
+    // manga: {
+    //     description: 'Get information for a single manga',
+    //     trigger: 'manga, m'
+    // }
 };
 
 export const Strings = strings;
