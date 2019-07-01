@@ -44,6 +44,10 @@ const strings = {
     suggestmanga:{
         description: 'Suggest a random manga based on genre. If no genre is specified, it will be randomized',
         trigger: 'suggestmanga, sm'
+    },
+    getgenrelist:{
+        description:'Get list of valid genres',
+        trigger:'getgenrelist, ggl'
     }
 };
 
