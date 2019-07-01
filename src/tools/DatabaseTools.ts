@@ -1,4 +1,4 @@
-import * as Mongoose from 'mongoose';
+import Mongoose from 'mongoose';
 const dbURI = 'mongodb://localhost/chobot';
 
 class DatabaseTools {
