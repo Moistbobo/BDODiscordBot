@@ -52,6 +52,7 @@ class Bot {
                 command.trigger = stringResources.trigger.split(',');
                 command.trigger = command.trigger.map((e) => e.trim());
                 command.description = stringResources.description;
+                console.log(command.trigger);
                 this.commands.push(command);
             } else {
                 if (!cmd.includes('js.map')) {
@@ -71,6 +72,7 @@ class Bot {
         args.author ? embed.setAuthor(args.author) : null;
         args.url ? embed.setURL(args.url) : null;
         args.title ? embed.setTitle(args.title) : null;
+        args.image ? embed.setImage(args.image) : null
         return embed;
     };
 
@@ -83,6 +85,7 @@ class Bot {
         args.author ? embed.setAuthor(args.author) : null;
         args.url ? embed.setURL(args.url) : null;
         args.title ? embed.setTitle(args.title) : null;
+        args.image ? embed.setImage(args.image) : null
         return embed;
     };
 
@@ -105,7 +108,7 @@ class Bot {
             x.trigger.includes(command.toLowerCase())
         );
         // Trim the command args off the message contents
-        msg.content = msg.content.substring(1 + command.toLowerCase().length);
+        msg.content = msg.content.substring(1 + command.toLowerCase().length+1);
 
         if (cmd) {
             const commandArgs = {

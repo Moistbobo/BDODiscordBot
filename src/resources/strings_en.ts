@@ -35,11 +35,15 @@ const strings = {
     },
     alive:{
         description: 'Check if bot is alive',
-        trigger: 'alive'
+        trigger: 'alive, a'
     },
     checkttschannel:{
         description: 'Check the gtts enabled channel on the server',
         trigger: 'checkttschannel, ctc'
+    },
+    suggestmanga:{
+        description: 'Suggest a random manga based on genre. If no genre is specified, it will be randomized',
+        trigger: 'suggestmanga, sm'
     }
 };
 

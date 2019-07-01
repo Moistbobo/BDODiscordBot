@@ -4,6 +4,7 @@ interface EmbedArgs{
     footer: string;
     author: string;
     url: string;
+    image: string
 }
 
 export default EmbedArgs;
