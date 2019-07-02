@@ -6,7 +6,13 @@ import {successMessageColor} from '../../config.json';
 
 const iqTest = (args: CommandArgs) => {
     let iq = 0;
-    const userID = args.message.author.id;
+    // console.log(args.message.guild.members);
+    getUserID(args.message);
+    const userID = getUserID(args.message);
+
+    if(userID === null){
+        return args.sendErrorEmbed({contents:'User not found'});
+    }
     args.message.channel.startTyping();
 
     // Check mongodb if user has run the "iqtest" within the last 24 hours (86400 seconds)
@@ -24,7 +30,7 @@ const iqTest = (args: CommandArgs) => {
             // If delta from lastUpdated time is less than 24hours, break out of promise chain
             if (res.timeDifference < 86400) {
                 // 24hour limit on iqtest command
-                sendIQMessage(args.message.channel, res.iqTestResult.iq, args.message.author.id);
+                sendIQMessage(args.message.channel, res.iqTestResult.iq, userID);
                 throw new Error('IQ Cooldown not met');
             } else {
                 // Otherwise, load images and continue
@@ -42,13 +48,13 @@ const iqTest = (args: CommandArgs) => {
         .then((compositedImage) => {
             // Check if folder exists, and create it if it doesn't and then write the picture to a file
             makeIQFolderIfNotExists();
-            return compositedImage.writeAsync(`./iqtest/${args.message.author.id}.png`);
+            return compositedImage.writeAsync(`./iqtest/${userID}.png`);
         })
         .then(() => {
-            return saveIQTestResult(args.message.author.id, iq);
+            return saveIQTestResult(userID, iq);
         })
         .then(() => {
-            return sendIQMessage(args.message.channel, iq, args.message.author.id);
+            return sendIQMessage(args.message.channel, iq, userID);
         })
         .catch((err) => {
             console.log(err.toString());
@@ -58,6 +64,25 @@ const iqTest = (args: CommandArgs) => {
         })
 };
 
+/**
+ * Search server for name or mention and return the user id
+ * @param msg
+ */
+const getUserID = (msg: any) =>{
+    if(!msg.content){
+        return msg.author.id;
+    }
+    const searchByName = msg.guild.members.find((member)=>member.user.username.toLowerCase() === msg.content.toLowerCase());
+    const searchByID = msg.guild.members.find((member)=>member.id === msg.content.replace(/<|@|>|!/g,''));
+    console.log(msg.content);
+    if(searchByName){
+        return searchByName.user.id;
+    }else if (searchByID){
+        return searchByID.user.id;
+    }else{
+        return null;
+    }
+};
 
 const loadImages = ():Promise<any> => {
     return Promise.all([
@@ -122,10 +147,10 @@ const saveIQTestResult = (userID: string, iq: number): Promise<any> => {
  * @param iq
  * @param authorID
  */
-const sendIQMessage = (channel: any, iq: number, authorID: string):Promise<any> => {
+const sendIQMessage = (channel: any, iq: number, authorID: any):Promise<any> => {
     return channel.send({
         embed: {
-            description: `Your iq: ${iq}${iq > 300 ? `\nDon't worry, you're still stupid` : ''}`,
+            description: `<@${authorID}>'s iq: ${iq}${iq > 300 ? `\nDon't worry, you're still stupid` : ''}`,
             color: successMessageColor
         },
         files: [{
