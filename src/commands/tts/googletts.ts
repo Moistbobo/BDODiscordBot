@@ -70,7 +70,7 @@ const checkGTTSChannel = (serverID: string) => {
 };
 
 const googlettsMainFunction = (args: CommandArgs, voiceChannel: any, serverID: string) => {
-    const language = args.message.content.split(' ')[1];
+    const language = args.message.content.split(' ')[0];
 
     let lang: string;
     if (language.length > 5 || !language.includes('-')) {

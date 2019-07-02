@@ -50,7 +50,7 @@ const startsWithNumber = (content: string): boolean => {
 };
 
 const value = (args: CommandArgs) => {
-    const originalValue = args.message.content.split(' ')[1].toLowerCase();
+    const originalValue = args.message.content.split(' ')[0].toLowerCase();
 
     const priceBeforeConversion = originalValue.replace(/,/g, '');
     let sellingPrice = 0;
