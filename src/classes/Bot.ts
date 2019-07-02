@@ -23,7 +23,7 @@ class Bot {
     }
 
     // Init
-    setListeners = () =>{
+    setListeners = () => {
         this.client.on('message', this.onMessage);
         this.client.on('error', this.onError);
         this.client.on('ready', this.onReady);
@@ -102,13 +102,18 @@ class Bot {
     };
 
     onMessage = (msg) => {
+        if (msg.content[0] !== '.') {
+            return;
+        }
+
         const command = msg.content.substring(1).split(' ')[0];
+
 
         const cmd = this.commands.find((x) =>
             x.trigger.includes(command.toLowerCase())
         );
         // Trim the command args off the message contents
-        msg.content = msg.content.substring(1 + command.toLowerCase().length+1);
+        msg.content = msg.content.substring(1 + command.toLowerCase().length + 1);
 
         if (cmd) {
             const commandArgs = {
