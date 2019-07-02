@@ -1,7 +1,7 @@
 import CommandArgs from "../../classes/CommandArgs";
 import Images from "../../resources/images";
 import Jimp from 'jimp';
-import IQTestResult from "../../models/iqtestResult";
+import IQTestResult, {IIQTestResult} from "../../models/iqtestResult";
 import {successMessageColor} from '../../config.json';
 
 const iqTest = (args: CommandArgs) => {
@@ -134,11 +134,28 @@ const mapPlotPointToIQ = (xPlot: number, iqMax: number, iqMin: number, imageMax:
  * @param iq
  */
 const saveIQTestResult = (userID: string, iq: number): Promise<any> => {
-    const newIQTestResult = new IQTestResult();
-    newIQTestResult.lastUpdate = Date.now() / 1000;
-    newIQTestResult.userID = userID;
-    newIQTestResult.iq = iq;
-    return newIQTestResult.save();
+
+    const currentTime = Date.now() / 1000;
+
+    return new Promise((resolve, reject)=>{
+        IQTestResult.findOne(({userID}))
+            .then((iqTestResult : IIQTestResult)=>{
+                if(iqTestResult){
+                    iqTestResult.lastUpdate = currentTime;
+                    iqTestResult.iq = iq;
+                    resolve(iqTestResult.save());
+                }else{
+                    const newIQTestResult = new IQTestResult();
+                    newIQTestResult.lastUpdate = currentTime;
+                    newIQTestResult.userID = userID;
+                    newIQTestResult.iq = iq;
+                     resolve(newIQTestResult.save());
+                }
+            })
+            .catch((err)=>{
+                reject(new Error('Error saving iq test result'));
+            })
+    });
 };
 
 /**
