@@ -40,7 +40,7 @@ const respawn = (args: CommandArgs) => {
             return rpgCharacter.save();
         })
         .then(() => {
-            args.sendOKEmbed({contents:replace(args.strings.respawnStrings.respawnSuccess, [args.message.author.username])});
+            args.sendOKEmbed({contents:replace(args.strings.respawn.respawnSuccess, [args.message.author.username])});
         })
         .catch((err) => {
             console.log(err.toString());
