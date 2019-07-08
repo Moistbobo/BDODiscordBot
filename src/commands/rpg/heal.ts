@@ -14,14 +14,22 @@ const heal = (args: CommandArgs) => {
 
 
             if (!CanHeal(rpgTimer.lastHeal)) {
-                const timeToHeal = Timers.rpg.healCD - (Date.now()/1000 - rpgTimer.lastHeal);
-                args.sendErrorEmbed({contents: replace(args.strings.heal.timeUntilHeal, [timeToHeal.toFixed(0)])})
+                const timeToHeal = Timers.rpg.healCD - (Date.now() / 1000 - rpgTimer.lastHeal);
+                args.sendErrorEmbed({
+                    contents: replace(args.strings.heal.timeUntilHeal, [timeToHeal.toFixed(0),
+                        args.message.author.username])
+                })
                 throw new Error('Heal is on CD');
             }
 
             if (rpgCharacter.hitpoints.current === rpgCharacter.hitpoints.max) {
                 args.sendErrorEmbed({contents: args.strings.heal.hpFull});
                 throw new Error('User is at max HP');
+            }
+
+            if (rpgCharacter.hitpoints.current <= 0) {
+                args.sendErrorEmbed({contents: replace(args.strings.heal.userIsDead, [args.message.author.username])});
+                throw new Error('User is dead');
             }
 
             const healAmount = parseFloat(Math.floor(Math.random() * 20).toFixed(0));

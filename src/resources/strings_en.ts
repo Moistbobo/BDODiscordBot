@@ -1,6 +1,7 @@
 import attackStrings from "./strings/attack";
 import statusStrings from "./strings/status";
 import healStrings from "./strings/heal";
+import respawnStrings from "./strings/respawn";
 
 const strings = {
     helloWorld: {
@@ -73,7 +74,8 @@ const strings = {
     },
     respawn: {
         description: 'Respawn if you\'ve been killed',
-        trigger: 'respawn'
+        trigger: 'respawn',
+        ...respawnStrings
     },
     rpghelp:{
         description: 'Temp placeholder for rpg commands',

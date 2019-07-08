@@ -45,7 +45,7 @@ const attack = (args: CommandArgs) => {
 
             if (!CanAttackAgain(sourceTimer.lastAttack)) {
                 const timeToNextAttack = (Timers.rpg.attackCD - (now - sourceTimer.lastAttack)).toFixed(0);
-                const contents = replace(args.strings.attack.attackCooldown, [timeToNextAttack]);
+                const contents = replace(args.strings.attack.attackCooldown, [timeToNextAttack, sourceUser.username]);
                 args.sendErrorEmbed({contents});
                 throw new Error('Attacker is still on attack cooldown')
             }
@@ -90,11 +90,11 @@ const attack = (args: CommandArgs) => {
                 target.deaths += 1;
             }
 
-            // 5% chance for target to get stronger
+            // // 5% chance for target to get stronger
             if (Math.random() < 0.05) {
-                const strIncrease = Math.max(Math.random(), 0.1).toFixed(2);
+                const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
 
-                target.stats.str += strIncrease;
+                target.stats.str += parseFloat(strIncrease);
 
                 args.sendOKEmbed({
                     contents: replace(args.strings.attack.targetStrengthened, [
@@ -106,12 +106,12 @@ const attack = (args: CommandArgs) => {
 
             // 2% chance for attacker to get stronger
             if (Math.random() < 0.02) {
-                const strIncrease = Math.max(Math.random(), 0.1).toFixed(2);
+                const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
 
-                source.stats.str += strIncrease;
+                source.stats.str += parseFloat(strIncrease);
 
                 args.sendOKEmbed({
-                    contents: replace(args.strings.attack.targetStrengthened, [
+                    contents: replace(args.strings.attack.attackerStrengthened, [
                         sourceUser.username,
                         strIncrease.toString()
                     ])
