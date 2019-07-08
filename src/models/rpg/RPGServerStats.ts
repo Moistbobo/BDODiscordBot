@@ -1,5 +1,4 @@
 import {Document, Schema, model} from 'mongoose';
-import RPGTimer from "./RPGTimer";
 
 
 export const FindOrCreateRPGServerStats = (serverID: string):Promise<any> => {

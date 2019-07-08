@@ -3,6 +3,7 @@ import RPGCharacter, {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCha
 import RPGTimer, {CanAttackAgain, FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
 import replace from "../../tools/replace";
+import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
 
 const calculateDamage = (str: number): number => {
     return Math.floor(Math.max(str, (Math.random() * Math.floor(20)) * str));
@@ -18,6 +19,7 @@ const attack = (args: CommandArgs) => {
     let target = null;
     let damage = null;
     let crit = false;
+    let rpgServerStats = null;
 
     if (!sourceUser || !targetUser) {
         return args.sendErrorEmbed({contents: args.strings.attack.invalidTarget});
@@ -36,12 +38,13 @@ const attack = (args: CommandArgs) => {
     args.startTyping();
 
     Promise.all([FindOrCreateNewRPGCharacter(sourceUser.id), FindOrCreateNewRPGCharacter(targetUser.id),
-        FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id)])
+        FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id), FindOrCreateRPGServerStats(args.message.guild.id)])
         .then((result) => {
             source = result[0];
             target = result[1];
             sourceTimer = result[2];
             targetTimer = result[3];
+            rpgServerStats = result[4];
 
             if (!CanAttackAgain(sourceTimer.lastAttack)) {
                 const timeToNextAttack = (Timers.rpg.attackCD - (now - sourceTimer.lastAttack)).toFixed(0);
@@ -124,6 +127,8 @@ const attack = (args: CommandArgs) => {
         })
         .then(() => {
             // Finally, if the attack is successful, determine what kind of message to display
+
+            rpgServerStats.attacks++;
             if (target.hitpoints.current > 0) {
                 const contents = replace(args.strings.attack.attackTargetLives,
                     [sourceUser.username,
@@ -138,7 +143,9 @@ const attack = (args: CommandArgs) => {
                 } else {
                     args.sendOKEmbed({contents})
                 }
+
             } else {
+                rpgServerStats.deaths++;
                 const contents = replace(args.strings.attack.attackTargetLives,
                     [sourceUser.username,
                         targetUser.username,
@@ -155,6 +162,8 @@ const attack = (args: CommandArgs) => {
                     args.sendOKEmbed({contents})
                 }
             }
+
+            return rpgServerStats.save();
         })
         .catch((err) => {
             console.log(err);
