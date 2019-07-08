@@ -1,45 +1,11 @@
 import CommandArgs from "../../classes/CommandArgs";
-import RPGCharacter from "../../models/rpg/RPGCharacter";
-import RPGTimer from "../../models/rpg/RPGTimer";
+import RPGCharacter, {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
+import RPGTimer, {CanAttackAgain, FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
+import replace from "../../tools/replace";
 
-const getRPGCharacter = (userID: string): any => {
-    return new Promise((resolve, reject) => {
-        RPGCharacter.findOne({userID})
-            .then((user) => {
-                if (!user) {
-                    user = new RPGCharacter();
-                    user.userID = userID;
-                    resolve(user);
-                } else {
-                    resolve(user);
-                }
-            })
-            .catch((err) => {
-                console.log(err.toString());
-                reject(new Error('Error retrieving users'));
-            })
-    })
-};
-
-const getRPGTimers = (userID: string): any => {
-    return new Promise((resolve, reject) => {
-        RPGTimer.findOne(({userID}))
-            .then((rpgTimer) => {
-                if (!rpgTimer) {
-                    rpgTimer = new RPGTimer();
-                    rpgTimer.userID = userID;
-                }
-                resolve(rpgTimer);
-            })
-            .catch((err) => {
-                reject(new Error('Error retrieving timers'))
-            })
-    })
-};
-
-const calculateDamage = (): number => {
-    return Math.floor(Math.random() * Math.floor(20));
+const calculateDamage = (str: number): number => {
+    return Math.floor(Math.max(str, (Math.random() * Math.floor(20)) * str));
 };
 
 const attack = (args: CommandArgs) => {
@@ -51,13 +17,17 @@ const attack = (args: CommandArgs) => {
     let source = null;
     let target = null;
     let damage = null;
+    let crit = false;
 
     if (!sourceUser || !targetUser) {
-        return args.sendErrorEmbed({contents: 'You need to specify a target'});
+        return args.sendErrorEmbed({contents: args.strings.attack.invalidTarget});
     }
 
     if (sourceUser.id === targetUser.id) {
-        return args.sendErrorEmbed({contents: 'You bring the gun to your head but you end up shitting yourself instead of pulling the trigger. dum pusc'});
+        const randomMessage = args.strings.attack.attackSelf[Math.floor(Math.random() * (args.strings.attack.attackSelf.length - 1))];
+        const randomSuffix = args.strings.attack.attackSelfSuffix[Math.floor(Math.random() * (args.strings.attack.attackSelfSuffix.length - 1))];
+
+        return args.sendErrorEmbed({contents: randomMessage + randomSuffix});
     }
 
 
@@ -65,52 +35,45 @@ const attack = (args: CommandArgs) => {
 
     args.startTyping();
 
-    Promise.all([getRPGTimers(sourceUser.id), getRPGTimers(targetUser.id)])
-        .then((timers) => {
-            sourceTimer = timers[0];
-            targetTimer = timers[1];
+    Promise.all([FindOrCreateNewRPGCharacter(sourceUser.id), FindOrCreateNewRPGCharacter(targetUser.id),
+        FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id)])
+        .then((result) => {
+            source = result[0];
+            target = result[1];
+            sourceTimer = result[2];
+            targetTimer = result[3];
 
-            if (!(now - sourceTimer.lastAttack > Timers.rpg.attackCD)) {
+            if (!CanAttackAgain(sourceTimer.lastAttack)) {
                 const timeToNextAttack = (Timers.rpg.attackCD - (now - sourceTimer.lastAttack)).toFixed(0);
-                args.sendErrorEmbed({contents: `${timeToNextAttack} seconds until your next attack.`});
+                const contents = replace(args.strings.attack.attackCooldown, [timeToNextAttack]);
+                args.sendErrorEmbed({contents});
                 throw new Error('Attacker is still on attack cooldown')
             }
 
-            if (!(now - sourceTimer.lastDeath > Timers.rpg.deathCD)) {
-                const timeToRespawn = (Timers.rpg.deathCD - (now - sourceTimer.lastDeath));
-                args.sendErrorEmbed({contents: `You're dead. .respawn before attack again`});
-                throw new Error('Attacker is dead');
-            }
-
-            if ((now - targetTimer.lastDeath < Timers.rpg.deathCD)) {
-                args.sendErrorEmbed({
-                    contents: `${targetUser.username} is already dead so you stab their body a few times. How could you do such a thing?
-                Your attack has been used up as well`
-                });
-                throw new Error('Target is dead');
-            }
-
-            return Promise.all([getRPGCharacter(sourceUser.id), getRPGCharacter(targetUser.id)])
-        })
-        .then((users) => {
-            source = users[0];
-            target = users[1];
-
             if (source.hitpoints.current <= 0) {
-                args.sendErrorEmbed({contents: `You're dead. .respawn before attacking again`});
+                args.sendErrorEmbed({contents: args.strings.attack.attackerIsDead});
                 throw new Error('Attacker is dead');
             }
 
-            if( target.hitpoints.current <= 0){
+            if (target.hitpoints.current <= 0) {
+                const random = Math.floor(Math.random() * (args.strings.attack.targetAlreadyDead.length - 1));
+                const randomString = args.strings.attack.targetAlreadyDead[random];
+                const contents = replace(randomString, [targetUser.username]) + '\n' + args.strings.attack.attackAlsoUsedUp;
+
                 args.sendErrorEmbed({
-                    contents: `${targetUser.username} is already dead so you stab their body a few times. How could you do such a thing?
-                Your attack has been used up as well`
+                    contents
                 });
-                throw new Error('Target is dead');
-
+                throw new Error('Target is already dead');
             }
+            return true;
+        })
+        .then(() => {
+            // All checks passed, let's deal some damage!
+            crit = Math.random() < source.stats.crit;
 
-            damage = calculateDamage();
+
+            const baseDamage = calculateDamage(source.stats.str);
+            damage = Math.round(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
 
             // temp: respawn the player
             if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
@@ -127,17 +90,70 @@ const attack = (args: CommandArgs) => {
                 target.deaths += 1;
             }
 
+            // 5% chance for target to get stronger
+            if (Math.random() < 0.05) {
+                const strIncrease = Math.max(Math.random(), 0.1).toFixed(2);
+
+                target.stats.str += strIncrease;
+
+                args.sendOKEmbed({
+                    contents: replace(args.strings.attack.targetStrengthened, [
+                        targetUser.username,
+                        strIncrease.toString()
+                    ])
+                })
+            }
+
+            // 2% chance for attacker to get stronger
+            if (Math.random() < 0.02) {
+                const strIncrease = Math.max(Math.random(), 0.1).toFixed(2);
+
+                source.stats.str += strIncrease;
+
+                args.sendOKEmbed({
+                    contents: replace(args.strings.attack.targetStrengthened, [
+                        sourceUser.username,
+                        strIncrease.toString()
+                    ])
+                })
+            }
+
+
+
             return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save()])
         })
         .then(() => {
             // Finally, if the attack is successful, determine what kind of message to display
             if (target.hitpoints.current > 0) {
-                args.sendOKEmbed({contents: `${sourceUser.username} attacked ${targetUser.username} for ${damage}HP!\n${targetUser.username} has ${target.hitpoints.current}/${target.hitpoints.max} left!`})
+                const contents = replace(args.strings.attack.attackTargetLives,
+                    [sourceUser.username,
+                        targetUser.username,
+                        damage,
+                        target.hitpoints.current,
+                        target.hitpoints.max]);
+
+                if (crit) {
+                    const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
+                    args.sendOKEmbed({contents: criticalString + contents});
+                } else {
+                    args.sendOKEmbed({contents})
+                }
             } else {
-                args.sendOKEmbed({
-                    contents: `${sourceUser.username} attacked ${targetUser.username} for ${damage}HP!\n${targetUser.username} has ${target.hitpoints.current}/${target.hitpoints.max} left!
-                ${targetUser.username} has been killed!`
-                })
+                const contents = replace(args.strings.attack.attackTargetLives,
+                    [sourceUser.username,
+                        targetUser.username,
+                        damage,
+                        target.hitpoints.current,
+                        target.hitpoints.max])
+                    + '\n' +
+                    replace(args.strings.attack.attackTargetKilled, [targetUser.username]);
+
+                if (crit) {
+                    const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
+                    args.sendOKEmbed({contents: criticalString + contents});
+                } else {
+                    args.sendOKEmbed({contents})
+                }
             }
         })
         .catch((err) => {

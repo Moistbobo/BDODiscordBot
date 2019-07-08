@@ -19,16 +19,26 @@ export const FindOrCreateRPGTimer = (userID: string): Promise<any> => {
 };
 
 // User is dead if now - deathTime is less than the death timer
-export const CheckIsDead = (lastDeathTime) =>{
+export const CheckCanRespawn = (lastDeathTime) =>{
   const now = Date.now()/1000;
-  console.log((now - lastDeathTime));
   return (now - lastDeathTime) < Timers.rpg.deathCD;
+};
+
+export const CanAttackAgain = (lastAttackTime) =>{
+    const now = Date.now()/1000;
+    return (now - lastAttackTime) > Timers.rpg.attackCD;
+};
+
+export const CanHeal = (lastHealTime) =>{
+    const now = Date.now()/1000;
+    return (now - lastHealTime) > Timers.rpg.healCD;
 };
 
 export interface IRPGTimer extends Document {
     userID: string,
     lastAttack: number,
-    lastDeath: number
+    lastDeath: number,
+    lastHeal: number
 }
 
 export const RPGTimerSchema = new Schema({
@@ -43,6 +53,10 @@ export const RPGTimerSchema = new Schema({
     },
     lastDeath: {
         type: Number,
+        default: 0
+    },
+    lastHeal:{
+        type:Number,
         default: 0
     }
 });

@@ -1,5 +1,6 @@
 import CommandArgs from "../../classes/CommandArgs";
 import RPGCharacter, {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
+import replace from "../../tools/replace";
 
 
 const status = (args: CommandArgs) => {
@@ -14,12 +15,20 @@ const status = (args: CommandArgs) => {
     args.startTyping();
     FindOrCreateNewRPGCharacter(userIDToSearch)
         .then((rpgCharacter) => {
-            args.sendOKEmbed({contents: `${user.username}'s RPG stats\n\nHP:${rpgCharacter.hitpoints.current}/${rpgCharacter.hitpoints.max}\n\nKills:${rpgCharacter.kills}\nDeaths:${rpgCharacter.deaths}`})
+            const contents = replace(args.strings.status.statusString, [user.username,
+                rpgCharacter.hitpoints.current,
+                rpgCharacter.hitpoints.max,
+                rpgCharacter.kills,
+                rpgCharacter.deaths,
+                rpgCharacter.stats.str,
+                rpgCharacter.stats.crit,
+                rpgCharacter.stats.critDmgMult]);
+            args.sendOKEmbed({contents});
         })
-        .catch((err)=>{
+        .catch((err) => {
             console.log(err.toString());
         })
-        .finally(()=>{
+        .finally(() => {
             args.stopTyping();
         })
 };

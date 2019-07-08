@@ -1,5 +1,5 @@
 import CommandArgs from "../../classes/CommandArgs";
-import RPGTimer, {FindOrCreateRPGTimer, CheckIsDead} from "../../models/rpg/RPGTimer";
+import RPGTimer, {FindOrCreateRPGTimer, CheckCanRespawn} from "../../models/rpg/RPGTimer";
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import Timers from "../../resources/Timers";
 

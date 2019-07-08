@@ -1,3 +1,7 @@
+import attackStrings from "./strings/attack";
+import statusStrings from "./strings/status";
+import healStrings from "./strings/heal";
+
 const strings = {
     helloWorld: {
         action: 'hello world!',
@@ -59,20 +63,32 @@ const strings = {
     },
     attack: {
         description: 'Attack another user',
-        trigger: 'att, attack'
+        trigger: 'att, attack',
+        ...attackStrings
     },
     status: {
         description: 'Check your RPG stats',
-        trigger: 'status, stats'
+        trigger: 'status, stats',
+        ...statusStrings
     },
     respawn: {
         description: 'Respawn if you\'ve been killed',
         trigger: 'respawn'
+    },
+    rpghelp:{
+        description: 'Temp placeholder for rpg commands',
+        trigger: 'rpghelp'
+    },
+    heal:{
+        description: 'RNG Heal',
+        trigger: 'heal',
+        ...healStrings
     }
     // manga: {
     //     description: 'Get information for a single manga',
     //     trigger: 'manga, m'
     // }
 };
+
 
 export const Strings = strings;
