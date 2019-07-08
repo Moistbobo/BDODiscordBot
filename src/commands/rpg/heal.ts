@@ -50,7 +50,7 @@ const heal = (args: CommandArgs) => {
             return Promise.all([rpgCharacter.save(), rpgTimer.save(), rpgServerStats.save()]);
         })
         .catch((err) => {
-            console.log(err);
+            console.log(err.toString());
         })
 };
 

@@ -166,7 +166,7 @@ const attack = (args: CommandArgs) => {
             return rpgServerStats.save();
         })
         .catch((err) => {
-            console.log(err);
+            console.log(err.toString());
         })
         .finally(() => {
             args.stopTyping();
