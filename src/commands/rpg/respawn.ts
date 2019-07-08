@@ -28,7 +28,7 @@ const respawn = (args: CommandArgs) => {
             if (!canRespawn(rpgTimer.lastDeath)) {
                 const timeToRespawn = Date.now() / 1000 - rpgTimer.lastDeath;
                 const contents = replace(args.strings.respawn.timeToRespawn, [args.message.author.username,
-                    timeToRespawn.toFixed(0)]);
+                    (Timers.rpg.deathCD - timeToRespawn).toFixed(0)]);
                 args.sendErrorEmbed({contents});
                 throw new Error('Respawn time not met');
             }
