@@ -2,6 +2,7 @@ import attackStrings from "./strings/attack";
 import statusStrings from "./strings/status";
 import healStrings from "./strings/heal";
 import respawnStrings from "./strings/respawn";
+import serverStatStrings from "./strings/serverStats";
 
 const strings = {
     helloWorld: {
@@ -85,6 +86,11 @@ const strings = {
         description: 'RNG Heal',
         trigger: 'heal',
         ...healStrings
+    },
+    serverstats:{
+        description: 'Show accumulated rpg stats for server',
+        trigger: 'serverstats',
+        ...serverStatStrings
     }
     // manga: {
     //     description: 'Get information for a single manga',
