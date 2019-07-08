@@ -6,14 +6,17 @@ import {successMessageColor} from '../../config.json';
 
 const iqTest = (args: CommandArgs) => {
     let iq = 0;
-    // console.log(args.message.guild.members);
-    getUserID(args.message);
-    const userID = getUserID(args.message);
 
-    if(userID === null){
-        return args.sendErrorEmbed({contents:'User not found'});
+    let userID = args.message.author.id;
+
+    console.log(userID);
+    const mentionedUser = args.bot.getFirstMentionedUserID(args.message);
+    console.log(mentionedUser);
+    if (mentionedUser) {
+        userID = mentionedUser.id;
     }
-    args.message.channel.startTyping();
+
+    const typing = args.message.channel.startTyping();
 
     // Check mongodb if user has run the "iqtest" within the last 24 hours (86400 seconds)
     IQTestResult.findOne({userID})
@@ -43,7 +46,7 @@ const iqTest = (args: CommandArgs) => {
             const iqMark = images[1];
             const xPlot = plotIQMark(400);
             iq = mapPlotPointToIQ(xPlot, 400, 0, iqChart.getWidth(), 0);
-            return iqChart.composite(iqMark, xPlot -iqMark.getWidth()/2, 5);
+            return iqChart.composite(iqMark, xPlot - iqMark.getWidth() / 2, 5);
         })
         .then((compositedImage) => {
             // Check if folder exists, and create it if it doesn't and then write the picture to a file
@@ -64,27 +67,7 @@ const iqTest = (args: CommandArgs) => {
         })
 };
 
-/**
- * Search server for name or mention and return the user id
- * @param msg
- */
-const getUserID = (msg: any) =>{
-    if(!msg.content){
-        return msg.author.id;
-    }
-    const searchByName = msg.guild.members.find((member)=>member.user.username.toLowerCase() === msg.content.toLowerCase());
-    const searchByID = msg.guild.members.find((member)=>member.id === msg.content.replace(/<|@|>|!/g,''));
-    console.log(msg.content);
-    if(searchByName){
-        return searchByName.user.id;
-    }else if (searchByID){
-        return searchByID.user.id;
-    }else{
-        return null;
-    }
-};
-
-const loadImages = ():Promise<any> => {
+const loadImages = (): Promise<any> => {
     return Promise.all([
         Jimp.read(Images.iqTest.iqChart)
             .then((iqChart) => {
@@ -137,22 +120,22 @@ const saveIQTestResult = (userID: string, iq: number): Promise<any> => {
 
     const currentTime = Date.now() / 1000;
 
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
         IQTestResult.findOne(({userID}))
-            .then((iqTestResult : IIQTestResult)=>{
-                if(iqTestResult){
+            .then((iqTestResult: IIQTestResult) => {
+                if (iqTestResult) {
                     iqTestResult.lastUpdate = currentTime;
                     iqTestResult.iq = iq;
                     resolve(iqTestResult.save());
-                }else{
+                } else {
                     const newIQTestResult = new IQTestResult();
                     newIQTestResult.lastUpdate = currentTime;
                     newIQTestResult.userID = userID;
                     newIQTestResult.iq = iq;
-                     resolve(newIQTestResult.save());
+                    resolve(newIQTestResult.save());
                 }
             })
-            .catch((err)=>{
+            .catch((err) => {
                 reject(new Error('Error saving iq test result'));
             })
     });
@@ -164,7 +147,7 @@ const saveIQTestResult = (userID: string, iq: number): Promise<any> => {
  * @param iq
  * @param authorID
  */
-const sendIQMessage = (channel: any, iq: number, authorID: any):Promise<any> => {
+const sendIQMessage = (channel: any, iq: number, authorID: any): Promise<any> => {
     return channel.send({
         embed: {
             description: `<@${authorID}>'s iq: ${iq}${iq > 300 ? `\nDon't worry, you're still stupid` : ''}`,

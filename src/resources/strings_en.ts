@@ -49,13 +49,25 @@ const strings = {
         description: 'Get list of valid genres',
         trigger: 'getgenrelist, ggl'
     },
-    suggestanime:{
+    suggestanime: {
         description: 'Suggest a random anime based on genre',
         trigger: 'suggestanime, sa'
     },
-    iqtest :{
-        description:'Check your iq',
-        trigger:'iqtest, iq'
+    iqtest: {
+        description: 'Check your iq',
+        trigger: 'iqtest, iq'
+    },
+    attack: {
+        description: 'Attack another user',
+        trigger: 'att, attack'
+    },
+    status: {
+        description: 'Check your RPG stats',
+        trigger: 'status, stats'
+    },
+    respawn: {
+        description: 'Respawn if you\'ve been killed',
+        trigger: 'respawn'
     }
     // manga: {
     //     description: 'Get information for a single manga',

@@ -72,7 +72,7 @@ class Bot {
         args.author ? embed.setAuthor(args.author) : null;
         args.url ? embed.setURL(args.url) : null;
         args.title ? embed.setTitle(args.title) : null;
-        args.image ? embed.setImage(args.image) : null
+        args.image ? embed.setImage(args.image) : null;
         return embed;
     };
 
@@ -85,7 +85,7 @@ class Bot {
         args.author ? embed.setAuthor(args.author) : null;
         args.url ? embed.setURL(args.url) : null;
         args.title ? embed.setTitle(args.title) : null;
-        args.image ? embed.setImage(args.image) : null
+        args.image ? embed.setImage(args.image) : null;
         return embed;
     };
 
@@ -122,7 +122,9 @@ class Bot {
                 message: msg,
                 send: (content) => msg.channel.send(content),
                 sendOKEmbed: (args) => msg.channel.send(this.createOKEmbed(args)),
-                sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args))
+                sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args)),
+                startTyping: () => msg.channel.startTyping(),
+                stopTyping: ()=> msg.channel.stopTyping()
             };
             if (cmd.hasOwnProperty('action')) {
                 try {
@@ -140,6 +142,47 @@ class Bot {
         console.log(guild);
     }
 
+    getUserByID = (id: string, name: string, msg: Discord.Message): any => {
+        const searchByName = msg.guild.members.find((member) => member.user.username.toLowerCase() === name.toLowerCase());
+        const searchByID = msg.guild.members.find((member) => member.id === id.replace(/<|@|>|!/g, ''));
+
+        console.log(msg.content);
+        if (searchByName) {
+            return searchByName.user.id;
+        } else if (searchByID) {
+            return searchByID.user.id;
+        } else {
+            return null;
+        }
+    };
+
+    /**
+     * Returns the member object of the first mentioned user in the message,
+     * can search by mention, discord name, or nickname (in that priority)
+     * @param msg
+     */
+    getFirstMentionedUserID = (msg: Discord.Message): Discord.User => {
+        // First, check if there are any mentions in the message and return the ID
+        const mentions = msg.mentions.users.array();
+        let id = null;
+        if (mentions && mentions.length > 0) {
+            id = mentions[0];
+        }
+
+        // If not, then we need to search the entire list of users for their name
+        msg.content = msg.content.trim();
+        const searchByName = msg.guild.members.find((member) =>
+            member.user.username.toLowerCase() === msg.content.toLowerCase() ||
+            member.nickname === msg.content
+        );
+
+        if (searchByName) {
+            id = searchByName.user;
+        }
+
+        // console.log('[ID Search:]', id);
+        return id;
+    }
 }
 
 export default Bot;

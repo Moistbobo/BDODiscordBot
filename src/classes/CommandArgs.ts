@@ -7,6 +7,8 @@ interface CommandArgs{
     send: any;
     sendOKEmbed: any;
     sendErrorEmbed: any;
+    startTyping: any,
+    stopTyping: any
 };
 
 export default CommandArgs;
