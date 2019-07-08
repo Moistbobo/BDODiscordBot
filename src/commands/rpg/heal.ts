@@ -3,14 +3,16 @@ import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {CanHeal, FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
+import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
 
 const heal = (args: CommandArgs) => {
     const userID = args.message.author.id;
 
-    Promise.all([FindOrCreateRPGTimer(userID), FindOrCreateNewRPGCharacter(userID)])
+    Promise.all([FindOrCreateRPGTimer(userID), FindOrCreateNewRPGCharacter(userID), FindOrCreateRPGServerStats(args.message.guild.id)])
         .then((result) => {
             let rpgTimer = result[0];
             let rpgCharacter = result[1];
+            let rpgServerStats = result[2];
 
 
             if (!CanHeal(rpgTimer.lastHeal)) {
@@ -35,6 +37,8 @@ const heal = (args: CommandArgs) => {
             const healAmount = parseFloat(Math.floor(Math.random() * 20).toFixed(0));
 
             rpgCharacter.hitpoints.current = Math.min(rpgCharacter.hitpoints.max, rpgCharacter.hitpoints.current + healAmount);
+            rpgTimer.lastHeal = Date.now() / 1000;
+            rpgServerStats.heals++;
 
             args.sendOKEmbed({
                 contents: replace(args.strings.heal.healSuccess, [healAmount,
@@ -42,9 +46,8 @@ const heal = (args: CommandArgs) => {
                     rpgCharacter.hitpoints.max])
             });
 
-            rpgTimer.lastHeal = Date.now() / 1000;
 
-            return Promise.all([rpgCharacter.save(), rpgTimer.save()]);
+            return Promise.all([rpgCharacter.save(), rpgTimer.save(), rpgServerStats.save()]);
         })
         .catch((err) => {
             console.log(err);
