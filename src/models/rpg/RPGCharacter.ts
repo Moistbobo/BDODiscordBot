@@ -49,7 +49,7 @@ export const RPGCharacterSchema = new Schema({
         },
         current: {
             type: Number,
-            default: 102000
+            default: 200
         }
     },
     stats: {
