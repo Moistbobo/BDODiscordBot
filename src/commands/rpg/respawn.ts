@@ -3,6 +3,7 @@ import RPGTimer, {FindOrCreateRPGTimer, CheckCanRespawn} from "../../models/rpg/
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import Timers from "../../resources/Timers";
 import replace from "../../tools/replace";
+import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 
 const canRespawn = (lastDeathTime: number) => {
     const now = Date.now() / 1000;
@@ -13,7 +14,14 @@ const respawn = (args: CommandArgs) => {
     args.startTyping();
     let rpgTimer = null;
     let rpgCharacter = null;
-    Promise.all([FindOrCreateNewRPGCharacter(args.message.author.id), FindOrCreateRPGTimer(args.message.author.id)])
+    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+        .then((res) => {
+            if (!res) {
+                args.message.react('❌');
+                throw new Error('Non RPG Channel')
+            }
+            return Promise.all([FindOrCreateNewRPGCharacter(args.message.author.id), FindOrCreateRPGTimer(args.message.author.id)])
+        })
         .then((res) => {
             rpgCharacter = res[0];
             rpgTimer = res[1];
@@ -40,7 +48,7 @@ const respawn = (args: CommandArgs) => {
             return rpgCharacter.save();
         })
         .then(() => {
-            args.sendOKEmbed({contents:replace(args.strings.respawn.respawnSuccess, [args.message.author.username])});
+            args.sendOKEmbed({contents: replace(args.strings.respawn.respawnSuccess, [args.message.author.username])});
         })
         .catch((err) => {
             console.log(err.toString());

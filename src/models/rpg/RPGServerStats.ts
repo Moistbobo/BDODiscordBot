@@ -1,7 +1,7 @@
 import {Document, Schema, model} from 'mongoose';
 
 
-export const FindOrCreateRPGServerStats = (serverID: string):Promise<any> => {
+export const FindOrCreateRPGServerStats = (serverID: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         RPGServerStats.findOne({serverID})
             .then((rpgServerStats) => {
@@ -18,11 +18,25 @@ export const FindOrCreateRPGServerStats = (serverID: string):Promise<any> => {
     })
 };
 
+export const IsChannelRPGEnabled = (serverID: string, channelID: string): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        FindOrCreateRPGServerStats(serverID)
+            .then((rpgServerStats) => {
+                resolve(rpgServerStats.rpgChannels.includes(channelID));
+            })
+            .catch((err) => {
+                console.log(err.toString());
+                reject(new Error('Error retrieving rpg server stats'));
+            })
+    });
+};
+
 export interface IRPGServerStats extends Document {
     serverID: string,
     attacks: number,
     heals: number,
-    deaths: number
+    deaths: number,
+    rpgChannels: number[]
 }
 
 export const RPGServerStatsSchema = new Schema({
@@ -42,6 +56,9 @@ export const RPGServerStatsSchema = new Schema({
     deaths: {
         type: Number,
         default: 0
+    },
+    rpgChannels: {
+        type: Array
     }
 });
 

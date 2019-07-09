@@ -3,8 +3,15 @@ import statusStrings from "./strings/status";
 import healStrings from "./strings/heal";
 import respawnStrings from "./strings/respawn";
 import serverStatStrings from "./strings/serverStats";
+import setRPGChannelStrings from "./strings/setRPGChannel";
 
 const strings = {
+    general:{
+        noPermission: `You do not have permission to use this command`
+    },
+    rpg:{
+        nonRPGChannel: `This channel is not RPG enabled.`
+    },
     helloWorld: {
         action: 'hello world!',
         description: 'Says hello world',
@@ -91,6 +98,11 @@ const strings = {
         description: 'Show accumulated rpg stats for server',
         trigger: 'serverstats',
         ...serverStatStrings
+    },
+    setrpgchannel:{
+        description: 'Enables RPG commands on the channel',
+        trigger: 'setrpgchannel',
+        ...setRPGChannelStrings
     }
     // manga: {
     //     description: 'Get information for a single manga',

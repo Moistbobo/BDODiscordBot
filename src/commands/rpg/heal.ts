@@ -3,12 +3,19 @@ import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {CanHeal, FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
-import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
+import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 
 const heal = (args: CommandArgs) => {
     const userID = args.message.author.id;
 
-    Promise.all([FindOrCreateRPGTimer(userID), FindOrCreateNewRPGCharacter(userID), FindOrCreateRPGServerStats(args.message.guild.id)])
+    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+        .then((res) => {
+            if (!res) {
+                args.message.react('❌');
+                throw new Error('Non RPG Channel')
+            }
+            return Promise.all([FindOrCreateRPGTimer(userID), FindOrCreateNewRPGCharacter(userID), FindOrCreateRPGServerStats(args.message.guild.id)])
+        })
         .then((result) => {
             let rpgTimer = result[0];
             let rpgCharacter = result[1];

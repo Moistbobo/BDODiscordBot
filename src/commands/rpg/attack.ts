@@ -3,13 +3,14 @@ import RPGCharacter, {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCha
 import RPGTimer, {CanAttackAgain, FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
 import replace from "../../tools/replace";
-import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
+import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 
 const calculateDamage = (str: number): number => {
     return Math.floor(Math.max(str, (Math.random() * Math.floor(20)) * str));
 };
 
 const attack = (args: CommandArgs) => {
+
     const sourceUser = args.message.author;
     const targetUser = args.bot.getFirstMentionedUserID(args.message);
 
@@ -36,9 +37,16 @@ const attack = (args: CommandArgs) => {
     const now = Date.now() / 1000;
 
     args.startTyping();
+    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+        .then((res) => {
+            if(!res){
+                args.message.react('❌');
+                throw new Error('Non RPG Channel')
+            }
 
-    Promise.all([FindOrCreateNewRPGCharacter(sourceUser.id), FindOrCreateNewRPGCharacter(targetUser.id),
-        FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id), FindOrCreateRPGServerStats(args.message.guild.id)])
+            return Promise.all([FindOrCreateNewRPGCharacter(sourceUser.id), FindOrCreateNewRPGCharacter(targetUser.id),
+                FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id), FindOrCreateRPGServerStats(args.message.guild.id)]);
+        })
         .then((result) => {
             source = result[0];
             target = result[1];
@@ -120,7 +128,6 @@ const attack = (args: CommandArgs) => {
                     ])
                 })
             }
-
 
 
             return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save()])

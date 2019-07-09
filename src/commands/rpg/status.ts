@@ -1,6 +1,7 @@
 import CommandArgs from "../../classes/CommandArgs";
 import RPGCharacter, {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
+import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 
 
 const status = (args: CommandArgs) => {
@@ -13,7 +14,15 @@ const status = (args: CommandArgs) => {
     }
 
     args.startTyping();
-    FindOrCreateNewRPGCharacter(userIDToSearch)
+
+    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+        .then((res) => {
+            if (!res) {
+                args.message.react('❌');
+                throw new Error('Non RPG Channel')
+            }
+            return FindOrCreateNewRPGCharacter(userIDToSearch)
+        })
         .then((rpgCharacter) => {
             const contents = replace(args.strings.status.statusString, [user.username,
                 rpgCharacter.hitpoints.current,
