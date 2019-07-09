@@ -83,12 +83,12 @@ const attack = (args: CommandArgs) => {
             // All checks passed, let's deal some damage!
             crit = Math.random() < source.stats.crit;
 
-
-            const baseDamage = calculateDamage(source.stats.str);
-            damage = RPGTools.DamageCalculation(
+            const baseDamage = RPGTools.DamageCalculation(
                 source.stats.str,
                 source.stats.bal,
             );
+
+            damage = crit? baseDamage * source.stats.critDmgMult: baseDamage;
 
             // temp: respawn the player
             if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
