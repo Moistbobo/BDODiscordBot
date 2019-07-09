@@ -28,12 +28,15 @@ const heal = (args: CommandArgs) => {
                 args.sendErrorEmbed({
                     contents: replace(args.strings.heal.timeUntilHeal, [timeToHeal.toFixed(0),
                         args.message.author.username])
-                })
+                });
                 throw new Error('Heal is on CD');
             }
 
             if (rpgCharacter.hitpoints.current === rpgCharacter.hitpoints.max) {
-                args.sendErrorEmbed({contents: args.strings.heal.hpFull});
+                args.sendErrorEmbed({
+                    contents: replace(args.strings.heal.hpFull,
+                        [args.message.author.username])
+                });
                 throw new Error('User is at max HP');
             }
 
@@ -51,7 +54,8 @@ const heal = (args: CommandArgs) => {
             args.sendOKEmbed({
                 contents: replace(args.strings.heal.healSuccess, [healAmount,
                     rpgCharacter.hitpoints.current,
-                    rpgCharacter.hitpoints.max])
+                    rpgCharacter.hitpoints.max,
+                    args.message.author.username])
             });
 
 

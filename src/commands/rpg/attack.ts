@@ -70,7 +70,7 @@ const attack = (args: CommandArgs) => {
             if (target.hitpoints.current <= 0) {
                 const random = Math.floor(Math.random() * (args.strings.attack.targetAlreadyDead.length - 1));
                 const randomString = args.strings.attack.targetAlreadyDead[random];
-                const contents = replace(randomString, [targetUser.username]) + '\n' + args.strings.attack.attackAlsoUsedUp;
+                const contents = replace(randomString, [targetUser.username, sourceUser.username]);
 
                 args.sendErrorEmbed({
                     contents

@@ -2,13 +2,13 @@ const attackStrings = {
     attackCooldown: '{1}, {0} seconds until your next attack.',
     attackerIsDead: 'You are dead. You need to respawn before attacking again.',
     targetAlreadyDead:[
-        '{0} is already dead, so you stab their body a few times. How could you do such a thing?',
-        '{0} is already dead, so you spit on their body.',
-        '{0} is already dead, so you poo on your hand and draw a smiley face on their body with your poo.',
-        `{0} is already dead, so you lick his ass cheeks.`,
+        '{0} is already dead, so {1} stabs their body a few times. How could {1}} do such a thing?',
+        '{0} is already dead, so {1} spit on their body.',
+        '{0} is already dead, so {1} poo on their hand and drew a smiley face on {0}\'s} body with their poo.',
+        `{0} is already dead, so {1}} licked their ass cheeks.`,
     ],
     attackAlsoUsedUp: 'Also, your attack has been used up.',
-    attackTargetLives:'{0} attacked {1} for {2} damage!\n' +
+    attackTargetLives:'{0} attacked {1} for {2} damage!\n\n' +
         '{1} has {3}/{4} HP left!',
     attackTargetKilled: '{0} has been killed!',
     attackCritical: '{0} dealt a mortal blow to {1}!\n\n',

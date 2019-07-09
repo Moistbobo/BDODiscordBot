@@ -1,8 +1,8 @@
 const healStrings = {
-    hpFull: 'Your HP is already full.',
-    healSuccess:'You healed yourself by {0}HP.\nYou are at {1}/{2}HP',
+    hpFull: '{0}\'s HP is already full.',
+    healSuccess:'{3} healed for {0}HP.\n\n{3} is at {1}/{2}HP',
     timeUntilHeal: '{1}, {0} seconds until next heal.',
-    userIsDead: '{0}, you are already dead.'
+    userIsDead: '{0}, is already dead.'
 };
 
 export default healStrings ;
