@@ -7,6 +7,7 @@ export interface IRPGCharacter extends Document {
         max: number
     },
     stats: {
+        bal: number,
         str: number,
         int: number,
         crit: number,
@@ -52,6 +53,10 @@ export const RPGCharacterSchema = new Schema({
         }
     },
     stats: {
+        bal: {
+            type: Number,
+            default: 0.4
+        },
         str: {
             type: Number,
             default: 1.00

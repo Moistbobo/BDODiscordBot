@@ -4,6 +4,7 @@ import replace from "../../tools/replace";
 import {CanHeal, FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
+import RPGTools from "../../tools/rpg/RPGTools";
 
 const heal = (args: CommandArgs) => {
     const userID = args.message.author.id;
@@ -41,7 +42,7 @@ const heal = (args: CommandArgs) => {
                 throw new Error('User is dead');
             }
 
-            const healAmount = parseFloat(Math.floor(Math.random() * 20).toFixed(0));
+            const healAmount = RPGTools.HealCalculation(rpgCharacter.stats.int, rpgCharacter.stats.bal);
 
             rpgCharacter.hitpoints.current = Math.min(rpgCharacter.hitpoints.max, rpgCharacter.hitpoints.current + healAmount);
             rpgTimer.lastHeal = Date.now() / 1000;

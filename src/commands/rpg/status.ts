@@ -31,7 +31,9 @@ const status = (args: CommandArgs) => {
                 rpgCharacter.deaths,
                 rpgCharacter.stats.str,
                 rpgCharacter.stats.crit,
-                rpgCharacter.stats.critDmgMult]);
+                rpgCharacter.stats.critDmgMult,
+                rpgCharacter.stats.bal,
+                rpgCharacter.stats.int]);
             args.sendOKEmbed({contents});
         })
         .catch((err) => {

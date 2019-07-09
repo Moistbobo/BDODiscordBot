@@ -4,6 +4,7 @@ import RPGTimer, {CanAttackAgain, FindOrCreateRPGTimer} from "../../models/rpg/R
 import Timers from "../../resources/Timers";
 import replace from "../../tools/replace";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
+import RPGTools from "../../tools/rpg/RPGTools";
 
 const calculateDamage = (str: number): number => {
     return Math.floor(Math.max(str, (Math.random() * Math.floor(20)) * str));
@@ -84,7 +85,10 @@ const attack = (args: CommandArgs) => {
 
 
             const baseDamage = calculateDamage(source.stats.str);
-            damage = Math.round(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
+            damage = RPGTools.DamageCalculation(
+                source.stats.str,
+                source.stats.bal,
+            );
 
             // temp: respawn the player
             if (target.hitpoints.current > 0) target.hitpoints.current -= damage;

@@ -1,8 +1,8 @@
 const Timers ={
     rpg:{
-        attackCD: 30,
+        attackCD: 25,
         deathCD: 45,
-        healCD: 60
+        healCD: 45
     }
 };
 
