@@ -88,7 +88,7 @@ const attack = (args: CommandArgs) => {
                 source.stats.bal,
             );
 
-            damage = crit? baseDamage * source.stats.critDmgMult: baseDamage;
+            damage = Math.floor(crit? baseDamage * source.stats.critDmgMult: baseDamage);
 
             // temp: respawn the player
             if (target.hitpoints.current > 0) target.hitpoints.current -= damage;

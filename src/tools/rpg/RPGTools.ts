@@ -2,14 +2,14 @@ const DamageCalculation = (str: number, bal: number, equipment = 20, otherBonuse
     const maxDamage = CalcMaxDamage(str, equipment, otherBonuses);
     const balanceMod = getRandomArbitrary(bal, 1.0);
 
-    return parseFloat((maxDamage * balanceMod).toFixed(0));
+    return Math.floor((maxDamage * balanceMod));
 };
 
 const HealCalculation = (int:number, bal:number, equipment= 10, otherBonuses=1.0) =>{
   const maxHeal = CalcMaxHeal(int, equipment, otherBonuses);
   const balanceMod = getRandomArbitrary(bal, 1.5);
 
-  return parseFloat((maxHeal * balanceMod).toFixed(0));
+  return Math.floor((maxHeal * balanceMod));
 };
 
 const getRandomArbitrary = (min, max) => {
