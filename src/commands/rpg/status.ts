@@ -29,11 +29,11 @@ const status = (args: CommandArgs) => {
                 rpgCharacter.hitpoints.max,
                 rpgCharacter.kills,
                 rpgCharacter.deaths,
-                rpgCharacter.stats.str,
-                rpgCharacter.stats.crit,
-                rpgCharacter.stats.critDmgMult,
-                rpgCharacter.stats.bal,
-                rpgCharacter.stats.int]);
+                rpgCharacter.stats.str.toFixed(3),
+                rpgCharacter.stats.crit.toFixed(2),
+                rpgCharacter.stats.critDmgMult.toFixed(2),
+                rpgCharacter.stats.bal.toFixed(2),
+                rpgCharacter.stats.int.toFixed(3)]);
             args.sendOKEmbed({contents});
         })
         .catch((err) => {
