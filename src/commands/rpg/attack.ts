@@ -105,12 +105,12 @@ const attack = (args: CommandArgs) => {
                 source.kills += 1;
                 target.deaths += 1;
                 // Send notification if the target died
-                if (target.sendAttackedNotification) {
+                if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
                     targetUser.send(replace(args.strings.attack.attackNotificationKilled, [sourceUser.username, args.message.guild.name]));
                 }
             } else {
                 // send attacked dm if the target survives
-                if (target.sendAttackedNotification) {
+                if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
                     targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
                 }
             }
