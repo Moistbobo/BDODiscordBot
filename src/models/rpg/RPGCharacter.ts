@@ -45,11 +45,11 @@ export const RPGCharacterSchema = new Schema({
     hitpoints: {
         max: {
             type: Number,
-            default: 200
+            default: 150
         },
         current: {
             type: Number,
-            default: 200
+            default: 150
         }
     },
     stats: {
@@ -67,7 +67,7 @@ export const RPGCharacterSchema = new Schema({
         },
         crit: {
             type: Number,
-            default: 0.05
+            default: 0.10
         },
         critDmgMult: {
             type: Number,
