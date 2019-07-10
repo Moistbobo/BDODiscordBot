@@ -29,7 +29,8 @@ const attackStrings = {
     attackNotificationAttacked: `You were attacked by {0} in {1}!\n\nType .san in the rpg channel to disable these messages.`,
     attackNotificationKilled: `You were killed by {0} in {1}!\n\nType .san in the rpg channel to disable these messages.`,
     attackerNotFlagged: `{0} is not flagged and cannot attack.`,
-    targetNotFlagged: `{0} is not flagged and cannot be attacked.`
+    targetNotFlagged: `{0} is not flagged and cannot be attacked.`,
+    attackAFKPunish: `{0} slipped on dog shit and died instantly`
 };
 
 export default attackStrings;

@@ -129,12 +129,12 @@ const strings = {
         name: 'Send Attacked Notifications',
         ...sendAttackedNotificationStrings
     },
-    flag: {
-        description: 'Enable/Disable PVP mode',
-        trigger: 'flag,f,pvp',
-        name: 'Flag',
-        ...flagStrings
-    }
+    // flag: {
+    //     description: 'Enable/Disable PVP mode',
+    //     trigger: 'flag,f,pvp',
+    //     name: 'Flag',
+    //     ...flagStrings
+    // }
     // manga: {
     //     description: 'Get information for a single manga',
     //     trigger: 'manga, m'

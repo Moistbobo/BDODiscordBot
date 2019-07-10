@@ -15,13 +15,11 @@ const patchnotes = (args: CommandArgs) => {
             const tobj = parser.getTraversalObj(xml);
             const json = parser.convertToJson(tobj);
 
-            const patchNotesLink = json.rss.channel.link;
-            const pn = json.rss.channel;
-
+            const pn = json.rss.channel.item[0];
 
             let embedArgs = {
                 title: 'Patch Notes',
-                contents: `${pn.title} - ${pn.pubDate}\n${patchNotesLink} `
+                contents: `${pn.title}\n${pn.link} `
             };
             args.sendOKEmbed(embedArgs);
         })
