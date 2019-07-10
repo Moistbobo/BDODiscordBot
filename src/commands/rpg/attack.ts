@@ -56,6 +56,16 @@ const attack = (args: CommandArgs) => {
             targetTimer = result[3];
             rpgServerStats = result[4];
 
+            if(!source.pvpFlagged){
+                args.sendErrorEmbed({contents: replace(args.strings.attack.attackerNotFlagged, [args.user.username])});
+                throw new Error('Attacker not flagged');
+            }
+
+            if (!target.pvpFlagged){
+                args.sendErrorEmbed({contents: replace(args.strings.attack.targetNotFlagged, [targetUser.username])});
+                throw new Error('Target not flagged');
+            }
+
             if (!CanAttackAgain(sourceTimer.lastAttack)) {
                 const timeToNextAttack = (Timers.rpg.attackCD - (now - sourceTimer.lastAttack)).toFixed(0);
                 const contents = replace(args.strings.attack.attackCooldown, [timeToNextAttack, sourceUser.username]);

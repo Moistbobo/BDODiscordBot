@@ -1,4 +1,4 @@
-const replace = (base: string, values: string[]):string =>{
+const replace = (base: string, values: any[]):string =>{
     let finalString = base;
     for(let i = 0; i < values.length; i++){
         if(!base.includes(`{${i}}`)){

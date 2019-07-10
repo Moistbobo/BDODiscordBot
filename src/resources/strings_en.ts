@@ -5,6 +5,7 @@ import respawnStrings from "./strings/respawn";
 import serverStatStrings from "./strings/serverStats";
 import setRPGChannelStrings from "./strings/setRPGChannel";
 import sendAttackedNotificationStrings from "./strings/sendAttackedNotification";
+import flagStrings from "./strings/flag";
 
 const strings = {
     general:{
@@ -109,6 +110,11 @@ const strings = {
         description: 'Have the bot DM you whenever you get attacked',
         trigger: 'sendattackednotification,san',
         ...sendAttackedNotificationStrings
+    },
+    flag:{
+        description: 'Enable/Disable PVP mode',
+        trigger: 'flag,f,pvp',
+        ...flagStrings
     }
     // manga: {
     //     description: 'Get information for a single manga',

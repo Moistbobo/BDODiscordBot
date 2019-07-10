@@ -16,6 +16,7 @@ export interface IRPGCharacter extends Document {
     title: string,
     kills: number,
     deaths: number,
+    pvpFlagged: boolean
 }
 
 export const FindOrCreateNewRPGCharacter = (userID): Promise<any> => {
@@ -74,7 +75,7 @@ export const RPGCharacterSchema = new Schema({
             default: 2.5
         }
     },
-    title:String,
+    title: String,
     kills: {
         type: Number,
         default: 0
@@ -83,7 +84,11 @@ export const RPGCharacterSchema = new Schema({
         type: Number,
         default: 0
     },
-    sendAttackedNotification:{
+    sendAttackedNotification: {
+        type: Boolean,
+        default: false
+    },
+    pvpFlagged: {
         type: Boolean,
         default: false
     }

@@ -27,7 +27,9 @@ const attackStrings = {
     targetStrengthened: `Getting attacked has made {0} stronger!\n\n{0}'s Strength has increased by {1}!`,
     attackerStrengthened: `Attacking has made {0} stronger!\n\n{0}'s Strength has increased by {1}!`,
     attackNotificationAttacked: `You were attacked by {0} in {1}!\n\nType .san in the rpg channel to disable these messages.`,
-    attackNotificationKilled: `You were killed by {0} in {1}!\n\nType .san in the rpg channel to disable these messages.`
+    attackNotificationKilled: `You were killed by {0} in {1}!\n\nType .san in the rpg channel to disable these messages.`,
+    attackerNotFlagged: `{0} is not flagged and cannot attack.`,
+    targetNotFlagged: `{0} is not flagged and cannot be attacked.`
 };
 
 export default attackStrings;
