@@ -4,6 +4,7 @@ import healStrings from "./strings/heal";
 import respawnStrings from "./strings/respawn";
 import serverStatStrings from "./strings/serverStats";
 import setRPGChannelStrings from "./strings/setRPGChannel";
+import sendAttackedNotificationStrings from "./strings/sendAttackedNotification";
 
 const strings = {
     general:{
@@ -103,6 +104,11 @@ const strings = {
         description: 'Enables RPG commands on the channel',
         trigger: 'setrpgchannel',
         ...setRPGChannelStrings
+    },
+    sendattackednotification:{
+        description: 'Have the bot DM you whenever you get attacked',
+        trigger: 'sendattackednotification,san',
+        ...sendAttackedNotificationStrings
     }
     // manga: {
     //     description: 'Get information for a single manga',

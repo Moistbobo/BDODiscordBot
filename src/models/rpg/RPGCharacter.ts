@@ -82,6 +82,10 @@ export const RPGCharacterSchema = new Schema({
     deaths: {
         type: Number,
         default: 0
+    },
+    sendAttackedNotification:{
+        type: Boolean,
+        default: false
     }
 });
 
