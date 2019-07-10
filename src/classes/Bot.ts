@@ -4,6 +4,7 @@ import Command from "./Command";
 import DatabaseTools from '../tools/DatabaseTools';
 import * as BotConfig from '../config.json'
 import EmbedArgs from '../classes/EmbedArgs';
+import {FindOrCreateRPGTimer} from "../models/rpg/RPGTimer";
 
 class Bot {
     strings: object;
@@ -117,42 +118,57 @@ class Bot {
         console.log(err);
     };
 
-    onMessage = (msg) => {
-        if (msg.content[0] !== '.') {
-            return;
-        }
+    onMessage = (msg: Discord.Message) => {
 
-        const command = msg.content.substring(1).split(' ')[0];
+        // Update user's last activity for rpg use
+        const userID = msg.author.id;
 
+        FindOrCreateRPGTimer(userID)
+            .then((rpgTimer)=>{
+               rpgTimer.lastActivity = Date.now()/1000;
 
-        const cmd = this.commands.find((x) =>
-            x.trigger.includes(command.toLowerCase())
-        );
-        // Trim the command args off the message contents
-        msg.content = msg.content.substring(1 + command.toLowerCase().length + 1);
-
-        if (cmd) {
-            const commandArgs = {
-                bot: this,
-                strings: this.strings,
-                message: msg,
-                send: (content) => msg.channel.send(content),
-                sendOKEmbed: (args) => msg.channel.send(this.createOKEmbed(args)),
-                sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args)),
-                startTyping: () => msg.channel.startTyping(),
-                stopTyping: () => msg.channel.stopTyping(),
-                user: msg.author
-            };
-            if (cmd.hasOwnProperty('action')) {
-                try {
-                    cmd.action(commandArgs);
-                } catch (exception) {
-                    console.log(exception);
+               return rpgTimer.save();
+            })
+            .then(()=>{
+                if (msg.content[0] !== '.') {
+                    return;
                 }
-            } else {
-                console.log(command + ' is missing a command action');
-            }
-        }
+
+                const command = msg.content.substring(1).split(' ')[0];
+
+
+                const cmd = this.commands.find((x) =>
+                    x.trigger.includes(command.toLowerCase())
+                );
+                // Trim the command args off the message contents
+                msg.content = msg.content.substring(1 + command.toLowerCase().length + 1);
+
+                if (cmd) {
+                    const commandArgs = {
+                        bot: this,
+                        strings: this.strings,
+                        message: msg,
+                        send: (content) => msg.channel.send(content),
+                        sendOKEmbed: (args) => msg.channel.send(this.createOKEmbed(args)),
+                        sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args)),
+                        startTyping: () => msg.channel.startTyping(),
+                        stopTyping: () => msg.channel.stopTyping(),
+                        user: msg.author
+                    };
+                    if (cmd.hasOwnProperty('action')) {
+                        try {
+                            cmd.action(commandArgs);
+                        } catch (exception) {
+                            console.log(exception);
+                        }
+                    } else {
+                        console.log(command + ' is missing a command action');
+                    }
+                }
+
+            });
+
+
     };
 
     onGuildCreate = (guild) => {

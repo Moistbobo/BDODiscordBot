@@ -49,7 +49,7 @@ const attack = (args: CommandArgs) => {
             return Promise.all([FindOrCreateNewRPGCharacter(sourceUser.id), FindOrCreateNewRPGCharacter(targetUser.id),
                 FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id), FindOrCreateRPGServerStats(args.message.guild.id)]);
         })
-        .then((result) => {
+        .then((result):Promise<any> => {
             source = result[0];
             target = result[1];
             sourceTimer = result[2];
@@ -88,9 +88,6 @@ const attack = (args: CommandArgs) => {
                 });
                 throw new Error('Target is already dead');
             }
-            return true;
-        })
-        .then(() => {
             // All checks passed, let's deal some damage!
             crit = Math.random() < source.stats.crit;
 
@@ -102,106 +99,102 @@ const attack = (args: CommandArgs) => {
             damage = Math.floor(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
 
 
-            if ((now - targetTimer.lastAttack) > Timers.rpg.afkTimer && RPGTools.getRandomIntegerFrom(100) < 75) {
+            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer &&(RPGTools.getRandomIntegerFrom(100) < 75)) {
                 source.hitpoints.current -= source.hitpoints.current;
                 source.deaths += 1;
+                sourceTimer.lastDeath = now;
                 args.sendOKEmbed({contents: replace(args.strings.attack.attackAFKPunish, [sourceUser.username])});
-                throw new Error('Attacker slipped on dog shit');
             }
-            // temp: respawn the player
-            if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
+            else{
+                // temp: respawn the player
+                if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
 
-            return true;
-        })
-        .then(() => {
-            const now = Date.now() / 1000;
-            sourceTimer.lastAttack = now;
+                //     return true;
+                // })
+                // .then(() => {
+                sourceTimer.lastAttack = now;
 
 
-            if (target.hitpoints.current <= 0) {
-                targetTimer.lastDeath = now;
-                source.kills += 1;
-                target.deaths += 1;
-                // Send notification if the target died
-                if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
-                    targetUser.send(replace(args.strings.attack.attackNotificationKilled, [sourceUser.username, args.message.guild.name]));
-                }
-            } else {
-                // send attacked dm if the target survives
-                if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
-                    targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
-                }
-            }
-
-            // // 5% chance for target to get stronger
-            if (Math.random() < 0.05) {
-                const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
-
-                target.stats.str += parseFloat(strIncrease);
-
-                args.sendOKEmbed({
-                    contents: replace(args.strings.attack.targetStrengthened, [
-                        targetUser.username,
-                        strIncrease.toString()
-                    ])
-                })
-            }
-
-            // 2% chance for attacker to get stronger
-            if (Math.random() < 0.02) {
-                const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
-
-                source.stats.str += parseFloat(strIncrease);
-
-                args.sendOKEmbed({
-                    contents: replace(args.strings.attack.attackerStrengthened, [
-                        sourceUser.username,
-                        strIncrease.toString()
-                    ])
-                })
-            }
-
-            return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save()])
-        })
-        .then(() => {
-            // Finally, if the attack is successful, determine what kind of message to display
-
-            rpgServerStats.attacks++;
-            if (target.hitpoints.current > 0) {
-                const contents = replace(args.strings.attack.attackTargetLives,
-                    [sourceUser.username,
-                        targetUser.username,
-                        damage,
-                        target.hitpoints.current,
-                        target.hitpoints.max]);
-
-                if (crit) {
-                    const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
-                    args.sendOKEmbed({contents: criticalString + contents});
+                if (target.hitpoints.current <= 0) {
+                    targetTimer.lastDeath = now;
+                    source.kills += 1;
+                    target.deaths += 1;
+                    // Send notification if the target died
+                    if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+                        targetUser.send(replace(args.strings.attack.attackNotificationKilled, [sourceUser.username, args.message.guild.name]));
+                    }
                 } else {
-                    args.sendOKEmbed({contents})
+                    // send attacked dm if the target survives
+                    if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+                        targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
+                    }
                 }
 
-            } else {
-                rpgServerStats.deaths++;
-                const contents = replace(args.strings.attack.attackTargetLives,
-                    [sourceUser.username,
-                        targetUser.username,
-                        damage,
-                        target.hitpoints.current,
-                        target.hitpoints.max])
-                    + '\n' +
-                    replace(args.strings.attack.attackTargetKilled, [targetUser.username]);
+                // // 5% chance for target to get stronger
+                if (Math.random() < 0.05) {
+                    const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
 
-                if (crit) {
-                    const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
-                    args.sendOKEmbed({contents: criticalString + contents});
+                    target.stats.str += parseFloat(strIncrease);
+
+                    args.sendOKEmbed({
+                        contents: replace(args.strings.attack.targetStrengthened, [
+                            targetUser.username,
+                            strIncrease.toString()
+                        ])
+                    })
+                }
+
+                // 2% chance for attacker to get stronger
+                if (Math.random() < 0.02) {
+                    const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
+
+                    source.stats.str += parseFloat(strIncrease);
+
+                    args.sendOKEmbed({
+                        contents: replace(args.strings.attack.attackerStrengthened, [
+                            sourceUser.username,
+                            strIncrease.toString()
+                        ])
+                    })
+                }
+
+                rpgServerStats.attacks++;
+                if (target.hitpoints.current > 0) {
+                    const contents = replace(args.strings.attack.attackTargetLives,
+                        [sourceUser.username,
+                            targetUser.username,
+                            damage,
+                            target.hitpoints.current,
+                            target.hitpoints.max]);
+
+                    if (crit) {
+                        const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
+                        args.sendOKEmbed({contents: criticalString + contents});
+                    } else {
+                        args.sendOKEmbed({contents})
+                    }
+
                 } else {
-                    args.sendOKEmbed({contents})
+                    rpgServerStats.deaths++;
+                    const contents = replace(args.strings.attack.attackTargetLives,
+                        [sourceUser.username,
+                            targetUser.username,
+                            damage,
+                            target.hitpoints.current,
+                            target.hitpoints.max])
+                        + '\n' +
+                        replace(args.strings.attack.attackTargetKilled, [targetUser.username]);
+
+                    if (crit) {
+                        const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
+                        args.sendOKEmbed({contents: criticalString + contents});
+                    } else {
+                        args.sendOKEmbed({contents})
+                    }
                 }
             }
 
-            return rpgServerStats.save();
+            return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save(),  rpgServerStats.save()])
         })
         .catch((err) => {
             console.log(err.toString());
