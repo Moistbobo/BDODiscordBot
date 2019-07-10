@@ -101,6 +101,13 @@ const attack = (args: CommandArgs) => {
 
             damage = Math.floor(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
 
+
+            if ((now - targetTimer.lastAttack) > Timers.rpg.afkTimer && RPGTools.getRandomIntegerFrom(100) < 75) {
+                source.hitpoints.current -= source.hitpoints.current;
+                source.deaths += 1;
+                args.sendOKEmbed({contents: replace(args.strings.attack.attackAFKPunish, [sourceUser.username])});
+                throw new Error('Attacker slipped on dog shit');
+            }
             // temp: respawn the player
             if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
 
@@ -110,54 +117,48 @@ const attack = (args: CommandArgs) => {
             const now = Date.now() / 1000;
             sourceTimer.lastAttack = now;
 
-            if((now - targetTimer.lastAttack)> Timers.rpg.afkTimer){
-                if(RPGTools.getRandomIntegerFrom(100) < 25){
-                    source.hitpoints.current-=source.hitpoints.current;
-                    args.sendOKEmbed({contents:replace(args.strings.attack.attackAFKPunish,[sourceUser.username])});
+
+            if (target.hitpoints.current <= 0) {
+                targetTimer.lastDeath = now;
+                source.kills += 1;
+                target.deaths += 1;
+                // Send notification if the target died
+                if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+                    targetUser.send(replace(args.strings.attack.attackNotificationKilled, [sourceUser.username, args.message.guild.name]));
                 }
-            }else{
-                if (target.hitpoints.current <= 0) {
-                    targetTimer.lastDeath = now;
-                    source.kills += 1;
-                    target.deaths += 1;
-                    // Send notification if the target died
-                    if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
-                        targetUser.send(replace(args.strings.attack.attackNotificationKilled, [sourceUser.username, args.message.guild.name]));
-                    }
-                } else {
-                    // send attacked dm if the target survives
-                    if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
-                        targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
-                    }
+            } else {
+                // send attacked dm if the target survives
+                if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+                    targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
                 }
+            }
 
-                // // 5% chance for target to get stronger
-                if (Math.random() < 0.05) {
-                    const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
+            // // 5% chance for target to get stronger
+            if (Math.random() < 0.05) {
+                const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
 
-                    target.stats.str += parseFloat(strIncrease);
+                target.stats.str += parseFloat(strIncrease);
 
-                    args.sendOKEmbed({
-                        contents: replace(args.strings.attack.targetStrengthened, [
-                            targetUser.username,
-                            strIncrease.toString()
-                        ])
-                    })
-                }
+                args.sendOKEmbed({
+                    contents: replace(args.strings.attack.targetStrengthened, [
+                        targetUser.username,
+                        strIncrease.toString()
+                    ])
+                })
+            }
 
-                // 2% chance for attacker to get stronger
-                if (Math.random() < 0.02) {
-                    const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
+            // 2% chance for attacker to get stronger
+            if (Math.random() < 0.02) {
+                const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
 
-                    source.stats.str += parseFloat(strIncrease);
+                source.stats.str += parseFloat(strIncrease);
 
-                    args.sendOKEmbed({
-                        contents: replace(args.strings.attack.attackerStrengthened, [
-                            sourceUser.username,
-                            strIncrease.toString()
-                        ])
-                    })
-                }
+                args.sendOKEmbed({
+                    contents: replace(args.strings.attack.attackerStrengthened, [
+                        sourceUser.username,
+                        strIncrease.toString()
+                    ])
+                })
             }
 
             return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save()])
