@@ -11,9 +11,11 @@ class Bot {
     commands: Command[];
     config: any;
     voiceSessions: any;
+    helpString: {};
 
     constructor(prefix: string, token: string, config: any) {
         this.client = new Discord.Client();
+        this.helpString = {};
         this.setListeners();
         this.strings = require('../resources/strings_en').Strings;
         this.client.login(token);
@@ -40,7 +42,7 @@ class Bot {
         });
     };
 
-    extractCommand = (commandPath: String, commandNames: String[]) => {
+    extractCommand = (commandPath: string, commandNames: string[]) => {
         commandNames.forEach((cmd) => {
 
             const commandName = cmd.replace('.js', '');
@@ -52,7 +54,20 @@ class Bot {
                 command.trigger = stringResources.trigger.split(',');
                 command.trigger = command.trigger.map((e) => e.trim());
                 command.description = stringResources.description;
-                console.log(command.trigger);
+                command.name = stringResources.name;
+
+                // Also build the help string here
+                const helpobj = {
+                  name: command.name,
+                  description: command.description,
+                  trigger: command.trigger
+                };
+
+                if(!this.helpString.hasOwnProperty(commandPath.split('/')[2])){
+                    this.helpString[commandPath.split('/')[2]] = {}
+                }
+                this.helpString[commandPath.split('/')[2]][commandName] = helpobj;
+
                 this.commands.push(command);
             } else {
                 if (!cmd.includes('js.map')) {
@@ -60,7 +75,10 @@ class Bot {
                 }
             }
         });
+
+        console.log(this.helpString);
     };
+
 
     // Utility functions
     createOKEmbed = (args: EmbedArgs)

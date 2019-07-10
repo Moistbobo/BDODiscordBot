@@ -1,7 +1,8 @@
 class Command {
     action: any;
-    description: String;
-    trigger: String[]
+    description: string;
+    trigger: string[];
+    name: string
 }
 
 export default Command;
