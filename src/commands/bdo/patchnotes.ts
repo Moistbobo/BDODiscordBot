@@ -1,27 +1,32 @@
 import CommandArgs from "../../classes/CommandArgs";
 import fetch from 'node-fetch';
-import EmbedArgs from "../../../src/classes/EmbedArgs";
 
 const rssFeedUrl = "https://community.blackdesertonline.com/index.php?forums/patch-notes.5/index.rss";
-const rssToJSONUrl = "https://feed2json.org/convert?url=";
 
 const patchnotes = (args: CommandArgs) => {
-    const requestUrl = `${rssToJSONUrl}${encodeURI(rssFeedUrl)}`;
-    const limit = 1;
 
-    fetch(requestUrl)
+    const parser = require('fast-xml-parser');
+    fetch(rssFeedUrl)
         .then((result) => {
-            return result.json();
+            return result.text();
         })
-        .then((json) => {
-            const patchnotes = json.items;
+        .then((xml) => {
+
+            const tobj = parser.getTraversalObj(xml);
+            const json = parser.convertToJson(tobj);
+
+            const patchNotesLink = json.rss.channel.link;
+            const pn = json.rss.channel;
+
+
             let embedArgs = {
                 title: 'Patch Notes',
-                contents: `${patchnotes[0].title}\n${patchnotes[0].url} `
+                contents: `${pn.title} - ${pn.pubDate}\n${patchNotesLink} `
             };
             args.sendOKEmbed(embedArgs);
         })
         .catch((err) => {
+            console.log(err);
             console.log('err');
             args.sendErrorEmbed({
                 contents: 'A network error occurred while retrieving patchnotes'

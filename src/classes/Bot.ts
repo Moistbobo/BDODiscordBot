@@ -75,8 +75,6 @@ class Bot {
                 }
             }
         });
-
-        console.log(this.helpString);
     };
 
 
