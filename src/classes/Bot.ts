@@ -124,7 +124,8 @@ class Bot {
                 sendOKEmbed: (args) => msg.channel.send(this.createOKEmbed(args)),
                 sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args)),
                 startTyping: () => msg.channel.startTyping(),
-                stopTyping: ()=> msg.channel.stopTyping()
+                stopTyping: () => msg.channel.stopTyping(),
+                user: msg.author
             };
             if (cmd.hasOwnProperty('action')) {
                 try {

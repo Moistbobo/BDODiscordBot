@@ -12,8 +12,12 @@ const HealCalculation = (int:number, bal:number, equipment= 10, otherBonuses=1.0
   return Math.floor((maxHeal * balanceMod));
 };
 
-const getRandomArbitrary = (min, max) => {
+const getRandomArbitrary = (min:number, max:number):number => {
     return Math.random() * (max - min) + min;
+};
+
+const getRandomIntegerFrom = (max:number):number=>{
+    return Math.floor(Math.random() * max);
 };
 
 const CalcMaxDamage = (str: number, equip: number, otherBonuses: number) => {
@@ -34,7 +38,8 @@ const RPGTools = {
     CalcMaxDamage,
     DamageCalculation,
     CalcMaxHeal,
-    HealCalculation
+    HealCalculation,
+    getRandomIntegerFrom
 };
 
 export default RPGTools;

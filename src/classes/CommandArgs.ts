@@ -8,7 +8,8 @@ interface CommandArgs{
     sendOKEmbed: any;
     sendErrorEmbed: any;
     startTyping: any,
-    stopTyping: any
+    stopTyping: any,
+    user: Discord.User
 };
 
 export default CommandArgs;

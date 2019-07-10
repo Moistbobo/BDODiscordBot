@@ -27,7 +27,7 @@ const respawn = (args: CommandArgs) => {
             rpgTimer = res[1];
 
             if (!(rpgCharacter.hitpoints.current <= 0)) {
-                args.sendErrorEmbed({contents: args.strings.respawn.respawnFailedNotDead});
+                args.sendErrorEmbed({contents: replace(args.strings.respawn.respawnFailedNotDead, [args.message.author.username])});
                 throw new Error('User is not dead');
             }
 

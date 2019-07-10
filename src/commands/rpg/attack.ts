@@ -28,10 +28,11 @@ const attack = (args: CommandArgs) => {
     }
 
     if (sourceUser.id === targetUser.id) {
-        const randomMessage = args.strings.attack.attackSelf[Math.floor(Math.random() * (args.strings.attack.attackSelf.length - 1))];
-        const randomSuffix = args.strings.attack.attackSelfSuffix[Math.floor(Math.random() * (args.strings.attack.attackSelfSuffix.length - 1))];
 
-        return args.sendErrorEmbed({contents: randomMessage + randomSuffix});
+        const randomMessage = args.strings.attack.attackSelf[RPGTools.getRandomIntegerFrom(args.strings.attack.attackSelf.length)];
+        const randomSuffix = args.strings.attack.attackSelfSuffix[RPGTools.getRandomIntegerFrom(args.strings.attack.attackSelfSuffix.length)];
+
+        return args.sendErrorEmbed({contents: replace(randomMessage, [sourceUser.username]) + randomSuffix});
     }
 
 
@@ -40,7 +41,7 @@ const attack = (args: CommandArgs) => {
     args.startTyping();
     IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
         .then((res) => {
-            if(!res){
+            if (!res) {
                 args.message.react('❌');
                 throw new Error('Non RPG Channel')
             }
@@ -63,7 +64,7 @@ const attack = (args: CommandArgs) => {
             }
 
             if (source.hitpoints.current <= 0) {
-                args.sendErrorEmbed({contents: args.strings.attack.attackerIsDead});
+                args.sendErrorEmbed({contents: replace(args.strings.attack.attackerIsDead, [sourceUser.username])});
                 throw new Error('Attacker is dead');
             }
 
@@ -88,7 +89,7 @@ const attack = (args: CommandArgs) => {
                 source.stats.bal,
             );
 
-            damage = Math.floor(crit? baseDamage * source.stats.critDmgMult: baseDamage);
+            damage = Math.floor(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
 
             // temp: respawn the player
             if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
