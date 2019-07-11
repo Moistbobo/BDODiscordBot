@@ -2,7 +2,7 @@ import attackStrings from "./strings/attackStrings";
 import statusStrings from "./strings/statusStrings";
 import healStrings from "./strings/healStrings";
 import respawnStrings from "./strings/respawnStrings";
-import serverStatStrings from "./strings/serverStats";
+import serverStatStrings from "./strings/serverStatsStrings";
 import setRPGChannelStrings from "./strings/setRPGChannelStrings";
 import sendAttackedNotificationStrings from "./strings/sendAttackedNotificationStrings";
 import flagStrings from "./strings/flagStrings";

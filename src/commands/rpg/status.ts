@@ -2,6 +2,8 @@ import CommandArgs from "../../classes/CommandArgs";
 import RPGCharacter, {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
+import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
+import Timers from "../../resources/Timers";
 
 
 const status = (args: CommandArgs) => {
@@ -21,10 +23,15 @@ const status = (args: CommandArgs) => {
                 args.message.react('❌');
                 throw new Error('Non RPG Channel')
             }
-            return FindOrCreateNewRPGCharacter(userIDToSearch)
+            return Promise.all([FindOrCreateNewRPGCharacter(userIDToSearch), FindOrCreateRPGTimer(userIDToSearch)])
         })
-        .then((rpgCharacter) => {
-            const contents = replace(args.strings.statusStrings.statusString, [user.username,
+        .then((res) => {
+            const rpgCharacter = res[0];
+            const rpgTimer = res[1];
+            const isAFK = (Date.now()/1000 - rpgTimer.lastActivity)> Timers.rpg.afkTimer;
+            console.log(isAFK);
+
+            const contents = replace(args.strings.status.statusString, [user.username,
                 rpgCharacter.hitpoints.current,
                 rpgCharacter.hitpoints.max,
                 rpgCharacter.kills,
@@ -33,7 +40,9 @@ const status = (args: CommandArgs) => {
                 rpgCharacter.stats.crit.toFixed(2),
                 rpgCharacter.stats.critDmgMult.toFixed(2),
                 rpgCharacter.stats.bal.toFixed(2),
-                rpgCharacter.stats.int.toFixed(3)]);
+                rpgCharacter.stats.int.toFixed(3),
+                isAFK?'Yes':'No'],
+                );
             args.sendOKEmbed({contents});
         })
         .catch((err) => {
