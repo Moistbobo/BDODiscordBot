@@ -24,7 +24,7 @@ const status = (args: CommandArgs) => {
             return FindOrCreateNewRPGCharacter(userIDToSearch)
         })
         .then((rpgCharacter) => {
-            const contents = replace(args.strings.status.statusString, [user.username,
+            const contents = replace(args.strings.statusStrings.statusString, [user.username,
                 rpgCharacter.hitpoints.current,
                 rpgCharacter.hitpoints.max,
                 rpgCharacter.kills,

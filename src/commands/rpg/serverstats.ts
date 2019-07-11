@@ -18,7 +18,8 @@ const serverstats = (args: CommandArgs) => {
                         [args.message.guild.name,
                             rpgServerStats.attacks,
                             rpgServerStats.heals,
-                            rpgServerStats.deaths])
+                            rpgServerStats.deaths,
+                            rpgServerStats.pvpProtectionDeaths])
             })
         });
 };

@@ -46,9 +46,9 @@ const suggestmanga = (args: CommandArgs) => {
         .then((response) => {
             if (response.ok) {
                 return response.json();
-            } else if (response.status === 429) {
+            } else if (response.statusStrings === 429) {
                 args.sendErrorEmbed({contents: 'Request was rate limited. Please try again later'});
-            } else if (response.status > 400){
+            } else if (response.statusStrings > 400){
                 args.sendErrorEmbed({contents: 'Error retrieving manga list'});
             }
         })

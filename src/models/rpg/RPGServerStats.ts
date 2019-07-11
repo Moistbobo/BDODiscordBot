@@ -36,6 +36,7 @@ export interface IRPGServerStats extends Document {
     attacks: number,
     heals: number,
     deaths: number,
+    pvpProtectionDeaths: number,
     rpgChannels: number[]
 }
 
@@ -59,6 +60,10 @@ export const RPGServerStatsSchema = new Schema({
     },
     rpgChannels: {
         type: Array
+    },
+    pvpProtectionDeaths:{
+        type: Number,
+        deafult: 0
     }
 });
 

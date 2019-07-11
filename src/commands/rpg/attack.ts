@@ -49,7 +49,7 @@ const attack = (args: CommandArgs) => {
             return Promise.all([FindOrCreateNewRPGCharacter(sourceUser.id), FindOrCreateNewRPGCharacter(targetUser.id),
                 FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id), FindOrCreateRPGServerStats(args.message.guild.id)]);
         })
-        .then((result):Promise<any> => {
+        .then((result): Promise<any> => {
             source = result[0];
             target = result[1];
             sourceTimer = result[2];
@@ -99,13 +99,16 @@ const attack = (args: CommandArgs) => {
             damage = Math.floor(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
 
 
-            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer &&(RPGTools.getRandomIntegerFrom(100) < 75)) {
+            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.getRandomIntegerFrom(100) < 75)) {
                 source.hitpoints.current -= source.hitpoints.current;
                 source.deaths += 1;
                 sourceTimer.lastDeath = now;
-                args.sendOKEmbed({contents: replace(args.strings.attack.attackAFKPunish, [sourceUser.username])});
-            }
-            else{
+                rpgServerStats.pvpProtectionDeaths++;
+                args.sendOKEmbed({
+                    contents: replace(args.strings.attack.attackAFKPunish, [sourceUser.username]),
+                    footer: args.strings.attack.attackAFKPunishNote
+                });
+            } else {
                 // temp: respawn the player
                 if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
 
@@ -194,7 +197,7 @@ const attack = (args: CommandArgs) => {
                 }
             }
 
-            return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save(),  rpgServerStats.save()])
+            return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save(), rpgServerStats.save()])
         })
         .catch((err) => {
             console.log(err.toString());
