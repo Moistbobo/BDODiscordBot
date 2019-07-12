@@ -63,7 +63,7 @@ export const RPGServerStatsSchema = new Schema({
     },
     pvpProtectionDeaths:{
         type: Number,
-        deafult: 0
+        default: 0
     }
 });
 
