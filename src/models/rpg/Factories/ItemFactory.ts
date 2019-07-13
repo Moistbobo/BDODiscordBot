@@ -1,0 +1,22 @@
+import Item, {IItem} from "../Item";
+
+const CreateNewItem = (itemID: string, qty = 1):Promise<any> => {
+    return new Promise((resolve, reject) => {
+        Item.findOne({itemID})
+            .then((item: any) => {
+                if (!item) reject(new Error(`Item ID ${itemID} not found in database`));
+                item.qty = qty;
+                resolve(item);
+            })
+            .catch((err)=>{
+                console.log(err.toString());
+            })
+    })
+
+};
+
+const ItemFactory = {
+    CreateNewItem
+};
+
+export default ItemFactory;

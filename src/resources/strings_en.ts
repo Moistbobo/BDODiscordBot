@@ -1,18 +1,24 @@
-import attackStrings from "./strings/attackStrings";
-import statusStrings from "./strings/statusStrings";
-import healStrings from "./strings/healStrings";
-import respawnStrings from "./strings/respawnStrings";
-import serverStatStrings from "./strings/serverStatsStrings";
-import setRPGChannelStrings from "./strings/setRPGChannelStrings";
-import sendAttackedNotificationStrings from "./strings/sendAttackedNotificationStrings";
-import flagStrings from "./strings/flagStrings";
-import commandStrings from "./strings/commandStrings";
+import attackStrings from "./strings/en/commands/attackStrings";
+import statusStrings from "./strings/en/commands/statusStrings";
+import healStrings from "./strings/en/commands/healStrings";
+import respawnStrings from "./strings/en/commands/respawnStrings";
+import serverStatStrings from "./strings/en/commands/serverStatsStrings";
+import setRPGChannelStrings from "./strings/en/commands/setRPGChannelStrings";
+import sendAttackedNotificationStrings from "./strings/en/commands/sendAttackedNotificationStrings";
+import flagStrings from "./strings/en/commands/flagStrings";
+import commandStrings from "./strings/en/commands/commandStrings";
+import OneRarityWeaponStrings from "./strings/en/items/weapons/1_rarity";
+import inventoryStrings from "./strings/en/commands/inventoryStrings";
+import discardStrings from "./strings/en/commands/discardStrings";
+import equipStrings from "./strings/en/commands/equipStrings";
 
 const strings = {
+    ...OneRarityWeaponStrings,
+    error: 'String not found',
     commands: {
         description: 'Show list of commands',
         trigger: 'commands, scs',
-        name: 'Commands',
+        name: 'commands',
         ...commandStrings
     },
     general: {
@@ -60,7 +66,8 @@ const strings = {
     alive: {
         description: 'Check if bot is alive',
         trigger: 'alive, a',
-        name: 'Alive'
+        name: 'Alive',
+        hidden: true
     },
     checkttschannel: {
         description: 'Check the gtts enabled channel on the server',
@@ -128,6 +135,30 @@ const strings = {
         trigger: 'sendattackednotification,san',
         name: 'Send Attacked Notifications',
         ...sendAttackedNotificationStrings
+    },
+    createitem: {
+        description: 'Create an item',
+        trigger: 'createitem',
+        name: 'Create Item',
+        hidden: true
+    },
+    inventory: {
+        description: 'Check your inventory',
+        trigger: 'inventory',
+        name: 'Inventory',
+        ...inventoryStrings
+    },
+    discarditem:{
+        description:'Discard an item from your inventory',
+        trigger: 'discard',
+        name: 'Discard',
+        ...discardStrings
+    },
+    equip:{
+        description: 'Equip an item',
+        trigger: 'equip',
+        name: 'Equip',
+        ...equipStrings
     },
     // flag: {
     //     description: 'Enable/Disable PVP mode',

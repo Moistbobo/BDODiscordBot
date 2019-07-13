@@ -18,8 +18,10 @@ const commands = (args: CommandArgs) => {
 
     const commandCategories = Object.values(commands[commandCategory]);
     commandCategories.forEach((command: any) => {
-        const append = `[Name:]\n${command.name}\n\n[Description:]\n${command.description}\n\n[Triggers:]\n${command.trigger.join(' ')}`;
-        helpString = helpString + '```ini\n' + append + '```\n';
+        if(!command.hidden){
+            const append = `[Name:]\n${command.name}\n\n[Description:]\n${command.description}\n\n[Triggers:]\n${command.trigger.join(' ')}`;
+            helpString = helpString + '```ini\n' + append + '```\n';
+        }
     });
 
     // console.log(helpString);

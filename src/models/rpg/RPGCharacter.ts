@@ -1,4 +1,5 @@
 import {Document, Schema, model} from 'mongoose';
+import Item, {IItem, ItemSchema} from "./Item";
 
 export interface IRPGCharacter extends Document {
     userID: string,
@@ -17,6 +18,8 @@ export interface IRPGCharacter extends Document {
     kills: number,
     deaths: number,
     pvpFlagged: boolean
+    inventory: [IItem],
+    equippedWeapon: IItem
 }
 
 export const FindOrCreateNewRPGCharacter = (userID): Promise<any> => {
@@ -35,7 +38,7 @@ export const FindOrCreateNewRPGCharacter = (userID): Promise<any> => {
                 reject(new Error('Error retrieving New RPG Character'));
             })
     })
-}
+};
 
 export const RPGCharacterSchema = new Schema({
     userID: {
@@ -91,7 +94,9 @@ export const RPGCharacterSchema = new Schema({
     pvpFlagged: {
         type: Boolean,
         default: false
-    }
+    },
+    inventory: [ItemSchema],
+    equippedWeapon: ItemSchema
 });
 
 const RPGCharacter = model<IRPGCharacter>('RPGCharacter', RPGCharacterSchema);
