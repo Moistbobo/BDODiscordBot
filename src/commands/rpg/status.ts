@@ -17,7 +17,7 @@ const status = (args: CommandArgs) => {
 
     args.startTyping();
 
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

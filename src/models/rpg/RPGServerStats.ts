@@ -1,4 +1,6 @@
 import {Document, Schema, model} from 'mongoose';
+import {Message} from "discord.js";
+import CommandArgs from "../../classes/CommandArgs";
 
 
 export const FindOrCreateRPGServerStats = (serverID: string): Promise<any> => {
@@ -18,11 +20,21 @@ export const FindOrCreateRPGServerStats = (serverID: string): Promise<any> => {
     })
 };
 
-export const IsChannelRPGEnabled = (serverID: string, channelID: string): Promise<any> => {
+export const IsChannelRPGEnabled = (args: CommandArgs): Promise<any> => {
+    const serverID = args.message.guild.id;
+    const channelID = args.message.channel.id;
+    const message = args.message;
     return new Promise((resolve, reject) => {
         FindOrCreateRPGServerStats(serverID)
             .then((rpgServerStats) => {
-                resolve(rpgServerStats.rpgChannels.includes(channelID));
+                const isRPGChannel = rpgServerStats.rpgChannels.includes(channelID);
+
+                if (isRPGChannel) {
+                    resolve(true);
+                } else {
+                    message.react('❌');
+                    reject(new Error('Channel is not RPG Enabled'));
+                }
             })
             .catch((err) => {
                 console.log(err.toString());
@@ -30,6 +42,7 @@ export const IsChannelRPGEnabled = (serverID: string, channelID: string): Promis
             })
     });
 };
+
 
 export interface IRPGServerStats extends Document {
     serverID: string,
@@ -61,7 +74,7 @@ export const RPGServerStatsSchema = new Schema({
     rpgChannels: {
         type: [Array]
     },
-    pvpProtectionDeaths:{
+    pvpProtectionDeaths: {
         type: Number,
         default: 0
     }

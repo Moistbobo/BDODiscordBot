@@ -39,7 +39,7 @@ const attack = (args: CommandArgs) => {
     const now = Date.now() / 1000;
 
     args.startTyping();
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

@@ -7,7 +7,7 @@ import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 
 const flag = (args: CommandArgs) => {
 
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

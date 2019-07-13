@@ -10,7 +10,7 @@ const discarditem = (args: CommandArgs) => {
 
     if (isNaN(index)) return args.sendErrorEmbed({contents: args.strings.discard.enterANumber});
 
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

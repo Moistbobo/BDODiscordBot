@@ -6,7 +6,8 @@ import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 const inventory = (args: CommandArgs) => {
     const userID = args.message.author.id;
 
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
+
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

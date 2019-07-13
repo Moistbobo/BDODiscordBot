@@ -9,7 +9,7 @@ import RPGTools from "../../tools/rpg/RPGTools";
 const heal = (args: CommandArgs) => {
     const userID = args.message.author.id;
 
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

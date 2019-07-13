@@ -3,7 +3,7 @@ import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/
 import replace from "../../tools/replace";
 
 const serverstats = (args: CommandArgs) => {
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

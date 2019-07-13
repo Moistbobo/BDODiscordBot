@@ -14,7 +14,7 @@ const respawn = (args: CommandArgs) => {
     args.startTyping();
     let rpgTimer = null;
     let rpgCharacter = null;
-    IsChannelRPGEnabled(args.message.guild.id, args.message.channel.id)
+    IsChannelRPGEnabled(args)
         .then((res) => {
             if (!res) {
                 args.message.react('❌');

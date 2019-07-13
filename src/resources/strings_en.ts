@@ -11,6 +11,7 @@ import OneRarityWeaponStrings from "./strings/en/items/weapons/1_rarity";
 import inventoryStrings from "./strings/en/commands/inventoryStrings";
 import discardStrings from "./strings/en/commands/discardStrings";
 import equipStrings from "./strings/en/commands/equipStrings";
+import unequipWeaponStrings from "./strings/en/commands/unequipWeaponStrings";
 
 const strings = {
     ...OneRarityWeaponStrings,
@@ -160,6 +161,12 @@ const strings = {
         name: 'Equip',
         ...equipStrings
     },
+    unequipweapon:{
+        description:'Unequip your weapon',
+        trigger: 'unequipweapon, uew',
+        name: 'Unequip Weapon',
+        ...unequipWeaponStrings
+    }
     // flag: {
     //     description: 'Enable/Disable PVP mode',
     //     trigger: 'flag,f,pvp',
