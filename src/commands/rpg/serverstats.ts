@@ -21,6 +21,7 @@ const serverstats = (args: CommandArgs) => {
                             rpgServerStats.deaths,
                             rpgServerStats.pvpProtectionDeaths])
             })
+            return rpgServerStats.save();
         });
 };
 

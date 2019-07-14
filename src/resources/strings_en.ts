@@ -17,12 +17,15 @@ import MaterialStrings from "./strings/en/items/materials/materialStrings";
 import RecipeStrings from "./strings/en/items/recipes/recipeStrings";
 import craftRecipeStrings from "./strings/en/commands/craftRecipeStrings";
 import craftStrings from "./strings/en/commands/craftStrings";
+import enableItemDropStrings from "./strings/en/commands/enableItemDropStrings";
+import OnMessageItemDropStrings from "./strings/en/events/onMessageItemDropStrings";
 
 const strings = {
     ...OneRarityWeaponStrings,
     ...ThreeRarityWeaponStrings,
     ...MaterialStrings,
     ...RecipeStrings,
+    ...OnMessageItemDropStrings,
     error: 'String not found',
     commands: {
         description: 'Show list of commands',
@@ -186,6 +189,13 @@ const strings = {
         trigger: 'craft',
         name: 'Craft',
         ...craftStrings
+    },
+    enableitemdrops:{
+        description: 'Enable item drop for a channel',
+        trigger: 'eid, enableitemdrops',
+        name: 'Enable Item Drops',
+        hidden:true,
+        ...enableItemDropStrings
     }
     // flag: {
     //     description: 'Enable/Disable PVP mode',

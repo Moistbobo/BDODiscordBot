@@ -5,6 +5,8 @@ import DatabaseTools from '../tools/DatabaseTools';
 import * as BotConfig from '../config.json'
 import EmbedArgs from '../classes/EmbedArgs';
 import {FindOrCreateRPGTimer} from "../models/rpg/RPGTimer";
+import {FindOrCreateRPGServerStats} from "../models/rpg/RPGServerStats";
+import ProcessOnMessageItemDrop from "../tools/events/onMessage/ProcessOnMessageItemDrop";
 
 class Bot {
     strings: object;
@@ -59,12 +61,12 @@ class Bot {
 
                 // Also build the help string here
                 const helpobj = {
-                  name: command.name,
-                  description: command.description,
-                  trigger: command.trigger
+                    name: command.name,
+                    description: command.description,
+                    trigger: command.trigger
                 };
 
-                if(!this.helpString.hasOwnProperty(commandPath.split('/')[2])){
+                if (!this.helpString.hasOwnProperty(commandPath.split('/')[2])) {
                     this.helpString[commandPath.split('/')[2]] = {}
                 }
                 this.helpString[commandPath.split('/')[2]][commandName] = helpobj;
@@ -122,14 +124,36 @@ class Bot {
 
         // Update user's last activity for rpg use
         const userID = msg.author.id;
+        if(userID === this.client.user.id) {
+            return;
+        }
+        const commandArgs = {
+            bot: this,
+            strings: this.strings,
+            message: msg,
+            send: (content) => msg.channel.send(content),
+            sendOKEmbed: (args) => msg.channel.send(this.createOKEmbed(args)),
+            sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args)),
+            startTyping: () => msg.channel.startTyping(),
+            stopTyping: () => msg.channel.stopTyping(),
+            user: msg.author
+        };
+
+        ProcessOnMessageItemDrop(commandArgs)
+            .then((res) => {
+                console.log('Dropped item');
+            })
+            .catch((err) => {
+            });
 
         FindOrCreateRPGTimer(userID)
-            .then((rpgTimer)=>{
-               rpgTimer.lastActivity = Date.now()/1000;
+            .then((rpgTimer) => {
+                rpgTimer.lastActivity = Date.now() / 1000;
 
-               return rpgTimer.save();
+                return rpgTimer.save();
             })
-            .then(()=>{
+            .then(() => {
+
                 if (msg.content[0] !== '.') {
                     return;
                 }
@@ -144,17 +168,7 @@ class Bot {
                 msg.content = msg.content.substring(1 + command.toLowerCase().length + 1);
 
                 if (cmd) {
-                    const commandArgs = {
-                        bot: this,
-                        strings: this.strings,
-                        message: msg,
-                        send: (content) => msg.channel.send(content),
-                        sendOKEmbed: (args) => msg.channel.send(this.createOKEmbed(args)),
-                        sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args)),
-                        startTyping: () => msg.channel.startTyping(),
-                        stopTyping: () => msg.channel.stopTyping(),
-                        user: msg.author
-                    };
+
                     if (cmd.hasOwnProperty('action')) {
                         try {
                             cmd.action(commandArgs);
@@ -165,8 +179,7 @@ class Bot {
                         console.log(command + ' is missing a command action');
                     }
                 }
-
-            });
+            })
 
 
     };
