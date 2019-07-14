@@ -8,7 +8,11 @@ export interface IItem extends Document {
     baseDamage: number,
     enchantLevel: number
     qty: number,
-    stackable: boolean
+    stackable: boolean,
+    requirements:{
+        str: number,
+        int: number
+    }
 }
 
 export const ItemTypes = ['weapon', 'consumable', 'material'];
@@ -34,7 +38,19 @@ export const ItemSchema = new Schema({
         min: 0,
         max: 15
     },
-    stackable: Boolean
+    stackable: Boolean,
+    requirements:{
+        str:{
+            type: Number,
+            required:true,
+            default: 0
+        },
+        int:{
+            type:Number,
+            required:true,
+            default: 0
+        }
+    }
 });
 
 const Item = model<IItem>('Item', ItemSchema);

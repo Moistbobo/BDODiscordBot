@@ -8,16 +8,10 @@ const discarditem = (args: CommandArgs) => {
     const index = parseInt(args.message.content);
     let removedItem = null;
 
-    if (isNaN(index)) return args.sendErrorEmbed({contents: args.strings.discard.enterANumber});
+    if (isNaN(index) || index < 0) return args.sendErrorEmbed({contents: args.strings.discard.enterANumber});
 
     IsChannelRPGEnabled(args)
-        .then((res) => {
-            if (!res) {
-                args.message.react('❌');
-                throw new Error('Non RPG Channel');
-            }
-            return FindOrCreateNewRPGCharacter(userID)
-        })
+        .then((res) => FindOrCreateNewRPGCharacter(userID))
         .then((rpgCharacter) => {
             let inventory = rpgCharacter.inventory;
 

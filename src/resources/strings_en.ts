@@ -7,14 +7,22 @@ import setRPGChannelStrings from "./strings/en/commands/setRPGChannelStrings";
 import sendAttackedNotificationStrings from "./strings/en/commands/sendAttackedNotificationStrings";
 import flagStrings from "./strings/en/commands/flagStrings";
 import commandStrings from "./strings/en/commands/commandStrings";
-import OneRarityWeaponStrings from "./strings/en/items/weapons/1_rarity";
+import OneRarityWeaponStrings from "./strings/en/items/weapons/1_rarityStrings";
 import inventoryStrings from "./strings/en/commands/inventoryStrings";
 import discardStrings from "./strings/en/commands/discardStrings";
 import equipStrings from "./strings/en/commands/equipStrings";
 import unequipWeaponStrings from "./strings/en/commands/unequipWeaponStrings";
+import ThreeRarityWeaponStrings from "./strings/en/items/weapons/3_rarityStrings";
+import MaterialStrings from "./strings/en/items/materials/materialStrings";
+import RecipeStrings from "./strings/en/items/recipes/recipeStrings";
+import craftRecipeStrings from "./strings/en/commands/craftRecipeStrings";
+import craftStrings from "./strings/en/commands/craftStrings";
 
 const strings = {
     ...OneRarityWeaponStrings,
+    ...ThreeRarityWeaponStrings,
+    ...MaterialStrings,
+    ...RecipeStrings,
     error: 'String not found',
     commands: {
         description: 'Show list of commands',
@@ -149,23 +157,35 @@ const strings = {
         name: 'Inventory',
         ...inventoryStrings
     },
-    discarditem:{
-        description:'Discard an item from your inventory',
+    discarditem: {
+        description: 'Discard an item from your inventory',
         trigger: 'discard',
         name: 'Discard',
         ...discardStrings
     },
-    equip:{
+    equip: {
         description: 'Equip an item',
         trigger: 'equip',
         name: 'Equip',
         ...equipStrings
     },
-    unequipweapon:{
-        description:'Unequip your weapon',
+    unequipweapon: {
+        description: 'Unequip your weapon',
         trigger: 'unequipweapon, uew',
         name: 'Unequip Weapon',
         ...unequipWeaponStrings
+    },
+    craftrecipes: {
+        description: 'Check all available recipes',
+        trigger: 'cractrecipes, cr',
+        name: 'Craft Recipes',
+        ...craftRecipeStrings
+    },
+    craft: {
+        description: 'Craft an item according to index',
+        trigger: 'craft',
+        name: 'Craft',
+        ...craftStrings
     }
     // flag: {
     //     description: 'Enable/Disable PVP mode',
