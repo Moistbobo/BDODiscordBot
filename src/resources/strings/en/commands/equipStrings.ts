@@ -1,5 +1,5 @@
 const equipStrings ={
-    notEquippable: `{0}, {1} is an equippable item`,
+    notEquippable: `{0}, {1} is not an equippable item`,
     equipped: `{0}, successfully equipped {1}`,
     failEquipped : `{0} failed to equip item`,
     previousWeaponFooter: `Your {0} has been returned to your inventory`,

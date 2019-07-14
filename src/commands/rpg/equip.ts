@@ -61,6 +61,10 @@ const equip = (args: CommandArgs) => {
                     rpgCharacter.inventory.splice(index, 1);
                 }
             } else {
+                args.sendErrorEmbed({
+                    contents: replace(args.strings.equip.notEquippable, [args.message.author.username,
+                        args.strings[itemToEquip.itemID].name])
+                });
                 throw new Error('Invalid Item type');
             }
 
