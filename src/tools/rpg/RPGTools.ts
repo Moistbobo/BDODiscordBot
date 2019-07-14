@@ -17,11 +17,11 @@ const HealCalculation = (int: number, bal: number, equipment = 10, otherBonuses 
     return Math.floor((maxHeal * balanceMod));
 };
 
-const getRandomArbitrary = (min: number, max: number): number => {
-    return Math.random() * (max - min) + min;
+const getRandomArbitrary = (min, max) => {
+    return parseFloat((Math.random() * (max - min) + min).toPrecision(2));
 };
 
-const getRandomIntegerFrom = (max: number): number => {
+const GetRandomIntegerFrom = (max: number): number => {
     return Math.floor(Math.random() * max);
 };
 
@@ -63,7 +63,6 @@ const AddItemToUserInventory = (userID: string, itemID: string, qty=1) => {
                 reject(new Error('Error adding item to user inventory'));
             })
     })
-
 };
 
 const RPGTools = {
@@ -71,8 +70,9 @@ const RPGTools = {
     DamageCalculation,
     CalcMaxHeal,
     HealCalculation,
-    getRandomIntegerFrom,
-    AddItemToUserInventory
+    GetRandomIntegerFrom,
+    AddItemToUserInventory,
+    GetRandomFloatRange: getRandomArbitrary
 };
 
 export default RPGTools;

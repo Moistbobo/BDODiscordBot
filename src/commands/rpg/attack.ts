@@ -5,10 +5,7 @@ import Timers from "../../resources/Timers";
 import replace from "../../tools/replace";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import RPGTools from "../../tools/rpg/RPGTools";
-
-const calculateDamage = (str: number): number => {
-    return Math.floor(Math.max(str, (Math.random() * Math.floor(20)) * str));
-};
+import RPGCharacterManager from "../../tools/rpg/RPGCharacterManager";
 
 const attack = (args: CommandArgs) => {
 
@@ -29,23 +26,17 @@ const attack = (args: CommandArgs) => {
 
     if (sourceUser.id === targetUser.id) {
 
-        const randomMessage = args.strings.attack.attackSelf[RPGTools.getRandomIntegerFrom(args.strings.attack.attackSelf.length)];
-        const randomSuffix = args.strings.attack.attackSelfSuffix[RPGTools.getRandomIntegerFrom(args.strings.attack.attackSelfSuffix.length)];
+        const randomMessage = args.strings.attack.attackSelf[RPGTools.GetRandomIntegerFrom(args.strings.attack.attackSelf.length)];
+        const randomSuffix = args.strings.attack.attackSelfSuffix[RPGTools.GetRandomIntegerFrom(args.strings.attack.attackSelfSuffix.length)];
 
         return args.sendErrorEmbed({contents: replace(randomMessage, [sourceUser.username]) + randomSuffix});
     }
-
 
     const now = Date.now() / 1000;
 
     args.startTyping();
     IsChannelRPGEnabled(args)
-        .then((res) => {
-            if (!res) {
-                args.message.react('❌');
-                throw new Error('Non RPG Channel')
-            }
-
+        .then(() => {
             return Promise.all([FindOrCreateNewRPGCharacter(sourceUser.id), FindOrCreateNewRPGCharacter(targetUser.id),
                 FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id), FindOrCreateRPGServerStats(args.message.guild.id)]);
         })
@@ -55,16 +46,6 @@ const attack = (args: CommandArgs) => {
             sourceTimer = result[2];
             targetTimer = result[3];
             rpgServerStats = result[4];
-
-            // if(!source.pvpFlagged){
-            //     args.sendErrorEmbed({contents: replace(args.strings.attack.attackerNotFlagged, [args.user.username])});
-            //     throw new Error('Attacker not flagged');
-            // }
-            //
-            // if (!target.pvpFlagged){
-            //     args.sendErrorEmbed({contents: replace(args.strings.attack.targetNotFlagged, [targetUser.username])});
-            //     throw new Error('Target not flagged');
-            // }
 
             if (!CanAttackAgain(sourceTimer.lastAttack)) {
                 const timeToNextAttack = (Timers.rpg.attackCD - (now - sourceTimer.lastAttack)).toFixed(0);
@@ -79,7 +60,7 @@ const attack = (args: CommandArgs) => {
             }
 
             if (target.hitpoints.current <= 0) {
-                const random = Math.floor(Math.random() * (args.strings.attack.targetAlreadyDead.length - 1));
+                const random = Math.floor(Math.random() * (args.strings.attack.targetAlreadyDead.length));
                 const randomString = args.strings.attack.targetAlreadyDead[random];
                 const contents = replace(randomString, [targetUser.username, sourceUser.username]);
 
@@ -98,8 +79,7 @@ const attack = (args: CommandArgs) => {
 
             damage = Math.floor(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
 
-
-            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.getRandomIntegerFrom(100) < 75)) {
+            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.GetRandomIntegerFrom(100) < 75)) {
                 source.hitpoints.current -= source.hitpoints.current;
                 source.deaths += 1;
                 sourceTimer.lastDeath = now;
@@ -108,15 +88,11 @@ const attack = (args: CommandArgs) => {
                     contents: replace(args.strings.attack.attackAFKPunish, [sourceUser.username]),
                     footer: args.strings.attack.attackAFKPunishNote
                 });
+                args.stopTyping();
+                return Promise.all([rpgServerStats.save(), source.save()]);
             } else {
-                // temp: respawn the player
                 if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
-
-                //     return true;
-                // })
-                // .then(() => {
                 sourceTimer.lastAttack = now;
-
 
                 if (target.hitpoints.current <= 0) {
                     targetTimer.lastDeath = now;
@@ -132,35 +108,6 @@ const attack = (args: CommandArgs) => {
                         targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
                     }
                 }
-
-                // // 5% chance for target to get stronger
-                if (Math.random() < 0.05) {
-                    const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
-
-                    target.stats.str += parseFloat(strIncrease);
-
-                    args.sendOKEmbed({
-                        contents: replace(args.strings.attack.targetStrengthened, [
-                            targetUser.username,
-                            strIncrease.toString()
-                        ])
-                    })
-                }
-
-                // 2% chance for attacker to get stronger
-                if (Math.random() < 0.02) {
-                    const strIncrease = Math.min(Math.random(), 0.1).toPrecision(2);
-
-                    source.stats.str += parseFloat(strIncrease);
-
-                    args.sendOKEmbed({
-                        contents: replace(args.strings.attack.attackerStrengthened, [
-                            sourceUser.username,
-                            strIncrease.toString()
-                        ])
-                    })
-                }
-
                 rpgServerStats.attacks++;
                 if (target.hitpoints.current > 0) {
                     const contents = replace(args.strings.attack.attackTargetLives,
@@ -195,16 +142,15 @@ const attack = (args: CommandArgs) => {
                         args.sendOKEmbed({contents})
                     }
                 }
+                args.stopTyping();
+                return Promise.all([sourceTimer.save(), targetTimer.save(), RPGCharacterManager.ProcessStrUpAttacker(source, args, sourceUser.username), RPGCharacterManager.ProcessStrUpDefender(target, args, targetUser.username), rpgServerStats.save()])
             }
 
-            return Promise.all([sourceTimer.save(), targetTimer.save(), source.save(), target.save(), rpgServerStats.save()])
         })
         .catch((err) => {
             console.log(err.toString());
         })
-        .finally(() => {
-            args.stopTyping();
-        })
+
 };
 
 export const action = attack;
