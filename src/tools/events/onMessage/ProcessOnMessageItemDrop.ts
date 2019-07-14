@@ -15,7 +15,7 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
                     console.log('channel does not drop items');
                     return;
                 }
-                if (RPGTools.getRandomIntegerFrom(100) < rpgServerStats.onMessageDropChance) {
+                if (RPGTools.GetRandomIntegerFrom(100) < rpgServerStats.onMessageDropChance) {
                     // Load drop table
                     return RPGDropTable.findOne({dropTableID: rpgServerStats.onMessageDropTable})
                 }
@@ -30,7 +30,7 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
                 });
                 dropTable.sort((a, b) => a.chance - b.chance);
 
-                const itemDropRoll = RPGTools.getRandomIntegerFrom(100);
+                const itemDropRoll = RPGTools.GetRandomIntegerFrom(100);
                 let counter = 0;
 
                 while (counter < dropTable.length) {
@@ -62,13 +62,15 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
 
                 reactionMsg.awaitReactions(filter, {max: 2, time: 10000, error: ['time']})
                     .then(collected => {
-                        const reactingUser = collected.get('👌').users.array()[1];
-                        RPGTools.AddItemToUserInventory(reactingUser.id, itemIDToDrop);
                         reactionMsg.delete();
-                        args.sendOKEmbed({
-                            contents: replace(args.strings.itemPickedUp, [args.message.author.username,
-                                args.strings[itemIDToDrop].name])
-                        })
+                        const reactingUser = collected.get('👌').users.array()[1];
+                        if(reactingUser){
+                            RPGTools.AddItemToUserInventory(reactingUser.id, itemIDToDrop);
+                            args.sendOKEmbed({
+                                contents: replace(args.strings.itemPickedUp, [args.message.author.username,
+                                    args.strings[itemIDToDrop].name])
+                            })
+                        }
                     })
                     .catch(collected => console.log(collected, 'but error'));
 
