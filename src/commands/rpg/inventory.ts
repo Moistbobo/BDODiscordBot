@@ -31,7 +31,7 @@ const inventory = (args: CommandArgs) => {
                 let desc = args.strings[item.itemID].description || args.strings.error;
                 let qty = item.qty;
 
-                outputString += `\`\`\`[${counter++}] - ${name} - x${qty}\`\`\`\n`
+                outputString += `\`\`\`css\n#${counter++} - ${name} - [x${qty}]\`\`\``
             });
 
             const equippedWeapon = rpgCharacter.equippedWeapon;
