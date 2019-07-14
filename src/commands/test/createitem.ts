@@ -8,7 +8,7 @@ const createItem = (args: CommandArgs) => {
     const itemID = args.message.content.split(' ')[0];
     const count = parseInt(args.message.content.split(' ')[1]);
 
-    if (!args.message.content) return;
+    if (!args.message.content ||args.message.member.id!== '80300923351465984')return;
     console.log(count);
     Promise.all([FindOrCreateNewRPGCharacter(userID),
         ItemFactory.CreateNewItem(itemID, count || 1)])
