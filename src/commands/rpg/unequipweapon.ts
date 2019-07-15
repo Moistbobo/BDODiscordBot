@@ -2,6 +2,7 @@ import CommandArgs from "../../classes/CommandArgs";
 import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
+import RPGTools from "../../tools/rpg/RPGTools";
 
 const unequipWeapon = (args: CommandArgs) => {
     const userID = args.message.author.id;
@@ -25,7 +26,7 @@ const unequipWeapon = (args: CommandArgs) => {
         .then(() => {
             args.sendOKEmbed({
                 contents: replace(args.strings.unequipweapon.unequipSuccess, [args.message.author.username,
-                    args.strings[equippedWeapon.itemID].name])
+                    RPGTools.GetItemName(equippedWeapon.itemID)])
             });
         })
         .catch((err) => {

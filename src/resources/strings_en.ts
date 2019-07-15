@@ -21,11 +21,15 @@ import enableItemDropStrings from "./strings/en/commands/enableItemDropStrings";
 import OnMessageItemDropStrings from "./strings/en/events/onMessageItemDropStrings";
 
 const strings = {
-    ...OneRarityWeaponStrings,
-    ...ThreeRarityWeaponStrings,
-    ...MaterialStrings,
-    ...RecipeStrings,
-    ...OnMessageItemDropStrings,
+    items:{
+        ...OneRarityWeaponStrings,
+        ...ThreeRarityWeaponStrings,
+        ...MaterialStrings,
+        ...OnMessageItemDropStrings,
+    },
+    recipes:{
+        ...RecipeStrings,
+    },
     error: 'String not found',
     commands: {
         description: 'Show list of commands',

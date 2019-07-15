@@ -6,14 +6,14 @@ import replace from "../../replace";
 
 const ProcessOnMessageItemDrop = (args: CommandArgs) => {
     const msg = args.message;
+    const itemExpireTime = 15;
     let reactionMsg = null;
     let itemIDToDrop = null;
     return new Promise((resolve, reject) => {
         FindOrCreateRPGServerStats(msg.guild.id)
             .then((rpgServerStats) => {
                 if (!rpgServerStats.itemDropChannels.includes(msg.channel.id)) {
-                    console.log('channel does not drop items');
-                    return;
+                    reject(new Error('Channel does not drop items'));
                 }
                 if (RPGTools.GetRandomIntegerFrom(100) < rpgServerStats.onMessageDropChance) {
                     // Load drop table
@@ -40,12 +40,13 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
                     }
                     counter++;
                 }
-                console.log(itemDropRoll);
                 console.log('Dropping:', itemIDToDrop);
 
                 return args.sendOKEmbed({
                     contents: replace(args.strings.itemDropped,
-                        [args.strings[itemIDToDrop].name])
+                        [RPGTools.GetItemName(itemIDToDrop)]),
+                    footer: replace(args.strings.msgWillDisappear,
+                        [itemExpireTime], false)
                 });
 
             })
@@ -60,15 +61,15 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
                     return reaction.emoji.name === '👌';
                 };
 
-                reactionMsg.awaitReactions(filter, {max: 2, time: 10000, error: ['time']})
+                reactionMsg.awaitReactions(filter, {max: 2, time: itemExpireTime * 1000, error: ['time']})
                     .then(collected => {
                         reactionMsg.delete();
                         const reactingUser = collected.get('👌').users.array()[1];
-                        if(reactingUser){
+                        if (reactingUser) {
                             RPGTools.AddItemToUserInventory(reactingUser.id, itemIDToDrop);
                             args.sendOKEmbed({
                                 contents: replace(args.strings.itemPickedUp, [args.message.author.username,
-                                    args.strings[itemIDToDrop].name])
+                                    RPGTools.GetItemName(itemIDToDrop)]),
                             })
                         }
                     })

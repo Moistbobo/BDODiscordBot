@@ -3,6 +3,7 @@ import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {ItemTypes} from "../../models/rpg/Item";
+import RPGTools from "../../tools/rpg/RPGTools";
 
 const equip = (args: CommandArgs) => {
     const userID = args.message.author.id;
@@ -34,7 +35,7 @@ const equip = (args: CommandArgs) => {
                     args.sendErrorEmbed({
                         contents: replace(args.strings.equip.strRequirement,
                             [itemToEquip.requirements.str,
-                                args.strings[itemToEquip.itemID].name,
+                                RPGTools.GetItemName(itemToEquip.itemID),
                                 rpgCharacter.stats.str,
                                 args.message.author.username])
                     });
@@ -43,7 +44,7 @@ const equip = (args: CommandArgs) => {
                     args.sendErrorEmbed({
                         contents: replace(args.strings.equip.intRequirement,
                             [itemToEquip.requirements.int,
-                                args.strings[itemToEquip.itemID].name,
+                                RPGTools.GetItemName(itemToEquip.itemID),
                                 rpgCharacter.stats.int,
                                 args.message.author.username])
                     });
@@ -62,8 +63,11 @@ const equip = (args: CommandArgs) => {
                 }
             } else {
                 args.sendErrorEmbed({
-                    contents: replace(args.strings.equip.notEquippable, [args.message.author.username,
-                        args.strings[itemToEquip.itemID].name])
+                    contents: replace(args.strings.equip.notEquippable,
+                        [
+                            args.message.author.username,
+                            RPGTools.GetItemName(itemToEquip.itemID)
+                        ])
                 });
                 throw new Error('Invalid Item type');
             }
@@ -76,10 +80,10 @@ const equip = (args: CommandArgs) => {
                     contents: replace(args.strings.equip.equipped,
                         [
                             args.message.author.username,
-                            args.strings[itemToEquip.itemID].name
+                            RPGTools.GetItemName(itemToEquip.itemID)
                         ]),
                     footer: previousWeapon ? replace(args.strings.equip.previousWeaponFooter,
-                        [args.strings[previousWeapon.itemID].name],
+                        [RPGTools.GetItemName(previousWeapon.itemID)],
                         false) : null
                 });
 

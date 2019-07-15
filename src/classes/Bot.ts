@@ -7,6 +7,7 @@ import EmbedArgs from '../classes/EmbedArgs';
 import {FindOrCreateRPGTimer} from "../models/rpg/RPGTimer";
 import {FindOrCreateRPGServerStats} from "../models/rpg/RPGServerStats";
 import ProcessOnMessageItemDrop from "../tools/events/onMessage/ProcessOnMessageItemDrop";
+import RPGTools from "../tools/rpg/RPGTools";
 
 class Bot {
     strings: object;
@@ -21,6 +22,7 @@ class Bot {
         this.helpString = {};
         this.setListeners();
         this.strings = require('../resources/strings_en').Strings;
+        RPGTools.SetString(this.strings);
         this.client.login(token);
         this.voiceSessions = {};
         this.config = config;

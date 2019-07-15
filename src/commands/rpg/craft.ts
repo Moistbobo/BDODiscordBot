@@ -5,6 +5,7 @@ import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {IItem} from "../../models/rpg/Item";
 import ItemFactory from "../../models/rpg/Factories/ItemFactory";
+import RPGTools from "../../tools/rpg/RPGTools";
 
 const doesPlayerHaveReqMats = (inventory: [IItem], recipe: IRPGRecipe) => {
     // First check player has the required items
@@ -69,6 +70,8 @@ const craft = (args: CommandArgs) => {
             rpgCharacter = res[1];
             charInventory = rpgCharacter.inventory;
 
+            const craftedItemID = recipes[recipeIndex].resultItemID;
+
             if (recipeIndex > recipes.length - 1) {
                 args.sendErrorEmbed({
                     contents: replace(args.strings.craft.invalidIndex,
@@ -84,7 +87,7 @@ const craft = (args: CommandArgs) => {
             if (!matCheck) {
                 const contents = replace(args.strings.craft.invalidMaterials,
                     [args.message.author.username,
-                        args.strings[recipes[recipeIndex].resultItemID].name
+                        RPGTools.GetItemName(craftedItemID)
                     ]);
                 args.sendErrorEmbed({contents});
                 throw new Error('User does not have required materials')
@@ -96,9 +99,9 @@ const craft = (args: CommandArgs) => {
             return ItemFactory.CreateNewItem(recipes[recipeIndex].resultItemID);
         })
         .then((craftedItem) => {
-           // console.log('Inventory before:', charInventory);
+            // console.log('Inventory before:', charInventory);
             const newInventory = adjustPlayerMaterials(charInventory, recipes[recipeIndex]);
-           // console.log('Inventory after:', newInventory);
+            // console.log('Inventory after:', newInventory);
 
             newInventory.push(craftedItem);
             rpgCharacter.inventory = newInventory;
@@ -107,7 +110,7 @@ const craft = (args: CommandArgs) => {
         .then(() => {
             const contents = replace(args.strings.craft.craftSuccess,
                 [args.message.author.username,
-                    args.strings[recipes[recipeIndex].resultItemID].name])
+                    RPGTools.GetItemName(recipes[recipeIndex].resultItemID)])
             args.sendOKEmbed({contents});
         })
         .catch((err) => {

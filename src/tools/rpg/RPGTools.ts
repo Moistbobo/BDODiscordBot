@@ -3,6 +3,28 @@ import ItemFactory from "../../models/rpg/Factories/ItemFactory";
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import {ItemTypes} from "../../models/rpg/Item";
 
+let strings = null;
+
+const SetString = (_strings:any) =>{
+    strings = _strings;
+};
+
+const GetItemName = (itemID: string) =>{
+    return strings.items[itemID].name;
+};
+
+const GetItemDesc = (itemID: string) =>{
+    return strings.items[itemID].description;
+};
+
+const GetRecipeName = (recipeID: string) =>{
+    return strings.recipes[recipeID].name;
+};
+
+const GetRecipeDesc = (recipeID: string) =>{
+    return strings.recipes[recipeID].description;
+};
+
 const DamageCalculation = (str: number, bal: number, equipment = 20, otherBonuses = 1.0) => {
     const maxDamage = CalcMaxDamage(str, equipment, otherBonuses);
     const balanceMod = getRandomArbitrary(bal, 1.0);
@@ -72,7 +94,12 @@ const RPGTools = {
     HealCalculation,
     GetRandomIntegerFrom,
     AddItemToUserInventory,
-    GetRandomFloatRange: getRandomArbitrary
+    GetRandomFloatRange: getRandomArbitrary,
+    SetString,
+    GetItemName,
+    GetItemDesc,
+    GetRecipeName,
+    GetRecipeDesc
 };
 
 export default RPGTools;

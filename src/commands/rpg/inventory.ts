@@ -2,6 +2,7 @@ import CommandArgs from "../../classes/CommandArgs";
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
+import RPGTools from "../../tools/rpg/RPGTools";
 
 const inventory = (args: CommandArgs) => {
     const userID = args.message.author.id;
@@ -27,8 +28,7 @@ const inventory = (args: CommandArgs) => {
 
             inventory.forEach((item) => {
                 // Retrieve name from strings
-                let name = args.strings[item.itemID].name || args.strings.error;
-                let desc = args.strings[item.itemID].description || args.strings.error;
+                let name = RPGTools.GetItemName(item.itemID) || args.strings.error;
                 let qty = item.qty;
 
                 outputString += `\`\`\`css\n#${counter++} - ${name} - [x${qty}]\`\`\``
@@ -37,7 +37,7 @@ const inventory = (args: CommandArgs) => {
             const equippedWeapon = rpgCharacter.equippedWeapon;
 
             if(equippedWeapon){
-                let name = args.strings[equippedWeapon.itemID].name || args.strings.error;
+                let name = RPGTools.GetItemName(equippedWeapon.itemID)|| args.strings.error;
 
                 outputString += `** Equipped Weapon **\n\`\`\`${name}\`\`\``
             }
