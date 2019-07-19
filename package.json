@@ -8,7 +8,7 @@
     "debug": "node index.js",
     "build": "tsc && cp -r ./src/dockerfiles/. ./dist && cp ./src/package.json ./dist",
     "start": "cd dist && nodemon index.js",
-    "buildItemDatabase" : "cd dist\\tools\\rpg && node buildItemDatabase.js"
+    "buildItemDatabase": "cd dist\\tools\\rpg && node buildItemDatabase.js"
   },
   "jest": {
     "roots": [
@@ -28,6 +28,7 @@
     "discord.js": "github:discordjs/discord.js",
     "fast-xml-parser": "^3.12.16",
     "jimp": "^0.6.4",
+    "js-levenshtein": "^1.1.6",
     "libsodium-wrappers": "0.7.4",
     "mongodb": "3.2.3",
     "mongoose": "5.6.4",

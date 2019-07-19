@@ -6,9 +6,12 @@ import Recipes from "../../resources/rpg/itemData/recipes/recipes";
 import RPGRecipe from "../../models/rpg/RPGRecipes";
 import RPGDropTable from "../../models/rpg/RPGDropTable";
 import DropTableData from "../../resources/rpg/dropTables/DropTableData";
+import RPGMonster from "../../models/rpg/RPGMonster";
+import RPGMonsters from "../../resources/rpg/monsters/RPGMonsters";
 
 let itemCount = 0;
 let count = 0;
+
 const savedCallback = (err, res) => {
     if (err) console.log(err);
     // console.log(res);
@@ -26,6 +29,7 @@ const recipeSavedCallback = (err, res) => {
     console.log('Saving recipe/drop table...');
     if (err) console.log(err);
     console.log('Saved', res);
+    console.log(`${count++}/${itemCount}`)
 
 };
 
@@ -37,7 +41,10 @@ const buildItemDatabase = () => {
             Weapons.forEach((x) => Items.push(x));
             Materials.forEach((x) => Items.push(x));
 
-            itemCount = Items.length;
+            itemCount += Items.length;
+            itemCount+=Recipes.length;
+            itemCount+=Object.keys(DropTableData).length;
+            itemCount+=Object.keys(RPGMonsters).length;
 
 
             Recipes.forEach((recipe) => {
@@ -65,6 +72,15 @@ const buildItemDatabase = () => {
 
                 console.log(dropTableID);
                 RPGDropTable.update({dropTableID:dropTableID}, newDT, options, recipeSavedCallback);
+            });
+
+            Object.values(RPGMonsters).forEach((monster)=>{
+                const options = {
+                    upsert: true,
+                    setDefaultsOnInsert: true
+                };
+
+                RPGMonster.update({monsterID:monster.monsterID}, monster, options, recipeSavedCallback);
             });
 
             Items.forEach((item: any) => {

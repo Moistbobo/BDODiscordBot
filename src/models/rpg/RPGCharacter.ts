@@ -17,6 +17,7 @@ export interface IRPGCharacter extends Document {
     title: string,
     kills: number,
     deaths: number,
+    dungeonLevel: number,
     pvpFlagged: boolean
     inventory: [IItem],
     equippedWeapon: IItem
@@ -96,7 +97,12 @@ export const RPGCharacterSchema = new Schema({
         default: false
     },
     inventory: [ItemSchema],
-    equippedWeapon: ItemSchema
+    equippedWeapon: ItemSchema,
+    dungeonLevel:{
+        type: Number,
+        default: 1,
+        required: true
+    }
 });
 
 const RPGCharacter = model<IRPGCharacter>('RPGCharacter', RPGCharacterSchema);

@@ -1,7 +1,9 @@
 import OnMessageDropTables from "./onMessageDropTables";
+import dungeonEasyMonsterDropTables from "./dungeonEasyMonsterDropTables";
 
 const DropTableData = {
-    ...OnMessageDropTables
+    ...OnMessageDropTables,
+    ...dungeonEasyMonsterDropTables
 };
 
 export default DropTableData;

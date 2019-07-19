@@ -5,24 +5,28 @@ import {ItemTypes} from "../../models/rpg/Item";
 
 let strings = null;
 
-const SetString = (_strings:any) =>{
+const SetString = (_strings: any) => {
     strings = _strings;
 };
 
-const GetItemName = (itemID: string) =>{
+const GetItemName = (itemID: string) => {
     return strings.items[itemID].name;
 };
 
-const GetItemDesc = (itemID: string) =>{
+const GetItemDesc = (itemID: string) => {
     return strings.items[itemID].description;
 };
 
-const GetRecipeName = (recipeID: string) =>{
+const GetRecipeName = (recipeID: string) => {
     return strings.recipes[recipeID].name;
 };
 
-const GetRecipeDesc = (recipeID: string) =>{
+const GetRecipeDesc = (recipeID: string) => {
     return strings.recipes[recipeID].description;
+};
+
+const GetMonsterStrings = (monsterID: string) => {
+    return strings.monsters[monsterID];
 };
 
 const DamageCalculation = (str: number, bal: number, equipment = 20, otherBonuses = 1.0) => {
@@ -30,6 +34,10 @@ const DamageCalculation = (str: number, bal: number, equipment = 20, otherBonuse
     const balanceMod = getRandomArbitrary(bal, 1.0);
 
     return Math.floor((maxDamage * balanceMod));
+};
+
+const GetRandomStringFromArr = (str: [string]) =>{
+    return str[GetRandomIntegerFrom(str.length)];
 };
 
 const HealCalculation = (int: number, bal: number, equipment = 10, otherBonuses = 1.0) => {
@@ -61,7 +69,52 @@ const CalcMaxHeal = (int: number, equip: number, otherBonuses: number) => {
     return baseConstant * (Math.log(equip * int) / Math.log(baseLog));
 };
 
-const AddItemToUserInventory = (userID: string, itemID: string, qty=1) => {
+const GetMonsterIDFromTable = (spawnTable: any) =>{
+    let totalChance = 0;
+    spawnTable.forEach((mon)=>{
+        totalChance += mon.chance;
+        mon.chance = totalChance;
+    });
+
+    spawnTable.sort((a, b) => a.chance - b.chance);
+    const roll = GetRandomIntegerFrom(100);
+
+    let counter = 0;
+    let monsterID = null;
+    while(counter < spawnTable.length){
+        if(roll < spawnTable[counter].chance){
+            monsterID = spawnTable[counter].monsterID;
+            counter = spawnTable.length;
+        }
+        counter++;
+    }
+
+    return monsterID;
+
+};
+
+const GetItemIDFromTable = (dropTable: any) =>{
+    let totalChance = 0;
+    dropTable.forEach((drop: any) => {
+        totalChance += drop.chance;
+        drop.chance = totalChance;
+    });
+    dropTable.sort((a, b) => a.chance - b.chance);
+
+    const itemDropRoll = RPGTools.GetRandomIntegerFrom(100);
+    let counter = 0;
+    let itemIDToDrop = null;
+    while (counter < dropTable.length) {
+        if (itemDropRoll < dropTable[counter].chance) {
+            itemIDToDrop = dropTable[counter].itemID;
+            counter = dropTable.length;
+        }
+        counter++;
+    }
+    return itemIDToDrop;
+};
+
+const AddItemToUserInventory = (userID: string, itemID: string, qty = 1) => {
     return new Promise((resolve, reject) => {
         Promise.all([FindOrCreateNewRPGCharacter(userID), ItemFactory.CreateNewItem(itemID, qty)])
             .then((res) => {
@@ -99,7 +152,11 @@ const RPGTools = {
     GetItemName,
     GetItemDesc,
     GetRecipeName,
-    GetRecipeDesc
+    GetRecipeDesc,
+    GetMonsterStrings,
+    GetRandomStringFromArr,
+    GetMonsterIDFromTable,
+    GetItemIDFromTable
 };
 
 export default RPGTools;

@@ -22,24 +22,7 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
                 reject(new Error('Failed item roll'));
             })
             .then((dt: any) => {
-                let totalChance = 0;
-                let dropTable = dt.table;
-                dropTable.forEach((drop: any) => {
-                    totalChance += drop.chance;
-                    drop.chance = totalChance;
-                });
-                dropTable.sort((a, b) => a.chance - b.chance);
-
-                const itemDropRoll = RPGTools.GetRandomIntegerFrom(100);
-                let counter = 0;
-
-                while (counter < dropTable.length) {
-                    if (itemDropRoll < dropTable[counter].chance) {
-                        itemIDToDrop = dropTable[counter].itemID;
-                        counter = dropTable.length;
-                    }
-                    counter++;
-                }
+                itemIDToDrop = RPGTools.GetItemIDFromTable(dt.table);
                 console.log('Dropping:', itemIDToDrop);
 
                 return args.sendOKEmbed({

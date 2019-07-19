@@ -19,17 +19,23 @@ import craftRecipeStrings from "./strings/en/commands/craftRecipeStrings";
 import craftStrings from "./strings/en/commands/craftStrings";
 import enableItemDropStrings from "./strings/en/commands/enableItemDropStrings";
 import OnMessageItemDropStrings from "./strings/en/events/onMessageItemDropStrings";
+import rpgSearchStrings from "./strings/en/commands/rpgSearchStrings";
+import dungeonMonsterStrings from "./strings/en/monsters/dungeonMonsterStrings";
+import dungeonStrings from "./strings/en/commands/dungeonStrings";
 
 const strings = {
-    items:{
+    items: {
         ...OneRarityWeaponStrings,
         ...ThreeRarityWeaponStrings,
         ...MaterialStrings,
-        ...OnMessageItemDropStrings,
     },
-    recipes:{
+    monsters: {
+        ...dungeonMonsterStrings
+    },
+    recipes: {
         ...RecipeStrings,
     },
+    ...OnMessageItemDropStrings,
     error: 'String not found',
     commands: {
         description: 'Show list of commands',
@@ -194,12 +200,24 @@ const strings = {
         name: 'Craft',
         ...craftStrings
     },
-    enableitemdrops:{
+    enableitemdrops: {
         description: 'Enable item drop for a channel',
         trigger: 'eid, enableitemdrops',
         name: 'Enable Item Drops',
-        hidden:true,
+        hidden: true,
         ...enableItemDropStrings
+    },
+    rpgsearch: {
+        description: 'Look up an entity in RPG mode',
+        trigger: 'rs, rpgsearch',
+        name: 'RPG Search',
+        ...rpgSearchStrings
+    },
+    dungeon: {
+        description: 'Explore the dungeon and fight monsters',
+        trigger: 'dungeon, explore',
+        name: 'Dungeon',
+        ...dungeonStrings
     }
     // flag: {
     //     description: 'Enable/Disable PVP mode',

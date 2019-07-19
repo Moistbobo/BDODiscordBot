@@ -2,6 +2,7 @@ import CommandArgs from "../../classes/CommandArgs";
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
+import RPGTools from "../../tools/rpg/RPGTools";
 
 const discarditem = (args: CommandArgs) => {
     const userID = args.message.author.id;
@@ -32,7 +33,7 @@ const discarditem = (args: CommandArgs) => {
             return rpgCharacter.save();
         })
         .then(() => {
-            const itemName = args.strings[removedItem.itemID].name;
+            const itemName = RPGTools.GetItemName(removedItem.itemID);
             args.sendOKEmbed({
                 contents: replace(args.strings.discarditem.discardSuccess, [args.message.author.username,
                     itemName])

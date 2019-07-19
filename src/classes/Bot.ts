@@ -194,7 +194,6 @@ class Bot {
         const searchByName = msg.guild.members.find((member) => member.user.username.toLowerCase() === name.toLowerCase());
         const searchByID = msg.guild.members.find((member) => member.id === id.replace(/<|@|>|!/g, ''));
 
-        console.log(msg.content);
         if (searchByName) {
             return searchByName.user.id;
         } else if (searchByID) {
