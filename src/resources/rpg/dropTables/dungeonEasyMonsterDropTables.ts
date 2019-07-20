@@ -41,8 +41,12 @@ const dungeonEasyMonsterDropTables = {
             chance: 20
         },
         {
+            itemID: 'WPN3002',
+            chance: 10
+        },
+        {
             itemID: 'MAT0001',
-            chance: 55
+            chance: 45
         }
     ]
 };

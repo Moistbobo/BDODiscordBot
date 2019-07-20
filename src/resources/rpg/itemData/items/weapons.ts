@@ -45,6 +45,16 @@ const Weapons = [
         requirements: {
             str: 6.00
         }
+    },
+    {
+        itemID: 'WPN3002',
+        itemType: ItemTypes[0],
+        effects: [],
+        rarity: 3,
+        baseDamage: 18,
+        requirements: {
+            str: 4.00
+        }
     }
 ];
 
