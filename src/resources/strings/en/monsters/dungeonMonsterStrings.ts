@@ -17,11 +17,13 @@ const dungeonMonsterStrings = {
         name: 'Magical Girl Sachan',
         description: 'When aussie roid rage meets magical girls',
         attackStrings: [
-            "__Magical Girl Sachan casts firebolt at {0} for {1} damage!__",
-            "__Magical Girl Sachan blows a kiss at {0} for {1} damage!__"
+            "__Magical Girl Sachan shoots lasers at {0} for {1} damage!__",
+            "__Magical Girl Sachan blows a kiss at {0} for {1} damage!__",
+            "__Magical Girl Sachan winks at {0} for {1} damage!__"
         ],
         attackStringsCrit: [
-            "__Magical Girl Sachan uses magical girl roid rage on {0} for {1} damage (CRITICAL HIT)!__"
+            "__Magical Girl Sachan whispers `onii chan` into {0}'s ear and dealt {1} damage (CRITICAL HIT)!__",
+            "__Magical Girl Sachan injects herself with magical girl steroids and body slams {0} for {1} damage {CRITICAL HIT)!__"
         ],
         img: 'https://i.imgur.com/6nxdzdy.png',
         imgDead: 'https://i.imgur.com/XukP8Wq.png'
