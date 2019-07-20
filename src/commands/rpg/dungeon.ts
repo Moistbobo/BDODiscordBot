@@ -7,6 +7,7 @@ import RPGCombatTools from "../../tools/rpg/RPGCombatTools";
 import dungeonSpawnRates from "../../resources/rpg/monsters/dungeonSpawnRates";
 import RPGMonster from "../../models/rpg/RPGMonster";
 import RPGDropTable from "../../models/rpg/RPGDropTable";
+import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 
 const attackEmoji = '⚔';
 const runEmoji = '🏃';
@@ -19,27 +20,43 @@ const dungeon = (args: CommandArgs) => {
     let message = null;
     let collector = null;
     let rpgCharacter = null;
+    let rpgTimer = null;
     let acceptReactions = true;
     const collectorFilter = (reaction, user) => {
         return [attackEmoji, runEmoji].includes(reaction.emoji.name) &&
             user.id === args.message.author.id;
     };
-    FindOrCreateNewRPGCharacter(args.message.author.id)
-        .then((rpgChar) => {
-            rpgCharacter = rpgChar;
+
+    Promise.all([FindOrCreateRPGTimer(author.id),
+        FindOrCreateNewRPGCharacter(author.id)])
+        .then((res) => {
+            [rpgTimer, rpgCharacter] = res;
+
+            const {timeLeft, onCooldown} = RPGTools.CheckIfDungeonOnCooldown(rpgTimer);
+
+            if (onCooldown) {
+                args.sendErrorEmbed(
+                    {
+                        contents: replace(args.strings.dungeon.dungeonOnCooldown, [author.username, timeLeft])
+                    }
+                );
+                throw new Error(`User ${author.username} on cooldown`);
+            }
 
             if (rpgCharacter.hitpoints.current <= 0) {
                 args.sendErrorEmbed({contents: replace(args.strings.attack.attackerIsDead, [author.username])});
-                throw new Error('Aborting monster spawn: User is already dead');
+                throw new Error(`User ${author.username} is dead`);
             }
+
+            rpgTimer.lastDungeon = Date.now() / 1000;
 
             const spawnTable = dungeonSpawnRates[rpgCharacter.dungeonLevel];
             const monsterIDToSpawn = RPGTools.GetMonsterIDFromTable(spawnTable);
             mStrings = RPGTools.GetMonsterStrings(monsterIDToSpawn);
-            return RPGMonster.findOne({monsterID: monsterIDToSpawn});
+            return Promise.all([RPGMonster.findOne({monsterID: monsterIDToSpawn}), rpgTimer.save()]);
         })
-        .then((mons) => {
-            monster = mons;
+        .then((res) => {
+            [monster,] = res;
             return args.sendOKEmbed({
                 contents: replace(args.strings.dungeon.monsterEncountered,
                     [args.message.author.username,

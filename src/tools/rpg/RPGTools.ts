@@ -1,7 +1,9 @@
 import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
 import ItemFactory from "../../models/rpg/Factories/ItemFactory";
-import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
+import {FindOrCreateNewRPGCharacter, IRPGCharacter} from "../../models/rpg/RPGCharacter";
 import {ItemTypes} from "../../models/rpg/Item";
+import RPGTimer, {IRPGTimer} from "../../models/rpg/RPGTimer";
+import Timers from "../../resources/Timers";
 
 let strings = null;
 
@@ -36,7 +38,7 @@ const DamageCalculation = (str: number, bal: number, equipment = 20, otherBonuse
     return Math.floor((maxDamage * balanceMod));
 };
 
-const GetRandomStringFromArr = (str: [string]) =>{
+const GetRandomStringFromArr = (str: [string]) => {
     return str[GetRandomIntegerFrom(str.length)];
 };
 
@@ -69,9 +71,9 @@ const CalcMaxHeal = (int: number, equip: number, otherBonuses: number) => {
     return baseConstant * (Math.log(equip * int) / Math.log(baseLog));
 };
 
-const GetMonsterIDFromTable = (spawnTable: any) =>{
+const GetMonsterIDFromTable = (spawnTable: any) => {
     let totalChance = 0;
-    spawnTable.forEach((mon)=>{
+    spawnTable.forEach((mon) => {
         totalChance += mon.chance;
         mon.chance = totalChance;
     });
@@ -81,8 +83,8 @@ const GetMonsterIDFromTable = (spawnTable: any) =>{
 
     let counter = 0;
     let monsterID = null;
-    while(counter < spawnTable.length){
-        if(roll < spawnTable[counter].chance){
+    while (counter < spawnTable.length) {
+        if (roll < spawnTable[counter].chance) {
             monsterID = spawnTable[counter].monsterID;
             counter = spawnTable.length;
         }
@@ -93,7 +95,7 @@ const GetMonsterIDFromTable = (spawnTable: any) =>{
 
 };
 
-const GetItemIDFromTable = (dropTable: any) =>{
+const GetItemIDFromTable = (dropTable: any) => {
     let totalChance = 0;
     dropTable.forEach((drop: any) => {
         totalChance += drop.chance;
@@ -140,6 +142,13 @@ const AddItemToUserInventory = (userID: string, itemID: string, qty = 1) => {
     })
 };
 
+const CheckIfDungeonOnCooldown = (rpgTimer: IRPGTimer) => {
+    const now = Date.now() / 1000;
+    const timeLeft = Timers.rpg.dungeonTimer - (now - rpgTimer.lastDungeon);
+
+    return {timeLeft: Math.floor(timeLeft), onCooldown:(now - rpgTimer.lastDungeon) < Timers.rpg.dungeonTimer }
+};
+
 const RPGTools = {
     CalcMaxDamage,
     DamageCalculation,
@@ -156,7 +165,8 @@ const RPGTools = {
     GetMonsterStrings,
     GetRandomStringFromArr,
     GetMonsterIDFromTable,
-    GetItemIDFromTable
+    GetItemIDFromTable,
+    CheckIfDungeonOnCooldown
 };
 
 export default RPGTools;

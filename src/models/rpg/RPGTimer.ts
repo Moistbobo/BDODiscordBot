@@ -39,7 +39,8 @@ export interface IRPGTimer extends Document {
     lastAttack: number,
     lastDeath: number,
     lastHeal: number,
-    lastActivity: number
+    lastActivity: number,
+    lastDungeon: number
 }
 
 export const RPGTimerSchema = new Schema({
@@ -63,6 +64,10 @@ export const RPGTimerSchema = new Schema({
     lastActivity:{
         type:Number,
         default:0
+    },
+    lastDungeon:{
+        type: Number,
+        default: 0
     }
 });
 

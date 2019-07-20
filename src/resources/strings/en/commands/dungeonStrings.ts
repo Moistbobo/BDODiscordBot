@@ -4,6 +4,8 @@ const dungeonStrings = {
     monsterAttack: `{0}'s attack:\n`,
     playerHPLeft: `{0} has {1}/{2} HP left!`,
     waitingForPlayer : `Waiting for player turn...`,
+    dungeonOnCooldown: `{0}, {1} seconds until next dungeon`,
+    dungeonFooter: `{0}'s dungeon exploration`,
     dungeonBattleWinnerStrings: [
         '{0} was brutally massacred by {1}',
         '{0} has been defeated by {1}',
