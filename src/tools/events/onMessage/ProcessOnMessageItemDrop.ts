@@ -9,17 +9,18 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
     const itemExpireTime = 15;
     let reactionMsg = null;
     let itemIDToDrop = null;
+
     return new Promise((resolve, reject) => {
         FindOrCreateRPGServerStats(msg.guild.id)
             .then((rpgServerStats) => {
                 if (!rpgServerStats.itemDropChannels.includes(msg.channel.id)) {
-                    reject(new Error('Channel does not drop items'));
+                    throw new Error('Channel does not drop items');
                 }
                 if (RPGTools.GetRandomIntegerFrom(100) < rpgServerStats.onMessageDropChance) {
                     // Load drop table
                     return RPGDropTable.findOne({dropTableID: rpgServerStats.onMessageDropTable})
                 }
-                reject(new Error('Failed item roll'));
+               throw new Error('Failed item roll');
             })
             .then((dt: any) => {
                 itemIDToDrop = RPGTools.GetItemIDFromTable(dt.table);
@@ -62,7 +63,7 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
 
             })
             .catch((err) => {
-                reject(new Error('Error retrieving rpg server stats'));
+                reject(new Error(err.toString()));
             })
     })
 }

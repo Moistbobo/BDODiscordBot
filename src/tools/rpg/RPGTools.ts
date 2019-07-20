@@ -4,6 +4,7 @@ import {FindOrCreateNewRPGCharacter, IRPGCharacter} from "../../models/rpg/RPGCh
 import {ItemTypes} from "../../models/rpg/Item";
 import RPGTimer, {IRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
+import {spawn} from "child_process";
 
 let strings = null;
 
@@ -73,20 +74,25 @@ const CalcMaxHeal = (int: number, equip: number, otherBonuses: number) => {
 
 const GetMonsterIDFromTable = (spawnTable: any) => {
     let totalChance = 0;
-    spawnTable.forEach((mon) => {
+
+    const table = JSON.parse(JSON.stringify(spawnTable));
+
+    table.forEach((mon) => {
         totalChance += mon.chance;
         mon.chance = totalChance;
     });
 
-    spawnTable.sort((a, b) => a.chance - b.chance);
+    table.sort((a, b) => a.chance - b.chance);
     const roll = GetRandomIntegerFrom(100);
 
+    console.log('Spawn roll:', roll);
+    console.log(table);
     let counter = 0;
     let monsterID = null;
-    while (counter < spawnTable.length) {
-        if (roll < spawnTable[counter].chance) {
-            monsterID = spawnTable[counter].monsterID;
-            counter = spawnTable.length;
+    while (counter < table.length) {
+        if (roll < table[counter].chance) {
+            monsterID = table[counter].monsterID;
+            counter = table.length;
         }
         counter++;
     }
@@ -97,6 +103,9 @@ const GetMonsterIDFromTable = (spawnTable: any) => {
 
 const GetItemIDFromTable = (dropTable: any) => {
     let totalChance = 0;
+
+    dropTable = JSON.parse(JSON.stringify(dropTable));
+
     dropTable.forEach((drop: any) => {
         totalChance += drop.chance;
         drop.chance = totalChance;

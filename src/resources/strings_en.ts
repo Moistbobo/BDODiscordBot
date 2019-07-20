@@ -190,7 +190,7 @@ const strings = {
     },
     craftrecipes: {
         description: 'Check all available recipes',
-        trigger: 'cractrecipes, cr',
+        trigger: 'craftrecipes, cr',
         name: 'Craft Recipes',
         ...craftRecipeStrings
     },

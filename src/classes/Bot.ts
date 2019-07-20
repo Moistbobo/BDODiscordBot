@@ -146,6 +146,7 @@ class Bot {
                 console.log('Dropped item');
             })
             .catch((err) => {
+                console.log(err.toString());
             });
 
         FindOrCreateRPGTimer(userID)
