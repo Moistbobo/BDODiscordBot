@@ -3,6 +3,7 @@ import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import RPGTools from "../../tools/rpg/RPGTools";
+import {IItem, ItemTypes} from "../../models/rpg/Item";
 
 const inventory = (args: CommandArgs) => {
     const userID = args.message.author.id;
@@ -26,20 +27,42 @@ const inventory = (args: CommandArgs) => {
             //     throw new Error('Inventory is empty');
             // }
 
-            inventory.forEach((item) => {
+            const equippedWeapon = rpgCharacter.equippedWeapon;
+
+            inventory.forEach((item: IItem) => {
                 // Retrieve name from strings
                 let name = RPGTools.GetItemName(item.itemID) || args.strings.error;
                 let qty = item.qty;
 
-                outputString += `\`\`\`css\n#${counter++} - ${name} - [x${qty}]\`\`\``
+                let compareEquippedWeaponDifference = '';
+
+                if (equippedWeapon && item.itemType === ItemTypes[0]) {
+                    if (equippedWeapon.baseDamage > item.baseDamage) {
+                        compareEquippedWeaponDifference = `[${item.baseDamage - equippedWeapon.baseDamage}]`
+                    } else if (equippedWeapon.baseDamage === item.baseDamage) {
+                        compareEquippedWeaponDifference = `(0)`
+                    } else {
+                        compareEquippedWeaponDifference = `(+${item.baseDamage - equippedWeapon.baseDamage})`;
+                    }
+                }
+
+                if (!equippedWeapon && item.itemType === ItemTypes[0]) {
+                    compareEquippedWeaponDifference = `(+${item.baseDamage})`
+                }
+
+                let quantityString =
+                    item.itemType !== ItemTypes[0] ?
+                        ` - [x${qty}]` : '';
+
+                outputString += `\`\`\`css\n#${counter++} - [${item.itemType}] ${name} ${compareEquippedWeaponDifference} ${quantityString} \`\`\``
             });
 
-            const equippedWeapon = rpgCharacter.equippedWeapon;
 
-            if(equippedWeapon){
-                let name = RPGTools.GetItemName(equippedWeapon.itemID)|| args.strings.error;
+            if (equippedWeapon) {
+                let name = RPGTools.GetItemName(equippedWeapon.itemID) || args.strings.error;
 
-                outputString += `** Equipped Weapon **\n\`\`\`${name}\`\`\``
+                outputString += `** Equipped Weapon **\n\`\`\`${name}\n\n${replace(args.strings.inventory.inventoryWeaponDamageBonus,
+                    [equippedWeapon.baseDamage], false)}\`\`\``
             }
 
             args.sendOKEmbed({
