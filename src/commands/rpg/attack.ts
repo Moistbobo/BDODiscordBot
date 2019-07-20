@@ -84,7 +84,7 @@ const attack = (args: CommandArgs) => {
             }
 
             // PVP AFK protection: 75% to trigger
-            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.GetRandomIntegerFrom(100) < 1)) {
+            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.GetRandomIntegerFrom(100) < 75)) {
                 source.hitpoints.current -= source.hitpoints.current;
                 source.deaths += 1;
                 sourceTimer.lastDeath = now;

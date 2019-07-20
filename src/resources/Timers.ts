@@ -6,7 +6,7 @@ const Timers ={
         notificationTimer: 60, // Only notify player if they have been away since 30 seconds from their last attack
         unFlagTimer: 60, // Can only unflag after x amount of seconds from last attack
         afkTimer: 1800,
-        dungeonTimer: 1
+        dungeonTimer: 120
     }
 };
 
