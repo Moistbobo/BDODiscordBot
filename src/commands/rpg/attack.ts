@@ -9,7 +9,7 @@ import RPGCharacterManager from "../../tools/rpg/RPGCharacterManager";
 import RPGCombatTools from "../../tools/rpg/RPGCombatTools";
 
 const sendAttackedNotification = (target: any, targetTimer: any, source: any, targetUser: any, sourceUser: any, guildName: string, strings: any) => {
-    const now = Date.now();
+    const now = Date.now()/1000;
     if (target.hitpoints.current <= 0) {
         targetTimer.lastDeath = now;
         source.kills += 1;
