@@ -8,6 +8,7 @@ import dungeonSpawnRates from "../../resources/rpg/monsters/dungeonSpawnRates";
 import RPGMonster from "../../models/rpg/RPGMonster";
 import RPGDropTable from "../../models/rpg/RPGDropTable";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
+import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
 
 const attackEmoji = '⚔';
 const runEmoji = '🏃';
@@ -21,6 +22,7 @@ const dungeon = (args: CommandArgs) => {
     let collector = null;
     let rpgCharacter = null;
     let rpgTimer = null;
+    let rpgServerStats = null;
     let acceptReactions = true;
     const collectorFilter = (reaction, user) => {
         return [attackEmoji, runEmoji].includes(reaction.emoji.name) &&
@@ -28,9 +30,10 @@ const dungeon = (args: CommandArgs) => {
     };
 
     Promise.all([FindOrCreateRPGTimer(author.id),
-        FindOrCreateNewRPGCharacter(author.id)])
+        FindOrCreateNewRPGCharacter(author.id),
+        FindOrCreateRPGServerStats(args.message.guild.id)])
         .then((res) => {
-            [rpgTimer, rpgCharacter] = res;
+            [rpgTimer, rpgCharacter, rpgServerStats] = res;
 
             const {timeLeft, onCooldown} = RPGTools.CheckIfDungeonOnCooldown(rpgTimer);
 
@@ -105,19 +108,27 @@ const dungeon = (args: CommandArgs) => {
                     [mStrings.name,
                         author.username]);
 
-            message.edit(
-                args.bot.createOKEmbed({
-                    contents: newMessage,
-                    image: mStrings.imgDead
+            rpgServerStats.monsterKills++;
+            rpgCharacter.monsterKills++;
+
+            Promise.all([rpgCharacter.save(),
+                rpgServerStats.save()])
+                .then(() => {
+                    return message.edit(
+                        args.bot.createOKEmbed({
+                            contents: newMessage,
+                            image: mStrings.imgDead
+                        })
+                    )
                 })
-            ).then(() => {
-                if (Math.random() < monster.lootChance) {
-                    const dropTableID = monster.dropTableID;
-                    return RPGDropTable.findOne({dropTableID})
-                } else {
-                    throw new Error('Failed drop roll: no drops 4 u')
-                }
-            }).then((dropTable) => {
+                .then(() => {
+                    if (Math.random() < monster.lootChance) {
+                        const dropTableID = monster.dropTableID;
+                        return RPGDropTable.findOne({dropTableID})
+                    } else {
+                        throw new Error('Failed drop roll: no drops 4 u')
+                    }
+                }).then((dropTable) => {
                 const itemID = RPGTools.GetItemIDFromTable(dropTable.table);
 
                 args.sendOKEmbed({
@@ -130,7 +141,7 @@ const dungeon = (args: CommandArgs) => {
                 return RPGTools.AddItemToUserInventory(author.id, itemID)
             }).catch((err) => {
                 console.log('[DUNGEON COMMAND]:', err);
-            })
+            });
 
 
             collector.stop();

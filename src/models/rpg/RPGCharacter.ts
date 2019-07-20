@@ -16,6 +16,7 @@ export interface IRPGCharacter extends Document {
     },
     title: string,
     kills: number,
+    monsterKills: number,
     deaths: number,
     dungeonLevel: number,
     pvpFlagged: boolean
@@ -82,6 +83,10 @@ export const RPGCharacterSchema = new Schema({
     title: String,
     kills: {
         type: Number,
+        default: 0
+    },
+    monsterKills:{
+        type:Number,
         default: 0
     },
     deaths: {

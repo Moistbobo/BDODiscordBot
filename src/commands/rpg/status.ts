@@ -28,21 +28,24 @@ const status = (args: CommandArgs) => {
         .then((res) => {
             const rpgCharacter = res[0];
             const rpgTimer = res[1];
-            const isAFK = (Date.now()/1000 - rpgTimer.lastActivity)> Timers.rpg.afkTimer;
+            const isAFK = (Date.now() / 1000 - rpgTimer.lastActivity) > Timers.rpg.afkTimer;
             console.log(isAFK);
 
-            const contents = replace(args.strings.status.statusString, [user.username,
-                rpgCharacter.hitpoints.current,
-                rpgCharacter.hitpoints.max,
-                rpgCharacter.kills,
-                rpgCharacter.deaths,
-                rpgCharacter.stats.str.toFixed(3),
-                rpgCharacter.stats.crit.toFixed(2),
-                rpgCharacter.stats.critDmgMult.toFixed(2),
-                rpgCharacter.stats.bal.toFixed(2),
-                rpgCharacter.stats.int.toFixed(3),
-                isAFK?'Yes':'No'],
-                );
+            const contents = replace(args.strings.status.statusString, [
+                    user.username,
+                    rpgCharacter.hitpoints.current,
+                    rpgCharacter.hitpoints.max,
+                    rpgCharacter.kills,
+                    rpgCharacter.deaths,
+                    rpgCharacter.stats.str.toFixed(3),
+                    rpgCharacter.stats.crit.toFixed(2),
+                    rpgCharacter.stats.critDmgMult.toFixed(2),
+                    rpgCharacter.stats.bal.toFixed(2),
+                    rpgCharacter.stats.int.toFixed(3),
+                    isAFK ? 'Yes' : 'No',
+                    rpgCharacter.monsterKills
+                ]
+            );
             args.sendOKEmbed({contents});
         })
         .catch((err) => {

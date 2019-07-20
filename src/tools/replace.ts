@@ -1,6 +1,7 @@
 const replace = (base: string, values: any[], bold = true): string => {
     let finalString = base;
     if(!base) base = '';
+    console.log(values.length);
     for (let i = 0; i < values.length; i++) {
         if (!base.includes(`{${i}}`)) {
             return finalString + '\nThe values provided to the base string to not match the replaceable ones.';

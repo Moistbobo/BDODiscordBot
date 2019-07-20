@@ -51,9 +51,10 @@ export interface IRPGServerStats extends Document {
     deaths: number,
     pvpProtectionDeaths: number,
     rpgChannels: [string],
-    itemDropChannels:[string],
+    itemDropChannels: [string],
     onMessageDropTable: string,
-    onMessageDropChance: number
+    onMessageDropChance: number,
+    monsterKills: number
 }
 
 export const RPGServerStatsSchema = new Schema({
@@ -77,7 +78,7 @@ export const RPGServerStatsSchema = new Schema({
     rpgChannels: {
         type: [String]
     },
-    itemDropChannels:{
+    itemDropChannels: {
         type: [String]
     },
     pvpProtectionDeaths: {
@@ -89,11 +90,17 @@ export const RPGServerStatsSchema = new Schema({
         required: true,
         default: 'ONMSG_NORMAL_01'
     },
-    onMessageDropChance:{
+    onMessageDropChance: {
         type: Number,
         required: true,
         default: 10
+    },
+    monsterKills: {
+        type: Number,
+        default: 0
     }
+
+
 });
 
 const RPGServerStats = model<IRPGServerStats>('RPGServerStats', RPGServerStatsSchema);
