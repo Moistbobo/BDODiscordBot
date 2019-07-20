@@ -12,6 +12,7 @@ import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
 const attackEmoji = '⚔';
 const runEmoji = '🏃';
 const turnTimeout = 2000;
+const battleTime = 120000;
 
 const dungeon = (args: CommandArgs) => {
     let monster = null;
@@ -70,12 +71,12 @@ const dungeon = (args: CommandArgs) => {
             message = msg;
             return msg.react(attackEmoji);
         })
-        .then((msg) => {
-            return message.react(runEmoji)
-        })
+        // .then((msg) => {
+        //     return message.react(runEmoji)
+        // })
         .then(() => {
             collector = message.createReactionCollector(collectorFilter, {
-                time: 60000,
+                time: battleTime,
                 errors: ['time']
             });
             collector.on('collect', onCollected);
@@ -186,7 +187,6 @@ const dungeon = (args: CommandArgs) => {
                 image: mStrings.img
             })
         );
-
     };
 
     const monsterTurn = (prevMessage) => {
@@ -221,9 +221,11 @@ const dungeon = (args: CommandArgs) => {
                 message.edit(
                     args.bot.createOKEmbed({
                         contents: newMessage,
-                        image: mStrings.img
+                        image: mStrings.img,
                     })
-                )
+                ).then(() => {
+                    return rpgCharacter.save();
+                });
             } else {
                 const newMessage =
                     `${prevMessage}` + '\n\n\`=======================================\`\n\n' +
