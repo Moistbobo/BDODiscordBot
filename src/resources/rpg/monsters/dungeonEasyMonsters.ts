@@ -2,8 +2,8 @@ const dungeonEasyMonsters = {
     DMON0001: {
         monsterID: 'DMON0001',
         hitpoints: {
-            current: 45,
-            max: 45
+            current: 60,
+            max: 60
         },
         baseDamage: 10,
         bal: 0.2,
@@ -12,6 +12,20 @@ const dungeonEasyMonsters = {
         skills: [],
         dropTableID: 'DEASY_0001',
         lootChance: 0.2
+    },
+    DMON0002:{
+      monsterID: 'DMON0002',
+      hitpoints: {
+          current: 40,
+          max: 40
+      },
+        baseDamage: 20,
+        bal: 0.1,
+        crit: 0.55,
+        critDamageMult: 4.0,
+        skills: [],
+        dropTableID: 'DEASY_0002',
+        lootChance: 0.3
     },
     DMON0005:{
         monsterID: 'DMON0005',

@@ -6,7 +6,9 @@ const CalculateMonsterDamage = (monster: IRPGMonster) => {
     const critMod = (Math.random() < monster.crit) ? monster.critDamageMult : 1.0;
     const balanceMod = RPGTools.GetRandomFloatRange(monster.bal, 1.0);
 
+    console.log(critMod);
     const finalDamage = (monster.baseDamage * balanceMod) * critMod;
+    console.log('Damage: ', finalDamage);
     return {damage: Math.floor(finalDamage), isCrit: critMod !== 1.0}
 };
 
@@ -18,8 +20,10 @@ const CalcMaxDamage = (str: number, equip: number, otherBonuses: number) => {
 };
 
 const CalculatePlayerDamage = (rpgChar: IRPGCharacter) => {
-    const equipmentBonus = rpgChar.equippedWeapon ? rpgChar.equippedWeapon.baseDamage : 10;
+    const equipmentBonus = rpgChar.equippedWeapon ? rpgChar.equippedWeapon.baseDamage + 10 : 10;
     const maxDamage = CalcMaxDamage(rpgChar.stats.str, equipmentBonus, 0);
+
+    console.log(`Player max damage: ${maxDamage}`);
 
     const balanceMod = RPGTools.GetRandomFloatRange(rpgChar.stats.bal, 1.0);
     const isCrit = Math.random() < rpgChar.stats.crit;

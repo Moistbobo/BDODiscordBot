@@ -13,6 +13,20 @@ const dungeonMonsterStrings = {
         img: 'https://i.imgur.com/FUbrYR9.png',
         imgDead: 'https://i.imgur.com/Zmtq0Ky.png'
     },
+    DMON0002:{
+        name: "Blackrose",
+        description: "A nigga rose.",
+        attackStrings: [
+            "__Blackrose shot {0} for {1} damage!__",
+            "__Blackrose pistol whipped {0} for {1} damage!__",
+        ],
+        attackStringsCrit: [
+            "__Blackrose popped a cap in {0}'s ass for {1} damage(CRITICAL HIT)!__",
+            "__Blackrose shot {0}'s and killed their dog for {1} damage(CRITICAL HIT)__"
+        ],
+        img: 'https://i.imgur.com/Lg3vatn.png',
+        imgDead: 'https://i.imgur.com/aRf3HOa.png'
+    },
     DMON0005: {
         name: 'Magical Girl Sachan',
         description: 'When aussie roid rage meets magical girls',
@@ -23,7 +37,7 @@ const dungeonMonsterStrings = {
         ],
         attackStringsCrit: [
             "__Magical Girl Sachan whispers `onii chan` into {0}'s ear and dealt {1} damage (CRITICAL HIT)!__",
-            "__Magical Girl Sachan injects herself with magical girl steroids and body slams {0} for {1} damage {CRITICAL HIT)!__"
+            "__Magical Girl Sachan injects herself with magical girl steroids and body slams {0} for {1} damage (CRITICAL HIT)!__"
         ],
         img: 'https://i.imgur.com/6nxdzdy.png',
         imgDead: 'https://i.imgur.com/XukP8Wq.png'

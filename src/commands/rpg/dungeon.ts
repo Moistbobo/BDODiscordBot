@@ -89,87 +89,92 @@ const dungeon = (args: CommandArgs) => {
     const onCollected = (element, user) => {
         if (!acceptReactions || rpgCharacter.hitpoints.current <= 0) return;
 
-        acceptReactions = false;
+        FindOrCreateNewRPGCharacter(author.id)
+            .then((rpgChar) => {
+                rpgCharacter = rpgChar;
 
-        // const playerDamage = RPGTools.DamageCalculation(rpgCharacter.stats.str, rpgCharacter.stats.bal);
+                acceptReactions = false;
 
-        const {isCrit, damage} = RPGCombatTools.CalculatePlayerDamage(rpgCharacter);
+                // const playerDamage = RPGTools.DamageCalculation(rpgCharacter.stats.str, rpgCharacter.stats.bal);
 
-        const attackString = isCrit ? replace(args.strings.attack.attackCritical, [author.username, mStrings.name]) : '';
-        monster.hitpoints.current -= damage;
+                const {isCrit, damage} = RPGCombatTools.CalculatePlayerDamage(rpgCharacter);
 
-        if (monster.hitpoints.current < 0) {
-            const newMessage =
-                args.strings.dungeon.yourAttack +
-                attackString +
-                replace(args.strings.attack.attackTargetLives,
-                    [args.message.author.username,
-                        mStrings.name,
-                        damage,
-                        monster.hitpoints.current,
-                        monster.hitpoints.max]) + '\n\n' +
-                replace(RPGTools.GetRandomStringFromArr(args.strings.dungeon.dungeonBattleWinnerStrings),
-                    [mStrings.name,
-                        author.username]);
+                const attackString = isCrit ? replace(args.strings.attack.attackCritical, [author.username, mStrings.name]) : '';
+                monster.hitpoints.current -= damage;
 
-            rpgServerStats.monsterKills++;
-            rpgCharacter.monsterKills++;
+                if (monster.hitpoints.current <= 0) {
+                    const newMessage =
+                        args.strings.dungeon.yourAttack +
+                        attackString +
+                        replace(args.strings.attack.attackTargetLives,
+                            [args.message.author.username,
+                                mStrings.name,
+                                damage,
+                                monster.hitpoints.current,
+                                monster.hitpoints.max]) + '\n\n' +
+                        replace(RPGTools.GetRandomStringFromArr(args.strings.dungeon.dungeonBattleWinnerStrings),
+                            [mStrings.name,
+                                author.username]);
 
-            Promise.all([rpgCharacter.save(),
-                rpgServerStats.save()])
-                .then(() => {
-                    return message.edit(
-                        args.bot.createOKEmbed({
-                            contents: newMessage,
-                            image: mStrings.imgDead
+                    rpgServerStats.monsterKills++;
+                    rpgCharacter.monsterKills++;
+
+                    Promise.all([rpgCharacter.save(),
+                        rpgServerStats.save()])
+                        .then(() => {
+                            return message.edit(
+                                args.bot.createOKEmbed({
+                                    contents: newMessage,
+                                    image: mStrings.imgDead
+                                })
+                            )
                         })
-                    )
-                })
-                .then(() => {
-                    if (Math.random() < monster.lootChance) {
-                        const dropTableID = monster.dropTableID;
-                        return RPGDropTable.findOne({dropTableID})
-                    } else {
-                        throw new Error('Failed drop roll: no drops 4 u')
-                    }
-                }).then((dropTable) => {
-                const itemID = RPGTools.GetItemIDFromTable(dropTable.table);
+                        .then(() => {
+                            if (Math.random() < monster.lootChance) {
+                                const dropTableID = monster.dropTableID;
+                                return RPGDropTable.findOne({dropTableID})
+                            } else {
+                                throw new Error('Failed drop roll: no drops 4 u')
+                            }
+                        }).then((dropTable) => {
+                        const itemID = RPGTools.GetItemIDFromTable(dropTable.table);
 
-                args.sendOKEmbed({
-                    contents: replace(args.strings.dungeon.dungeonObtainItemFromMonster,
-                        [author.username,
-                            RPGTools.GetItemName(itemID),
-                            mStrings.name
-                        ])
-                });
-                return RPGTools.AddItemToUserInventory(author.id, itemID)
-            }).catch((err) => {
-                console.log('[DUNGEON COMMAND]:', err);
-            });
+                        args.sendOKEmbed({
+                            contents: replace(args.strings.dungeon.dungeonObtainItemFromMonster,
+                                [author.username,
+                                    RPGTools.GetItemName(itemID),
+                                    mStrings.name
+                                ])
+                        });
+                        return RPGTools.AddItemToUserInventory(author.id, itemID)
+                    }).catch((err) => {
+                        console.log('[DUNGEON COMMAND]:', err);
+                    });
 
 
-            collector.stop();
-        } else {
-            const newMessage =
-                args.strings.dungeon.yourAttack +
-                replace(args.strings.attack.attackTargetLives,
-                    [args.message.author.username,
-                        mStrings.name,
-                        damage,
-                        monster.hitpoints.current,
-                        monster.hitpoints.max]);
+                    collector.stop();
+                } else {
+                    const newMessage =
+                        args.strings.dungeon.yourAttack +
+                        replace(args.strings.attack.attackTargetLives,
+                            [args.message.author.username,
+                                mStrings.name,
+                                damage,
+                                monster.hitpoints.current,
+                                monster.hitpoints.max]);
 
-            message.edit(
-                args.bot.createOKEmbed({
-                    contents: newMessage + '\n\n\`=======================================\`\n\n' +
-                        `${replace(args.strings.dungeon.monsterAttack, [mStrings.name])}
+                    message.edit(
+                        args.bot.createOKEmbed({
+                            contents: newMessage + '\n\n\`=======================================\`\n\n' +
+                                `${replace(args.strings.dungeon.monsterAttack, [mStrings.name])}
                         ${args.strings.dungeon.waitingForPlayer}`,
-                    image: mStrings.img
-                })
-            ).then(() => {
-                monsterTurn(newMessage);
-            })
-        }
+                            image: mStrings.img
+                        })
+                    ).then(() => {
+                        monsterTurn(newMessage);
+                    })
+                }
+            });
     };
 
     const onEnd = () => {
@@ -193,7 +198,7 @@ const dungeon = (args: CommandArgs) => {
 
             rpgCharacter.hitpoints.current -= damage;
 
-            if (rpgCharacter.hitpoints.current < 0) {
+            if (rpgCharacter.hitpoints.current <= 0) {
                 rpgCharacter.deaths++;
 
                 const newMessage =
