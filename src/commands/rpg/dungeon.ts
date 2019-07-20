@@ -1,5 +1,4 @@
 import CommandArgs from "../../classes/CommandArgs";
-import MonsterFactory from "../../models/rpg/Factories/MonsterFactory";
 import RPGTools from "../../tools/rpg/RPGTools";
 import replace from "../../tools/replace";
 import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
@@ -12,7 +11,7 @@ import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
 
 const attackEmoji = '⚔';
 const runEmoji = '🏃';
-const turnTimeout = 3000;
+const turnTimeout = 2000;
 
 const dungeon = (args: CommandArgs) => {
     let monster = null;
@@ -92,16 +91,21 @@ const dungeon = (args: CommandArgs) => {
 
         acceptReactions = false;
 
-        const playerDamage = RPGTools.DamageCalculation(rpgCharacter.stats.str, rpgCharacter.stats.bal);
-        monster.hitpoints.current -= playerDamage;
+        // const playerDamage = RPGTools.DamageCalculation(rpgCharacter.stats.str, rpgCharacter.stats.bal);
+
+        const {isCrit, damage} = RPGCombatTools.CalculatePlayerDamage(rpgCharacter);
+
+        const attackString = isCrit ? replace(args.strings.attack.attackCritical, [author.username, mStrings.name]) : '';
+        monster.hitpoints.current -= damage;
 
         if (monster.hitpoints.current < 0) {
             const newMessage =
                 args.strings.dungeon.yourAttack +
+                attackString +
                 replace(args.strings.attack.attackTargetLives,
                     [args.message.author.username,
                         mStrings.name,
-                        playerDamage,
+                        damage,
                         monster.hitpoints.current,
                         monster.hitpoints.max]) + '\n\n' +
                 replace(RPGTools.GetRandomStringFromArr(args.strings.dungeon.dungeonBattleWinnerStrings),
@@ -151,7 +155,7 @@ const dungeon = (args: CommandArgs) => {
                 replace(args.strings.attack.attackTargetLives,
                     [args.message.author.username,
                         mStrings.name,
-                        playerDamage,
+                        damage,
                         monster.hitpoints.current,
                         monster.hitpoints.max]);
 

@@ -6,6 +6,25 @@ import replace from "../../tools/replace";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import RPGTools from "../../tools/rpg/RPGTools";
 import RPGCharacterManager from "../../tools/rpg/RPGCharacterManager";
+import RPGCombatTools from "../../tools/rpg/RPGCombatTools";
+
+const sendAttackedNotification = (target: any, targetTimer: any, source: any, targetUser: any, sourceUser: any, guildName: string, strings: any) => {
+    const now = Date.now();
+    if (target.hitpoints.current <= 0) {
+        targetTimer.lastDeath = now;
+        source.kills += 1;
+        target.deaths += 1;
+        // Send notification if the target died
+        if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+            targetUser.send(replace(strings.attack.attackNotificationKilled, [sourceUser.username, guildName]));
+        }
+    } else {
+        // send attacked dm if the target survives
+        if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+            targetUser.send(replace(strings.attack.attackNotificationAttacked, [sourceUser.username, guildName]));
+        }
+    }
+};
 
 const attack = (args: CommandArgs) => {
 
@@ -16,8 +35,6 @@ const attack = (args: CommandArgs) => {
     let targetTimer = null;
     let source = null;
     let target = null;
-    let damage = null;
-    let crit = false;
     let rpgServerStats = null;
 
     if (!sourceUser || !targetUser) {
@@ -41,11 +58,7 @@ const attack = (args: CommandArgs) => {
                 FindOrCreateRPGTimer(sourceUser.id), FindOrCreateRPGTimer(targetUser.id), FindOrCreateRPGServerStats(args.message.guild.id)]);
         })
         .then((result): Promise<any> => {
-            source = result[0];
-            target = result[1];
-            sourceTimer = result[2];
-            targetTimer = result[3];
-            rpgServerStats = result[4];
+            [source, target, sourceTimer, targetTimer, rpgServerStats] = result;
 
             if (!CanAttackAgain(sourceTimer.lastAttack)) {
                 const timeToNextAttack = (Timers.rpg.attackCD - (now - sourceTimer.lastAttack)).toFixed(0);
@@ -69,17 +82,9 @@ const attack = (args: CommandArgs) => {
                 });
                 throw new Error('Target is already dead');
             }
-            // All checks passed, let's deal some damage!
-            crit = Math.random() < source.stats.crit;
 
-            const baseDamage = RPGTools.DamageCalculation(
-                source.stats.str,
-                source.stats.bal,
-            );
-
-            damage = Math.floor(crit ? baseDamage * source.stats.critDmgMult : baseDamage);
-
-            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.GetRandomIntegerFrom(100) < 75)) {
+            // PVP AFK protection: 75% to trigger
+            if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.GetRandomIntegerFrom(100) < 1)) {
                 source.hitpoints.current -= source.hitpoints.current;
                 source.deaths += 1;
                 sourceTimer.lastDeath = now;
@@ -91,63 +96,55 @@ const attack = (args: CommandArgs) => {
                 args.stopTyping();
                 return Promise.all([rpgServerStats.save(), source.save()]);
             } else {
+                const {isCrit, damage} = RPGCombatTools.CalculatePlayerDamage(source);
+
+                const critString = isCrit ?
+                    replace(args.strings.attack.attackCritical,
+                        [sourceUser.username,
+                            targetUser.username]) : '';
+
                 if (target.hitpoints.current > 0) target.hitpoints.current -= damage;
                 sourceTimer.lastAttack = now;
 
-                if (target.hitpoints.current <= 0) {
-                    targetTimer.lastDeath = now;
-                    source.kills += 1;
-                    target.deaths += 1;
-                    // Send notification if the target died
-                    if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
-                        targetUser.send(replace(args.strings.attack.attackNotificationKilled, [sourceUser.username, args.message.guild.name]));
-                    }
-                } else {
-                    // send attacked dm if the target survives
-                    if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
-                        targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
-                    }
-                }
+                // Attacked notification
+                // if (target.hitpoints.current <= 0) {
+                //     targetTimer.lastDeath = now;
+                //     source.kills += 1;
+                //     target.deaths += 1;
+                //     // Send notification if the target died
+                //     if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+                //         targetUser.send(replace(args.strings.attack.attackNotificationKilled, [sourceUser.username, args.message.guild.name]));
+                //     }
+                // } else {
+                //     // send attacked dm if the target survives
+                //     if (target.sendAttackedNotification && ((now - targetTimer.lastAttack) > Timers.rpg.notificationTimer)) {
+                //         targetUser.send(replace(args.strings.attack.attackNotificationAttacked, [sourceUser.username, args.message.guild.name]));
+                //     }
+                // }
+                sendAttackedNotification(target, targetTimer, source, targetUser, sourceUser, args.message.guild.name, args.strings);
                 rpgServerStats.attacks++;
-                if (target.hitpoints.current > 0) {
-                    const contents = replace(args.strings.attack.attackTargetLives,
-                        [sourceUser.username,
-                            targetUser.username,
-                            damage,
-                            target.hitpoints.current,
-                            target.hitpoints.max]);
 
-                    if (crit) {
-                        const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
-                        args.sendOKEmbed({contents: criticalString + contents});
-                    } else {
-                        args.sendOKEmbed({contents})
-                    }
+                const targetDeadString = target.hitpoints.current <= 0 ?
+                    replace(args.strings.attack.attackTargetKilled, [targetUser.username]) : '';
 
-                } else {
-                    rpgServerStats.deaths++;
-                    const contents = replace(args.strings.attack.attackTargetLives,
-                        [sourceUser.username,
-                            targetUser.username,
-                            damage,
-                            target.hitpoints.current,
-                            target.hitpoints.max])
-                        + '\n' +
-                        replace(args.strings.attack.attackTargetKilled, [targetUser.username]);
+                const attackStringContents = replace(args.strings.attack.attackTargetLives,
+                    [sourceUser.username,
+                        targetUser.username,
+                        damage,
+                        target.hitpoints.current,
+                        target.hitpoints.max])
+                    + '\n' + targetDeadString;
 
-                    if (crit) {
-                        const criticalString = replace(args.strings.attack.attackCritical, [sourceUser.username, targetUser.username])
-                        args.sendOKEmbed({contents: criticalString + contents});
-                    } else {
-                        args.sendOKEmbed({contents})
-                    }
-                }
+                isCrit ?
+                    args.sendOKEmbed({contents: critString + attackStringContents}) :
+                    args.sendOKEmbed({contents: attackStringContents});
+
                 args.stopTyping();
                 return Promise.all([sourceTimer.save(), targetTimer.save(), RPGCharacterManager.ProcessStrUpAttacker(source, args, sourceUser.username), RPGCharacterManager.ProcessStrUpDefender(target, args, targetUser.username), rpgServerStats.save()])
             }
-
         })
         .catch((err) => {
+            args.stopTyping();
             console.log(err.toString());
         })
 
