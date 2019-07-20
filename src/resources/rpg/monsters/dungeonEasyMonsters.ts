@@ -31,6 +31,22 @@ const dungeonEasyMonsters = {
         strLevelChanceMod: 3.5,
         playerStrCapThreshold: 6
     },
+    DMON0003:{
+        monsterID: 'DMON0003',
+        hitpoints: {
+            current: 80,
+            max: 80
+        },
+        baseDamage: 50,
+        bal: 0.4,
+        crit: 0.01,
+        critDamageMult: 10.0,
+        skills: [],
+        dropTableID: 'DEASY_0003',
+        lootChance: 0.3,
+        strLevelChanceMod: 3.5,
+        playerStrCapThreshold: 6
+    },
     DMON0005:{
         monsterID: 'DMON0005',
         hitpoints: {

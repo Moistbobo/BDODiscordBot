@@ -27,6 +27,19 @@ const dungeonMonsterStrings = {
         img: 'https://i.imgur.com/Lg3vatn.png',
         imgDead: 'https://i.imgur.com/aRf3HOa.png'
     },
+    DMON0003:{
+        name: "Laser Nipples Proto-kun",
+        description: "Proto if he worked out hard enough to have nipples that shot lasers.",
+        attackStrings: [
+            "__Laser Nipples Proto-kun fired a beam from his right nipple at {0} for {1} damage!__",
+            "__Laser Nipples Proto-kun flicked a pube at {0} for {1} damage!__",
+        ],
+        attackStringsCrit: [
+            "__Laser Nipples Proto-kun unleashed 40 year old rage onto {0}'s ass for {1} damage(CRITICAL HIT)!__",
+        ],
+        img: 'https://i.imgur.com/FKYjPEV.png',
+        imgDead: 'https://i.imgur.com/RQQkbow.png'
+    },
     DMON0005: {
         name: 'Magical Girl Sachan',
         description: 'When aussie roid rage meets magical girls',
