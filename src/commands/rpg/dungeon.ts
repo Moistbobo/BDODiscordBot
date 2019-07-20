@@ -8,6 +8,7 @@ import RPGMonster from "../../models/rpg/RPGMonster";
 import RPGDropTable from "../../models/rpg/RPGDropTable";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
+import RPGCharacterManager from "../../tools/rpg/RPGCharacterManager";
 
 const attackEmoji = '⚔';
 const runEmoji = '🏃';
@@ -120,8 +121,10 @@ const dungeon = (args: CommandArgs) => {
                     rpgServerStats.monsterKills++;
                     rpgCharacter.monsterKills++;
 
-                    Promise.all([rpgCharacter.save(),
-                        rpgServerStats.save()])
+                    Promise.all([
+                        RPGCharacterManager.ProcessStrUpMonsterKill(rpgCharacter, args, author.username, mStrings, monster),
+                        rpgServerStats.save(),
+                    ])
                         .then(() => {
                             return message.edit(
                                 args.bot.createOKEmbed({

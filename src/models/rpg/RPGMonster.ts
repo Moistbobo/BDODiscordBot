@@ -12,7 +12,9 @@ export interface IRPGMonster extends Document {
     critDamageMult: number,
     skills: [string],
     dropTableID: string,
-    lootChance: number
+    lootChance: number,
+    strLevelChanceMod: number,
+    playerStrCapThreshold : number
 }
 
 export const RPGMonsterSchema = new Schema({
@@ -34,6 +36,16 @@ export const RPGMonsterSchema = new Schema({
     lootChance: {
         type: Number,
         isRequired: true
+    },
+    strLevelChanceMod:{
+        type:Number,
+        isRequired: true,
+        default: 1.2
+    },
+    playerStrCapThreshold:{
+        type:Number,
+        isRequired: true,
+        default: 5
     }
 });
 

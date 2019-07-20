@@ -11,7 +11,9 @@ const dungeonEasyMonsters = {
         critDamageMult: 2.5,
         skills: [],
         dropTableID: 'DEASY_0001',
-        lootChance: 0.2
+        lootChance: 0.2,
+        strLevelChanceMod: 2.5,
+        playerStrCapThreshold: 3
     },
     DMON0002:{
       monsterID: 'DMON0002',
@@ -25,7 +27,9 @@ const dungeonEasyMonsters = {
         critDamageMult: 4.0,
         skills: [],
         dropTableID: 'DEASY_0002',
-        lootChance: 0.3
+        lootChance: 0.3,
+        strLevelChanceMod: 3.5,
+        playerStrCapThreshold: 6
     },
     DMON0005:{
         monsterID: 'DMON0005',
@@ -39,7 +43,9 @@ const dungeonEasyMonsters = {
         critDamageMult: 1.80,
         skills: [],
         dropTableID: 'DEASY_0005',
-        lootChance: 0.8
+        lootChance: 0.8,
+        strLevelChanceMod: 10,
+        playerStrCapThreshold: 10
     }
 };
 

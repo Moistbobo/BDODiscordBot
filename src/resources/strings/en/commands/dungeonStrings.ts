@@ -17,6 +17,7 @@ const dungeonStrings = {
         '{0} ran away...',
         '{0} escaped...'
     ],
+    dungeonPlayerStrLevelUp:`Defeating a {0} has increased {1}'s strength by {2}!`,
     dungeonObtainItemFromMonster: `{0} obtained a {1} from killing {2}`
 };
 
