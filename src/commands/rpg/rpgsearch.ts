@@ -23,8 +23,9 @@ const rpgSearch = (args: CommandArgs) => {
         console.log('Search DB does not exist... building');
         const itemsArray = putIDIntoValueArray(args.strings.items);
         const recipesArray = putIDIntoValueArray(args.strings.recipes);
+        const monstersArray = putIDIntoValueArray(args.strings.monsters);
 
-        const finalArray = itemsArray.concat(recipesArray);
+        const finalArray = itemsArray.concat(recipesArray, monstersArray);
         searchDB = finalArray;
     }
 
@@ -36,7 +37,6 @@ const rpgSearch = (args: CommandArgs) => {
         foundList = searchDB.filter((e) => levenshtein(e.name.toLowerCase(), searchTerm) < 8);
     }
 
-    console.log(foundList);
     if (foundList.length > 1) {
         const outputString = foundList.map((value) =>`${value.name}`).join('\n');
         args.sendOKEmbed({
