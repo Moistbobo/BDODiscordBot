@@ -51,7 +51,7 @@ const ProcessOnMessageItemDrop = (args: CommandArgs) => {
                         if (reactingUser) {
                             RPGTools.AddItemToUserInventory(reactingUser.id, itemIDToDrop);
                             args.sendOKEmbed({
-                                contents: replace(args.strings.itemPickedUp, [args.message.author.username,
+                                contents: replace(args.strings.itemPickedUp, [reactingUser.username,
                                     RPGTools.GetItemName(itemIDToDrop)]),
                             })
                         }
