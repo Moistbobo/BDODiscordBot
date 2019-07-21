@@ -85,16 +85,16 @@ const attack = (args: CommandArgs) => {
 
             // PVP AFK protection: 75% to trigger
             if ((now - targetTimer.lastActivity) > Timers.rpg.afkTimer && (RPGTools.GetRandomIntegerFrom(100) < 75)) {
-                source.hitpoints.current -= source.hitpoints.current;
-                source.deaths += 1;
-                sourceTimer.lastDeath = now;
-                rpgServerStats.pvpProtectionDeaths++;
+                // source.hitpoints.current -= source.hitpoints.current;
+                // source.deaths += 1;
+                // sourceTimer.lastDeath = now;
+                // rpgServerStats.pvpProtectionDeaths++;
                 args.sendOKEmbed({
                     contents: replace(args.strings.attack.attackAFKPunish, [sourceUser.username]),
                     footer: args.strings.attack.attackAFKPunishNote
                 });
                 args.stopTyping();
-                return Promise.all([rpgServerStats.save(), source.save()]);
+                return Promise.all([rpgServerStats.save(), sourceTimer.save(), source.save()]);
             } else {
                 const {isCrit, damage} = RPGCombatTools.CalculatePlayerDamage(source);
 
