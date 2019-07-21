@@ -1,7 +1,7 @@
-import dungeonEasyMonsters from "./dungeonEasyMonsters";
+import dungeonMonsters from "./dungeonMonsters";
 
 const RPGMonsters = {
-    ...dungeonEasyMonsters
+    ...dungeonMonsters
 };
 
 export default RPGMonsters;
