@@ -7,8 +7,10 @@ import {IRPGMonster} from "../../models/rpg/RPGMonster";
 
 const attackingLevelChance = 10;
 const defendingLevelChance = 15;
+const strHardCap = 18;
 
 const ProcessStrUpAttacker = (attacker: IRPGCharacter, args: CommandArgs, username: string) => {
+    if(attacker.stats.str >= strHardCap) return attacker.save();
     const chance = RPGTools.GetRandomIntegerFrom(100);
 
     if (chance < (attackingLevelChance)) {
@@ -27,6 +29,7 @@ const ProcessStrUpAttacker = (attacker: IRPGCharacter, args: CommandArgs, userna
 };
 
 const ProcessStrUpMonsterKill = (attacker: IRPGCharacter, args: any, username: string, monsterStrings: any, monster: IRPGMonster)=>{
+    if(attacker.stats.str >= strHardCap) return attacker.save();
     const chance = RPGTools.GetRandomIntegerFrom(100);
     let monsterStrBonus = monster.strLevelChanceMod;
     if(attacker.stats.str >= monster.playerStrCapThreshold){
@@ -52,6 +55,7 @@ const ProcessStrUpMonsterKill = (attacker: IRPGCharacter, args: any, username: s
 };
 
 const ProcessStrUpDefender = (defender: IRPGCharacter, args: CommandArgs, username: string) => {
+    if(defender.stats.str >= strHardCap) return defender.save();
     const chance = RPGTools.GetRandomIntegerFrom(100);
 
     if (chance < defendingLevelChance) {
