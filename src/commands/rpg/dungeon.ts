@@ -7,7 +7,7 @@ import dungeonSpawnRates from "../../resources/rpg/monsters/dungeonSpawnRates";
 import RPGMonster from "../../models/rpg/RPGMonster";
 import RPGDropTable from "../../models/rpg/RPGDropTable";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
-import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
+import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import RPGCharacterManager from "../../tools/rpg/RPGCharacterManager";
 
 const attackEmoji = '⚔';
@@ -30,9 +30,12 @@ const dungeon = (args: CommandArgs) => {
             user.id === args.message.author.id;
     };
 
-    Promise.all([FindOrCreateRPGTimer(author.id),
-        FindOrCreateNewRPGCharacter(author.id),
-        FindOrCreateRPGServerStats(args.message.guild.id)])
+    IsChannelRPGEnabled(args)
+        .then(() => {
+            return Promise.all([FindOrCreateRPGTimer(author.id),
+                FindOrCreateNewRPGCharacter(author.id),
+                FindOrCreateRPGServerStats(args.message.guild.id)])
+        })
         .then((res) => {
             [rpgTimer, rpgCharacter, rpgServerStats] = res;
 
