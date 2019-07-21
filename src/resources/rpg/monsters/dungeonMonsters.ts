@@ -1,4 +1,4 @@
-const dungeonEasyMonsters = {
+const dungeonMonsters = {
     DMON0001: {
         monsterID: 'DMON0001',
         hitpoints: {
@@ -13,7 +13,8 @@ const dungeonEasyMonsters = {
         dropTableID: 'DEASY_0001',
         lootChance: 0.2,
         strLevelChanceMod: 2.5,
-        playerStrCapThreshold: 3
+        playerStrCapThreshold: 3,
+        exp: 15
     },
     DMON0002:{
       monsterID: 'DMON0002',
@@ -29,7 +30,8 @@ const dungeonEasyMonsters = {
         dropTableID: 'DEASY_0002',
         lootChance: 0.3,
         strLevelChanceMod: 3.5,
-        playerStrCapThreshold: 6
+        playerStrCapThreshold: 6,
+        exp: 25
     },
     DMON0003:{
         monsterID: 'DMON0003',
@@ -45,7 +47,8 @@ const dungeonEasyMonsters = {
         dropTableID: 'DEASY_0003',
         lootChance: 0.3,
         strLevelChanceMod: 3.5,
-        playerStrCapThreshold: 6
+        playerStrCapThreshold: 6,
+        exp: 30
     },
     DMON0005:{
         monsterID: 'DMON0005',
@@ -61,8 +64,26 @@ const dungeonEasyMonsters = {
         dropTableID: 'DEASY_0005',
         lootChance: 0.8,
         strLevelChanceMod: 10,
-        playerStrCapThreshold: 10
+        playerStrCapThreshold: 10,
+        exp: 50
+    },
+    DMON00010:{
+        monsterID: 'DMON00010',
+        hitpoints: {
+            current: 300,
+            max: 300
+        },
+        baseDamage: 40,
+        bal: 0.5,
+        crit: 0.15,
+        critDamageMult: 1.80,
+        skills: [],
+        dropTableID: '',
+        lootChance: 0.8,
+        strLevelChanceMod: 10,
+        playerStrCapThreshold: 10,
+        exp: 40
     }
 };
 
-export default dungeonEasyMonsters;
+export default dungeonMonsters;
