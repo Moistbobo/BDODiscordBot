@@ -13,8 +13,8 @@ import discardStrings from "./strings/en/commands/discardStrings";
 import equipStrings from "./strings/en/commands/equipStrings";
 import unequipWeaponStrings from "./strings/en/commands/unequipWeaponStrings";
 import ThreeRarityWeaponStrings from "./strings/en/items/weapons/3_rarityStrings";
-import MaterialStrings from "./strings/en/items/materials/materialStrings";
-import RecipeStrings from "./strings/en/items/recipes/recipeStrings";
+import MaterialStrings from "./strings/en/items/materialStrings";
+import RecipeStrings from "./strings/en/items/recipeStrings";
 import craftRecipeStrings from "./strings/en/commands/craftRecipeStrings";
 import craftStrings from "./strings/en/commands/craftStrings";
 import enableItemDropStrings from "./strings/en/commands/enableItemDropStrings";
@@ -22,12 +22,14 @@ import OnMessageItemDropStrings from "./strings/en/events/onMessageItemDropStrin
 import rpgSearchStrings from "./strings/en/commands/rpgSearchStrings";
 import dungeonMonsterStrings from "./strings/en/monsters/dungeonMonsterStrings";
 import dungeonStrings from "./strings/en/commands/dungeonStrings";
+import ConsumableStrings from "./strings/en/items/consumableStrings";
 
 const strings = {
     items: {
         ...OneRarityWeaponStrings,
         ...ThreeRarityWeaponStrings,
         ...MaterialStrings,
+        ...ConsumableStrings
     },
     monsters: {
         ...dungeonMonsterStrings

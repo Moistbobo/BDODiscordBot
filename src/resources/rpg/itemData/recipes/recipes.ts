@@ -4,6 +4,12 @@ const Recipes = [
         materialsID: ['MAT0001'],
         qty: [6],
         resultItemID: 'WPN3001'
+    },
+    {
+        recipeID: 'RCP0002',
+        materialsID: ['MAT0002'],
+        qty: [3],
+        resultItemID: 'CONS0001'
     }
 ];
 

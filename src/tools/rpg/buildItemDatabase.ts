@@ -8,6 +8,7 @@ import RPGDropTable from "../../models/rpg/RPGDropTable";
 import DropTableData from "../../resources/rpg/dropTables/DropTableData";
 import RPGMonster from "../../models/rpg/RPGMonster";
 import RPGMonsters from "../../resources/rpg/monsters/RPGMonsters";
+import Consumables from "../../resources/rpg/itemData/items/consumables";
 
 let itemCount = 0;
 let count = 0;
@@ -21,6 +22,7 @@ const savedCallback = (err, res) => {
         console.log('Item database updated');
         process.exit(0);
     } else {
+        console.log(res);
         console.log(`Saved Item: ${count}/${itemCount}`);
     }
 };
@@ -40,6 +42,7 @@ const buildItemDatabase = () => {
 
             Weapons.forEach((x) => Items.push(x));
             Materials.forEach((x) => Items.push(x));
+            Consumables.forEach((x) => Items.push(x));
 
             itemCount += Items.length;
             itemCount+=Recipes.length;
