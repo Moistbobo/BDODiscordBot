@@ -56,9 +56,9 @@ const dungeonMonsters = {
             current: 200,
             max: 200
         },
-        baseDamage: 20,
-        bal: 0.5,
-        crit: 0.30,
+        baseDamage: 30,
+        bal: 0.8,
+        crit: 0.50,
         critDamageMult: 1.80,
         skills: [],
         dropTableID: 'DEASY_0005',
