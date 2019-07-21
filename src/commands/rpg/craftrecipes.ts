@@ -27,7 +27,7 @@ const craftRecipes = (args: CommandArgs) => {
                     ],
                     false);
 
-                outputString += tempString;
+                outputString += tempString + '\n\n';
             });
 
             outputString += args.strings.craftrecipes.reminder;

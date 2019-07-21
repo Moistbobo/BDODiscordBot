@@ -95,22 +95,18 @@ const craft = (args: CommandArgs) => {
 
             // Player has passed all checks, reduce amount of items in their inventory and
             // give them the crafted weapon
-
-            return ItemFactory.CreateNewItem(recipes[recipeIndex].resultItemID);
-        })
-        .then((craftedItem) => {
-            // console.log('Inventory before:', charInventory);
-            const newInventory = adjustPlayerMaterials(charInventory, recipes[recipeIndex]);
-            // console.log('Inventory after:', newInventory);
-
-            newInventory.push(craftedItem);
-            rpgCharacter.inventory = newInventory;
+            rpgCharacter.inventory = adjustPlayerMaterials(charInventory, recipes[recipeIndex]);
             return rpgCharacter.save();
+
+        })
+        .then(() => {
+            // console.log('Inventory before:', charInventory);
+            return RPGTools.AddItemToUserInventory(args.message.author.id, recipes[recipeIndex].resultItemID);
         })
         .then(() => {
             const contents = replace(args.strings.craft.craftSuccess,
                 [args.message.author.username,
-                    RPGTools.GetItemName(recipes[recipeIndex].resultItemID)])
+                    RPGTools.GetItemName(recipes[recipeIndex].resultItemID)]);
             args.sendOKEmbed({contents});
         })
         .catch((err) => {
