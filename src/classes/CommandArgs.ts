@@ -9,7 +9,8 @@ interface CommandArgs{
     sendErrorEmbed: any;
     startTyping: any,
     stopTyping: any,
-    user: Discord.User
+    user: Discord.User,
+    timeNow: number
 };
 
 export default CommandArgs;

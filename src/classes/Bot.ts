@@ -138,7 +138,8 @@ class Bot {
             sendErrorEmbed: (args) => msg.channel.send(this.createErrorEmbed(args)),
             startTyping: () => msg.channel.startTyping(),
             stopTyping: () => msg.channel.stopTyping(),
-            user: msg.author
+            user: msg.author,
+            timeNow: Date.now()/1000
         };
 
         ProcessOnMessageItemDrop(commandArgs)
