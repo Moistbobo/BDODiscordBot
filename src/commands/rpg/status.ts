@@ -47,12 +47,10 @@ const status = (args: CommandArgs) => {
                 ]
             );
             args.sendOKEmbed({contents});
+            args.stopTyping();
         })
         .catch((err) => {
             console.log(err.toString());
-        })
-        .finally(() => {
-            args.stopTyping();
         })
 };
 

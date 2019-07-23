@@ -8,12 +8,14 @@ export interface IRPGCharacter extends Document {
         max: number
     },
     stats: {
+        hpLevel: number,
         bal: number,
         str: number,
         int: number,
         crit: number,
         critDmgMult: number
     },
+    exp: number,
     title: string,
     kills: number,
     monsterKills: number,
@@ -21,6 +23,14 @@ export interface IRPGCharacter extends Document {
     dungeonLevel: number,
     pvpFlagged: boolean
     inventory: [IItem],
+    level: number,
+    skillPoints: number,
+    effects: [
+        {
+            effectID: string,
+            length: number
+        }
+        ],
     equippedWeapon: IItem
 }
 
@@ -51,14 +61,18 @@ export const RPGCharacterSchema = new Schema({
     hitpoints: {
         max: {
             type: Number,
-            default: 150
+            default: 75
         },
         current: {
             type: Number,
-            default: 150
+            default: 75
         }
     },
     stats: {
+        hpLevel: {
+            type: Number,
+            default: 1
+        },
         bal: {
             type: Number,
             default: 0.4
@@ -85,8 +99,8 @@ export const RPGCharacterSchema = new Schema({
         type: Number,
         default: 0
     },
-    monsterKills:{
-        type:Number,
+    monsterKills: {
+        type: Number,
         default: 0
     },
     deaths: {
@@ -101,13 +115,31 @@ export const RPGCharacterSchema = new Schema({
         type: Boolean,
         default: false
     },
+    exp: {
+        type: Number,
+        default: 0
+    },
+    level: {
+        type: Number,
+        default: 1
+    },
+    skillPoints: {
+        type: Number,
+        default: 0
+    },
     inventory: [ItemSchema],
     equippedWeapon: ItemSchema,
-    dungeonLevel:{
+    dungeonLevel: {
         type: Number,
         default: 1,
         required: true
-    }
+    },
+    effects: [
+        {
+            effectID: String,
+            length: Number
+        }
+    ]
 });
 
 const RPGCharacter = model<IRPGCharacter>('RPGCharacter', RPGCharacterSchema);

@@ -23,6 +23,8 @@ import rpgSearchStrings from "./strings/en/commands/rpgSearchStrings";
 import dungeonMonsterStrings from "./strings/en/monsters/dungeonMonsterStrings";
 import dungeonStrings from "./strings/en/commands/dungeonStrings";
 import ConsumableStrings from "./strings/en/items/consumableStrings";
+import useStrings from "./strings/en/commands/useStrings";
+import addSkillStrings from "./strings/en/commands/addSkillStrings";
 
 const strings = {
     items: {
@@ -220,6 +222,18 @@ const strings = {
         trigger: 'dungeon, explore',
         name: 'Dungeon',
         ...dungeonStrings
+    },
+    use: {
+        description: 'Use an item in your inventory',
+        trigger: 'use',
+        name: 'Use',
+        ...useStrings
+    },
+    addSkill: {
+        description: 'Use a skillpoint',
+        trigger: 'addskll, as',
+        name: 'Add Skil',
+        ...addSkillStrings
     }
     // flag: {
     //     description: 'Enable/Disable PVP mode',

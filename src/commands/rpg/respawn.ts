@@ -48,13 +48,12 @@ const respawn = (args: CommandArgs) => {
             return rpgCharacter.save();
         })
         .then(() => {
+            args.stopTyping();
             args.sendOKEmbed({contents: replace(args.strings.respawn.respawnSuccess, [args.message.author.username])});
         })
         .catch((err) => {
-            console.log(err.toString());
-        })
-        .finally(() => {
             args.stopTyping();
+            console.log(err.toString());
         })
 };
 

@@ -57,13 +57,12 @@ const iqTest = (args: CommandArgs) => {
             return saveIQTestResult(userID, iq);
         })
         .then(() => {
+            args.message.channel.stopTyping();
             return sendIQMessage(args.message.channel, iq, userID);
         })
         .catch((err) => {
-            console.log(err.toString());
-        })
-        .finally(() => {
             args.message.channel.stopTyping();
+            console.log(err.toString());
         })
 };
 
