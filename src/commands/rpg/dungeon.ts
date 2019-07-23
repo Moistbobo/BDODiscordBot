@@ -206,6 +206,7 @@ const dungeon = (args: CommandArgs) => {
 
             if (rpgCharacter.hitpoints.current <= 0) {
                 rpgCharacter.deaths++;
+                rpgTimer.lastDeath = Date.now() / 1000;
 
                 const newMessage =
                     `${prevMessage}` + '\n\n\`=======================================\`\n\n' +
@@ -230,7 +231,8 @@ const dungeon = (args: CommandArgs) => {
                         image: mStrings.img,
                     })
                 ).then(() => {
-                    return rpgCharacter.save();
+                    return Promise.all([rpgCharacter.save(), rpgTimer.save()]);
+                    // return rpgCharacter.save();
                 });
             } else {
                 const newMessage =
