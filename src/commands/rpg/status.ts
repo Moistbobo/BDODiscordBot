@@ -1,7 +1,7 @@
 import CommandArgs from "../../classes/CommandArgs";
-import RPGCharacter, {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
+import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
-import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
+import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
 
@@ -33,20 +33,71 @@ const status = (args: CommandArgs) => {
 
             const contents = replace(args.strings.status.statusString, [
                     user.username,
-                    rpgCharacter.hitpoints.current,
+                    rpgCharacter.level
+                ]
+            );
+
+            const combatStrings = replace(
+                args.strings.status.combatStrings,
+                [rpgCharacter.hitpoints.current,
                     rpgCharacter.hitpoints.max,
+                    rpgCharacter.stats.bal,
+                    rpgCharacter.stats.crit,
+                    rpgCharacter.stats.critDmgMult]
+            );
+
+            const skillsStrings = replace(
+                args.strings.status.skillsStrings,
+                [
+                    rpgCharacter.stats.hpLevel,
+                    rpgCharacter.stats.str,
+                    rpgCharacter.stats.int
+                ]
+            );
+
+            const statusStrings = replace(
+                args.strings.status.statusStrings,
+                [
+                    isAFK ? args.strings.status.yes : args.strings.status.no
+                ]
+            );
+
+            const otherStatsStrings = replace(
+                args.strings.status.otherStatsStrings,
+                [
                     rpgCharacter.kills,
                     rpgCharacter.deaths,
-                    rpgCharacter.stats.str.toFixed(3),
-                    rpgCharacter.stats.crit.toFixed(2),
-                    rpgCharacter.stats.critDmgMult.toFixed(2),
-                    rpgCharacter.stats.bal.toFixed(2),
-                    rpgCharacter.stats.int.toFixed(3),
-                    isAFK ? 'Yes' : 'No',
                     rpgCharacter.monsterKills
                 ]
             );
-            args.sendOKEmbed({contents});
+
+            args.sendOKEmbed(
+                {
+                    contents,
+                    thumbnail: user.avatarURL(),
+                    extraFields: [
+                        {
+                            name: args.strings.status.combatTitle,
+                            value: combatStrings+'\n\n',
+                            inline: true
+                        },
+                        {
+                            name: args.strings.status.skillsTitle,
+                            value: skillsStrings,
+                            inline: true
+                        },
+                        {
+                            name: args.strings.status.otherStatsTitle,
+                            value: otherStatsStrings+'\n\n',
+                            inline: true
+                        },
+                        {
+                            name: args.strings.status.statusTitle,
+                            value: statusStrings,
+                            inline: true
+                        }
+                    ]
+                });
             args.stopTyping();
         })
         .catch((err) => {

@@ -25,6 +25,7 @@ import dungeonStrings from "./strings/en/commands/dungeonStrings";
 import ConsumableStrings from "./strings/en/items/consumableStrings";
 import useStrings from "./strings/en/commands/useStrings";
 import addSkillStrings from "./strings/en/commands/addSkillStrings";
+import resetSkillStrings from "./strings/en/commands/resetSkillStrings";
 
 const strings = {
     items: {
@@ -231,9 +232,15 @@ const strings = {
     },
     addSkill: {
         description: 'Use a skillpoint',
-        trigger: 'addskll, as',
-        name: 'Add Skil',
+        trigger: 'addskill, as',
+        name: 'Add Skill',
         ...addSkillStrings
+    },
+    resetSkills:{
+        description: 'Reset your skill points to 0',
+        trigger: 'resetskills',
+        name: 'Reset Skill',
+        ...resetSkillStrings
     }
     // flag: {
     //     description: 'Enable/Disable PVP mode',

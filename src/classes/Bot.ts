@@ -94,6 +94,20 @@ class Bot {
         args.url ? embed.setURL(args.url) : null;
         args.title ? embed.setTitle(args.title) : null;
         args.image ? embed.setImage(args.image) : null;
+        args.thumbnail ? embed.setThumbnail(args.thumbnail) : null;
+        if (args.extraFields) {
+            args.extraFields.forEach((ef) => {
+                if (ef.name === 'blank') {
+                    embed.addBlankField(ef.inline);
+                } else {
+                    embed.addField(
+                        ef.name||'',
+                        ef.value||'',
+                        ef.inline||false
+                    )
+                }
+            })
+        }
         return embed;
     };
 
@@ -107,6 +121,20 @@ class Bot {
         args.url ? embed.setURL(args.url) : null;
         args.title ? embed.setTitle(args.title) : null;
         args.image ? embed.setImage(args.image) : null;
+        args.thumbnail ? embed.setThumbnail(args.thumbnail) : null;
+        if (args.extraFields) {
+            args.extraFields.forEach((ef) => {
+                if (ef.name === 'blank') {
+                    embed.addBlankField(ef.inline);
+                } else {
+                    embed.addField(
+                        ef.name||'undefined',
+                        ef.value||'undefined',
+                        ef.inline||false
+                    )
+                }
+            })
+        }
         return embed;
     };
 
@@ -126,7 +154,7 @@ class Bot {
 
         // Update user's last activity for rpg use
         const userID = msg.author.id;
-        if(userID === this.client.user.id) {
+        if (userID === this.client.user.id) {
             return;
         }
         const commandArgs = {
@@ -139,7 +167,7 @@ class Bot {
             startTyping: () => msg.channel.startTyping(),
             stopTyping: () => msg.channel.stopTyping(),
             user: msg.author,
-            timeNow: Date.now()/1000
+            timeNow: Date.now() / 1000
         };
 
         ProcessOnMessageItemDrop(commandArgs)

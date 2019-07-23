@@ -1,6 +1,18 @@
 import {Document, Schema, model} from 'mongoose';
 import Item, {IItem, ItemSchema} from "./Item";
 
+export const DefaultStats = {
+    hp: 75,
+    str: 1,
+    int: 1,
+    hpLevel: 1,
+    level: 1
+};
+
+export const IncrementPerLevel = {
+    hp: 25
+};
+
 export interface IRPGCharacter extends Document {
     userID: string,
     hitpoints: {
