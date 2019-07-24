@@ -45,7 +45,7 @@ const GetRandomStringFromArr = (str: [string]) => {
 
 const HealCalculation = (int: number, bal: number, equipment = 10, otherBonuses = 1.0) => {
     const maxHeal = CalcMaxHeal(int, equipment, otherBonuses);
-    const balanceMod = getRandomArbitrary(bal, 1.5);
+    const balanceMod = getRandomArbitrary(0.6, 1.5);
 
     return Math.floor((maxHeal * balanceMod));
 };
