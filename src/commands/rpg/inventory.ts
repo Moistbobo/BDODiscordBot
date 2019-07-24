@@ -67,7 +67,8 @@ const inventory = (args: CommandArgs) => {
 
             args.sendOKEmbed({
                 contents: outputString,
-                footer: replace(args.strings.inventory.footerText, [args.message.author.username], false)
+                footer: replace(args.strings.inventory.footerText, [args.message.author.username], false),
+                thumbnail: args.message.author.avatarURL()
             });
         })
         .catch((err) => {
