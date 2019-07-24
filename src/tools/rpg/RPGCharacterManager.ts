@@ -7,8 +7,8 @@ import {IRPGMonster} from "../../models/rpg/RPGMonster";
 const attackingLevelChance = 10;
 const defendingLevelChance = 15;
 const strHardCap = 18;
-const maxLevel = 50;
-
+export const maxLevel = 50;
+export const maxLevelPenalty = 0.25;
 
 const CalculatePlayerLevel = (rpgChar: IRPGCharacter) => {
     return Math.floor(
@@ -26,11 +26,13 @@ const CalculateXPNeededForLevel = (level: number) => {
 
 const AddXPPlayer = (rpgChar: IRPGCharacter, exp: number, args: CommandArgs) => {
     const playerLevel = CalculatePlayerLevel(rpgChar);
+    let softCapPenalty = 1.0;
     if (playerLevel >= maxLevel) {
-        throw new Error('Player has reached level cap');
+        // throw new Error('Player has reached level cap');
+        softCapPenalty = maxLevelPenalty;
     }
 
-    rpgChar.exp += exp;
+    rpgChar.exp += Math.floor(exp * softCapPenalty);
 
     if (rpgChar.exp > CalculateXPNeededForLevel(playerLevel)) {
         rpgChar.exp = (rpgChar.exp - CalculateXPNeededForLevel(playerLevel));

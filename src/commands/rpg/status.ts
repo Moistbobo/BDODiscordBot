@@ -4,6 +4,7 @@ import replace from "../../tools/replace";
 import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
+import RPGCharacterManager from "../../tools/rpg/RPGCharacterManager";
 
 
 const status = (args: CommandArgs) => {
@@ -33,7 +34,7 @@ const status = (args: CommandArgs) => {
 
             const contents = replace(args.strings.status.statusString, [
                     user.username,
-                    rpgCharacter.level
+                    RPGCharacterManager.CalculatePlayerLevel(rpgCharacter)
                 ]
             );
 
@@ -41,10 +42,20 @@ const status = (args: CommandArgs) => {
                 args.strings.status.combatStrings,
                 [rpgCharacter.hitpoints.current,
                     rpgCharacter.hitpoints.max,
-                    rpgCharacter.stats.bal,
-                    rpgCharacter.stats.crit,
-                    rpgCharacter.stats.critDmgMult]
+                    `${rpgCharacter.stats.bal*100}`,
+                    `${rpgCharacter.stats.crit*100}%`,
+                    `${rpgCharacter.stats.critDmgMult*100}%`]
             );
+
+            const expToNextLevel = RPGCharacterManager.CalculateXPNeededForLevel(RPGCharacterManager.CalculatePlayerLevel(rpgCharacter));
+            const expStrings = replace(
+                args.strings.status.expStrings,
+                [
+                    rpgCharacter.exp,
+                    expToNextLevel,
+                    ((rpgCharacter.exp / expToNextLevel) * 100).toPrecision(2)
+                ]
+            )
 
             const skillsStrings = replace(
                 args.strings.status.skillsStrings,
@@ -77,8 +88,13 @@ const status = (args: CommandArgs) => {
                     thumbnail: user.avatarURL(),
                     extraFields: [
                         {
+                            name: args.strings.status.expTitle,
+                            value: expStrings,
+                            inline: false
+                        },
+                        {
                             name: args.strings.status.combatTitle,
-                            value: combatStrings+'\n\n',
+                            value: combatStrings + '\n\n',
                             inline: true
                         },
                         {
@@ -88,7 +104,7 @@ const status = (args: CommandArgs) => {
                         },
                         {
                             name: args.strings.status.otherStatsTitle,
-                            value: otherStatsStrings+'\n\n',
+                            value: otherStatsStrings + '\n\n',
                             inline: true
                         },
                         {

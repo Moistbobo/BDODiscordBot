@@ -8,7 +8,7 @@ import RPGMonster from "../../models/rpg/RPGMonster";
 import RPGDropTable from "../../models/rpg/RPGDropTable";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
-import RPGCharacterManager from "../../tools/rpg/RPGCharacterManager";
+import RPGCharacterManager, {maxLevel, maxLevelPenalty} from "../../tools/rpg/RPGCharacterManager";
 
 const attackEmoji = '⚔';
 const runEmoji = '🏃';
@@ -151,16 +151,18 @@ const dungeon = (args: CommandArgs) => {
                         }
                     }).then(() => {
                         const expToNextLevel = RPGCharacterManager.CalculateXPNeededForLevel(RPGCharacterManager.CalculatePlayerLevel(rpgCharacter));
+                        let expPenalty = RPGCharacterManager.CalculatePlayerLevel(rpgChar) >= maxLevel ? maxLevelPenalty : 1.0;
+                        console.log(monster.exp * expPenalty);
                         let extraFields = [
                             {
                                 name: args.strings.dungeon.dungeonBattleResultTitle,
                                 value: replace(
                                     args.strings.dungeon.dungeonBattleResultEXPGained,
                                     [author.username,
-                                        monster.exp,
+                                        Math.floor(monster.exp * expPenalty),
                                         rpgCharacter.exp,
                                         RPGCharacterManager.CalculateXPNeededForLevel(RPGCharacterManager.CalculatePlayerLevel(rpgCharacter)),
-                                        `${((rpgCharacter.exp / expToNextLevel )*100).toPrecision(2)}%`]
+                                        `${((rpgCharacter.exp / expToNextLevel) * 100).toPrecision(2)}%`]
                                 )
                             }
                         ];
