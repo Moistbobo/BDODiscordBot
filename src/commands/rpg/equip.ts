@@ -7,7 +7,7 @@ import RPGTools from "../../tools/rpg/RPGTools";
 
 const equip = (args: CommandArgs) => {
     const userID = args.message.author.id;
-    const index = parseInt(args.message.content);
+    const index = parseInt(args.message.content.replace('#',''));
     let itemToEquip = null;
     let previousWeapon = null;
 
