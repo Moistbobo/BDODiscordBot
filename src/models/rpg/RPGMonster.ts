@@ -13,8 +13,8 @@ export interface IRPGMonster extends Document {
     skills: [string],
     dropTableID: string,
     lootChance: number,
-    strLevelChanceMod: number,
-    playerStrCapThreshold : number
+    exp: number
+    level:number
 }
 
 export const RPGMonsterSchema = new Schema({
@@ -37,16 +37,12 @@ export const RPGMonsterSchema = new Schema({
         type: Number,
         isRequired: true
     },
-    strLevelChanceMod:{
-        type:Number,
+    exp: {
+        type: Number,
         isRequired: true,
-        default: 1.2
+        default: 0
     },
-    playerStrCapThreshold:{
-        type:Number,
-        isRequired: true,
-        default: 5
-    }
+    level: Number
 });
 
 const RPGMonster = model<IRPGMonster>('RPGMonster', RPGMonsterSchema);

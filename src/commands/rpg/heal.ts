@@ -11,18 +11,13 @@ const healSelf = (args: CommandArgs) => {
     const userID = args.message.author.id;
 
     IsChannelRPGEnabled(args)
-        .then((res) => {
-            if (!res) {
-                args.message.react('❌');
-                throw new Error('Non RPG Channel')
-            }
+        .then(() => {
             return Promise.all([FindOrCreateRPGTimer(userID), FindOrCreateNewRPGCharacter(userID), FindOrCreateRPGServerStats(args.message.guild.id)])
         })
         .then((result) => {
             let rpgTimer = result[0];
             let rpgCharacter = result[1];
             let rpgServerStats = result[2];
-
 
             if (!CanHeal(rpgTimer.lastHeal)) {
                 const timeToHeal = Timers.rpg.healCD - (Date.now() / 1000 - rpgTimer.lastHeal);

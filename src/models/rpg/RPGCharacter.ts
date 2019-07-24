@@ -2,7 +2,7 @@ import {Document, Schema, model} from 'mongoose';
 import Item, {IItem, ItemSchema} from "./Item";
 
 export const DefaultStats = {
-    hp: 75,
+    hp: 125,
     str: 1,
     int: 1,
     hpLevel: 1,

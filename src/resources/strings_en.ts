@@ -49,7 +49,8 @@ const strings = {
         ...commandStrings
     },
     general: {
-        noPermission: `You do not have permission to use this command`
+        noPermission: `You do not have permission to use this command`,
+        levelUp: `{0} has reached level {1}!`
     },
     rpg: {
         nonRPGChannel: `This channel is not RPG enabled.`

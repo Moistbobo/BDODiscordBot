@@ -14,7 +14,8 @@ const dungeonMonsters = {
         lootChance: 0.2,
         strLevelChanceMod: 2.5,
         playerStrCapThreshold: 3,
-        exp: 15
+        exp: 15,
+        level: 3
     },
     DMON0002:{
       monsterID: 'DMON0002',
@@ -28,10 +29,11 @@ const dungeonMonsters = {
         critDamageMult: 4.0,
         skills: [],
         dropTableID: 'DEASY_0002',
-        lootChance: 0.3,
+        lootChance: 0.35,
         strLevelChanceMod: 3.5,
         playerStrCapThreshold: 6,
-        exp: 25
+        exp: 25,
+        level: 5
     },
     DMON0003:{
         monsterID: 'DMON0003',
@@ -45,10 +47,9 @@ const dungeonMonsters = {
         critDamageMult: 10.0,
         skills: [],
         dropTableID: 'DEASY_0003',
-        lootChance: 0.3,
-        strLevelChanceMod: 3.5,
-        playerStrCapThreshold: 6,
-        exp: 30
+        lootChance: 0.4,
+        exp: 30,
+        level: 8
     },
     DMON0005:{
         monsterID: 'DMON0005',
@@ -63,9 +64,8 @@ const dungeonMonsters = {
         skills: [],
         dropTableID: 'DEASY_0005',
         lootChance: 0.8,
-        strLevelChanceMod: 10,
-        playerStrCapThreshold: 10,
-        exp: 50
+        exp: 100,
+        level: 10
     },
     DMON00010:{
         monsterID: 'DMON00010',
@@ -79,10 +79,8 @@ const dungeonMonsters = {
         critDamageMult: 1.80,
         skills: [],
         dropTableID: '',
-        lootChance: 0.8,
-        strLevelChanceMod: 10,
-        playerStrCapThreshold: 10,
-        exp: 40
+        lootChance: 0.4,
+        exp: 200
     }
 };
 

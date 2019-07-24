@@ -98,7 +98,8 @@ const addSkill = (args: CommandArgs) => {
                 [author.username,
                     allocation,
                     skill,
-                    skillLevel]);
+                    skillLevel,
+                    rpgChar.skillPoints]);
             args.sendOKEmbed({contents});
         })
         .catch((err) => {

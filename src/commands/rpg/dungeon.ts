@@ -16,6 +16,7 @@ const turnTimeout = 2000;
 const battleTime = 120000;
 
 const dungeon = (args: CommandArgs) => {
+    let itemID = null;
     let monster = null;
     let mStrings = null;
     const author = args.message.author;
@@ -68,7 +69,8 @@ const dungeon = (args: CommandArgs) => {
                 contents: replace(args.strings.dungeon.monsterEncountered,
                     [args.message.author.username,
                         mStrings.name]),
-                image: mStrings.img
+                image: mStrings.img,
+                thumbnail: author.avatarURL()
             })
         })
         .then((msg) => {
@@ -124,39 +126,69 @@ const dungeon = (args: CommandArgs) => {
                     rpgServerStats.monsterKills++;
                     rpgCharacter.monsterKills++;
 
+                    let itemDropped = false;
+
                     Promise.all([
-                        RPGCharacterManager.ProcessStrUpMonsterKill(rpgCharacter, args, author.username, mStrings, monster),
+                        RPGCharacterManager.AddXPPlayer(rpgCharacter, monster.exp, args),
+                        // RPGCharacterManager.ProcessStrUpMonsterKill(rpgCharacter, args, author.username, mStrings, monster),
                         rpgServerStats.save(),
                     ])
                         .then(() => {
-                            return message.edit(
-                                args.bot.createOKEmbed({
-                                    contents: newMessage,
-                                    image: mStrings.imgDead
-                                })
-                            )
-                        })
-                        .then(() => {
                             if (Math.random() < monster.lootChance) {
                                 const dropTableID = monster.dropTableID;
+                                itemDropped = true;
                                 return RPGDropTable.findOne({dropTableID})
                             } else {
-                                throw new Error('Failed drop roll: no drops 4 u')
+                                // throw new Error('Failed drop roll: no drops 4 u')
+                                return null;
                             }
                         }).then((dropTable) => {
-                        const itemID = RPGTools.GetItemIDFromTable(dropTable.table);
+                        if (dropTable) {
+                            itemID = RPGTools.GetItemIDFromTable(dropTable.table);
+                            return RPGTools.AddItemToUserInventory(author.id, itemID)
+                        } else {
+                            return;
+                        }
+                    }).then(() => {
+                        const expToNextLevel = RPGCharacterManager.CalculateXPNeededForLevel(RPGCharacterManager.CalculatePlayerLevel(rpgCharacter));
+                        let extraFields = [
+                            {
+                                name: args.strings.dungeon.dungeonBattleResultTitle,
+                                value: replace(
+                                    args.strings.dungeon.dungeonBattleResultEXPGained,
+                                    [author.username,
+                                        monster.exp,
+                                        rpgCharacter.exp,
+                                        RPGCharacterManager.CalculateXPNeededForLevel(RPGCharacterManager.CalculatePlayerLevel(rpgCharacter)),
+                                        `${((rpgCharacter.exp / expToNextLevel )*100).toPrecision(2)}%`]
+                                )
+                            }
+                        ];
 
-                        args.sendOKEmbed({
-                            contents: replace(args.strings.dungeon.dungeonObtainItemFromMonster,
-                                [author.username,
-                                    RPGTools.GetItemName(itemID),
-                                    mStrings.name
-                                ])
+                        if (itemID) {
+                            extraFields.push({
+                                name: args.strings.dungeon.dungeonItemObtained,
+                                value: replace(args.strings.dungeon.dungeonObtainItemFromMonster,
+                                    [author.username,
+                                        RPGTools.GetItemName(itemID),
+                                        mStrings.name
+                                    ])
+                            })
+                        }
+
+                        return message.edit(
+                            args.bot.createOKEmbed({
+                                contents: newMessage,
+                                image: mStrings.imgDead,
+                                extraFields,
+                                thumbnail: author.avatarURL()
+                            })
+                        )
+                    })
+
+                        .catch((err) => {
+                            console.log('[DUNGEON COMMAND]:', err);
                         });
-                        return RPGTools.AddItemToUserInventory(author.id, itemID)
-                    }).catch((err) => {
-                        console.log('[DUNGEON COMMAND]:', err);
-                    });
 
 
                     collector.stop();
@@ -175,7 +207,8 @@ const dungeon = (args: CommandArgs) => {
                             contents: newMessage + '\n\n\`=======================================\`\n\n' +
                                 `${replace(args.strings.dungeon.monsterAttack, [mStrings.name])}
                         ${args.strings.dungeon.waitingForPlayer}`,
-                            image: mStrings.img
+                            image: mStrings.img,
+                            thumbnail: author.avatarURL()
                         })
                     ).then(() => {
                         monsterTurn(newMessage);
@@ -190,7 +223,8 @@ const dungeon = (args: CommandArgs) => {
             args.bot.createOKEmbed({
                 contents: replace(RPGTools.GetRandomStringFromArr(args.strings.dungeon.dungeonBattleTimeoutStrings),
                     [mStrings.name]),
-                image: mStrings.img
+                // image: mStrings.img,
+                thumbnail: author.avatarURL()
             })
         );
     };
@@ -229,6 +263,7 @@ const dungeon = (args: CommandArgs) => {
                     args.bot.createOKEmbed({
                         contents: newMessage,
                         image: mStrings.img,
+                        thumbnail: author.avatarURL()
                     })
                 ).then(() => {
                     return Promise.all([rpgCharacter.save(), rpgTimer.save()]);
@@ -251,7 +286,8 @@ const dungeon = (args: CommandArgs) => {
                 message.edit(
                     args.bot.createOKEmbed({
                         contents: newMessage,
-                        image: mStrings.img
+                        image: mStrings.img,
+                        thumbnail: author.avatarURL()
                     })
                 ).then(() => {
                     return rpgCharacter.save();

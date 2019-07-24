@@ -12,10 +12,12 @@ const confirmEmoji = '✅';
 
 const refundSkillPoints = (rpgChar: IRPGCharacter) => {
     let refundedSkillPoints =
-        rpgChar.stats.hpLevel-1 +
-        rpgChar.stats.str-1 +
-        rpgChar.stats.int-1 +
+        rpgChar.stats.hpLevel - 1 +
+        rpgChar.stats.str - 1 +
+        rpgChar.stats.int - 1 +
         rpgChar.skillPoints;
+
+    refundedSkillPoints = Math.round(refundedSkillPoints);
 
     rpgChar.stats.hpLevel = 1;
     rpgChar.stats.str = 1;
