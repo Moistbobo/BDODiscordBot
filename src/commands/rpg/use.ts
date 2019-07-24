@@ -11,7 +11,7 @@ const isItemUsable = (userInventory: any, itemIndex: number) => {
     return userInventory[itemIndex].itemType === ItemTypes[1];
 };
 
-const processItemEffects = (rpgChar: any, effectID:string) => {
+const processItemEffects = (rpgChar: any, effectID: string) => {
     const e = Effects.find((x) => x.effectID === effectID);
     let value = 0;
 
@@ -90,6 +90,16 @@ const use = (args: CommandArgs) => {
                             itemName])
                 });
                 throw new Error(`${itemName} is not usable`);
+            }
+
+            if (rpgChar.hitpoints.current <= 0) {
+                args.sendErrorEmbed({
+                    contents: replace(
+                        args.strings.use.useErrorDead,
+                        [args.message.author.username]
+                    )
+                })
+                throw new Error(`${args.message.author.username} is dead`);
             }
 
             return useItem(rpgChar, itemIndex, args);
