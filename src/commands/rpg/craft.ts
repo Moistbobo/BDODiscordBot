@@ -66,11 +66,8 @@ const craft = (args: CommandArgs) => {
     IsChannelRPGEnabled(args)
         .then(() => Promise.all([RPGRecipe.find(), FindOrCreateNewRPGCharacter(userID)]))
         .then((res: any) => {
-            recipes = res[0];
-            rpgCharacter = res[1];
+            [recipes, rpgCharacter] = res;
             charInventory = rpgCharacter.inventory;
-
-            const craftedItemID = recipes[recipeIndex].resultItemID;
 
             if (recipeIndex > recipes.length - 1) {
                 args.sendErrorEmbed({
@@ -82,6 +79,8 @@ const craft = (args: CommandArgs) => {
 
                 throw new Error('Specified index exceeds recipe array length');
             }
+
+            const craftedItemID = recipes[recipeIndex].resultItemID;
 
             const matCheck = doesPlayerHaveReqMats(charInventory, recipes[recipeIndex]);
             if (!matCheck) {
