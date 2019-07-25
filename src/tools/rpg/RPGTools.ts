@@ -149,12 +149,20 @@ const AddItemToUserInventory = (userID: string, itemID: string, qty = 1) => {
     })
 };
 
-const CheckIfDungeonOnCooldown = (rpgTimer: IRPGTimer) => {
+const CheckIfDungeonOnCooldown = (rpgTimer: IRPGTimer): { timeLeft: number, onCooldown: boolean } => {
     const now = Date.now() / 1000;
     const timeLeft = Timers.rpg.dungeonTimer - (now - rpgTimer.lastDungeon);
 
     return {timeLeft: Math.floor(timeLeft), onCooldown: (now - rpgTimer.lastDungeon) < Timers.rpg.dungeonTimer}
 };
+
+const CheckIfHealingItemOnCooldown = (rpgTimer: IRPGTimer): { timeLeft: number, onCooldown: boolean } => {
+    const now = Date.now() / 1000;
+    const timeLeft = Timers.rpg.healItemTimer - (now - rpgTimer.lastHealItem)
+
+    return {timeLeft: Math.floor(timeLeft), onCooldown: (now - rpgTimer.lastHealItem) < Timers.rpg.healItemTimer}
+};
+
 
 const RPGTools = {
     CalcMaxDamage,
@@ -173,7 +181,8 @@ const RPGTools = {
     GetRandomStringFromArr,
     GetMonsterIDFromTable,
     GetItemIDFromTable,
-    CheckIfDungeonOnCooldown
+    CheckIfDungeonOnCooldown,
+    CheckIfHealingItemOnCooldown
 };
 
 export default RPGTools;

@@ -15,7 +15,7 @@ export interface IItem extends Document {
     }
 }
 
-export const ItemTypes = ['weapon', 'consumable', 'material'];
+export const ItemTypes = ['weapon', 'item-healing', 'material', 'item-buff'];
 
 export const ItemSchema = new Schema({
     itemID: {

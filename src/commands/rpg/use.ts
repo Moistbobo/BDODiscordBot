@@ -1,11 +1,12 @@
 import CommandArgs from "../../classes/CommandArgs";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import {FindOrCreateNewRPGCharacter, IRPGCharacter} from "../../models/rpg/RPGCharacter";
-import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
+import {FindOrCreateRPGTimer, IRPGTimer} from "../../models/rpg/RPGTimer";
 import {ItemTypes} from "../../models/rpg/Item";
 import replace from "../../tools/replace";
 import RPGTools from "../../tools/rpg/RPGTools";
 import Effects, {effectActions, healType} from "../../resources/rpg/Effects";
+import {on} from "cluster";
 
 const isItemUsable = (userInventory: any, itemIndex: number) => {
     return userInventory[itemIndex].itemType === ItemTypes[1];
@@ -27,7 +28,7 @@ const processItemEffects = (rpgChar: any, effectID: string) => {
     return {rpgChar, effect: e.effect, value};
 };
 
-const useItem = (rpgChar: any, itemIndex: number, args: CommandArgs) => {
+const useItem = (rpgChar: any, rpgTimer: IRPGTimer, itemIndex: number, args: CommandArgs) => {
 
     const effectsArray = rpgChar.inventory[itemIndex].effects;
 
@@ -53,12 +54,13 @@ const useItem = (rpgChar: any, itemIndex: number, args: CommandArgs) => {
     });
 
     rpgChar.inventory[itemIndex].qty--;
+    rpgTimer.lastHealItem = args.timeNow;
 
     if (rpgChar.inventory[itemIndex].qty === 0) {
         rpgChar.inventory.splice(itemIndex, 1);
     }
 
-    return rpgChar.save();
+    return Promise.all([rpgChar.save(), rpgTimer.save()]);
 };
 
 const use = (args: CommandArgs) => {
@@ -92,6 +94,28 @@ const use = (args: CommandArgs) => {
                 throw new Error(`${itemName} is not usable`);
             }
 
+            const itemType = rpgChar.inventory[itemIndex].itemType;
+            // Check if the specified item type is on cooldown
+            switch (itemType) {
+                // Healing
+                case ItemTypes[1]:
+                    const {timeLeft, onCooldown} = RPGTools.CheckIfHealingItemOnCooldown(rpgTimer);
+                    if (onCooldown) {
+                        args.sendErrorEmbed({
+                            contents:
+                                replace(args.strings.use.useItemHealingCooldown,
+                                    [
+                                        args.message.author.username,
+                                        timeLeft])
+                        });
+                        throw new Error('Healing item on cooldown');
+                    }
+                // Buff
+                case ItemTypes[3]:
+                    break;
+            }
+
+
             if (rpgChar.hitpoints.current <= 0) {
                 args.sendErrorEmbed({
                     contents: replace(
@@ -102,9 +126,13 @@ const use = (args: CommandArgs) => {
                 throw new Error(`${args.message.author.username} is dead`);
             }
 
-            return useItem(rpgChar, itemIndex, args);
+            return useItem(rpgChar, rpgTimer, itemIndex, args);
+        })
+        .catch((err) => {
+            console.log('[USE COMMAND]: ', err.toString());
         })
 };
 
 
 export const action = use;
+
