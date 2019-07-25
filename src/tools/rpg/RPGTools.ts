@@ -1,10 +1,8 @@
-import {FindOrCreateRPGServerStats} from "../../models/rpg/RPGServerStats";
 import ItemFactory from "../../models/rpg/Factories/ItemFactory";
-import {FindOrCreateNewRPGCharacter, IRPGCharacter} from "../../models/rpg/RPGCharacter";
+import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
 import {ItemTypes} from "../../models/rpg/Item";
-import RPGTimer, {IRPGTimer} from "../../models/rpg/RPGTimer";
+import {IRPGTimer} from "../../models/rpg/RPGTimer";
 import Timers from "../../resources/Timers";
-import {spawn} from "child_process";
 
 let strings = null;
 
@@ -155,7 +153,7 @@ const CheckIfDungeonOnCooldown = (rpgTimer: IRPGTimer) => {
     const now = Date.now() / 1000;
     const timeLeft = Timers.rpg.dungeonTimer - (now - rpgTimer.lastDungeon);
 
-    return {timeLeft: Math.floor(timeLeft), onCooldown:(now - rpgTimer.lastDungeon) < Timers.rpg.dungeonTimer }
+    return {timeLeft: Math.floor(timeLeft), onCooldown: (now - rpgTimer.lastDungeon) < Timers.rpg.dungeonTimer}
 };
 
 const RPGTools = {
