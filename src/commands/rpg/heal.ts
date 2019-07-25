@@ -19,6 +19,7 @@ const healSelf = (args: CommandArgs) => {
             let rpgCharacter = result[1];
             let rpgServerStats = result[2];
 
+            // Can't heal if on cd
             if (!CanHeal(rpgTimer.lastHeal)) {
                 const timeToHeal = Timers.rpg.healCD - (Date.now() / 1000 - rpgTimer.lastHeal);
                 args.sendErrorEmbed({
@@ -28,6 +29,7 @@ const healSelf = (args: CommandArgs) => {
                 throw new Error('Heal is on CD');
             }
 
+            // Can't heal if max hp
             if (rpgCharacter.hitpoints.current === rpgCharacter.hitpoints.max) {
                 args.sendErrorEmbed({
                     contents: replace(args.strings.heal.hpFull,
@@ -36,6 +38,7 @@ const healSelf = (args: CommandArgs) => {
                 throw new Error('User is at max HP');
             }
 
+            // Can't heal if dead
             if (rpgCharacter.hitpoints.current <= 0) {
                 args.sendErrorEmbed({contents: replace(args.strings.heal.userIsDead, [args.message.author.username])});
                 throw new Error('User is dead');
@@ -78,6 +81,7 @@ const healOther = (args: CommandArgs, targetUser: User) => {
         .then((res) => {
             let [rpgTimer, healingCharacter, targetCharacter, rpgServerStats] = res;
 
+            // Can't heal if on CD
             if (!CanHeal(rpgTimer.lastHeal)) {
                 const timeToHeal = Timers.rpg.healCD - (Date.now() / 1000 - rpgTimer.lastHeal);
                 args.sendErrorEmbed({
@@ -87,6 +91,7 @@ const healOther = (args: CommandArgs, targetUser: User) => {
                 throw new Error('Heal is on CD');
             }
 
+            // Can't heal if target is at max hp
             if (targetCharacter.hitpoints.current === targetCharacter.hitpoints.max) {
                 args.sendErrorEmbed({
                     contents: replace(args.strings.heal.hpFull,
@@ -95,6 +100,13 @@ const healOther = (args: CommandArgs, targetUser: User) => {
                 throw new Error('User is at max HP');
             }
 
+            // Can't heal if dead
+            if (healingCharacter.hitpoints.current <= 0) {
+                args.sendErrorEmbed({contents: replace(args.strings.heal.userIsDead, [args.message.author.username])});
+                throw new Error('User is dead');
+            }
+
+            // Can't heal if target is already dead
             if (targetCharacter.hitpoints.current <= 0) {
                 args.sendErrorEmbed({contents: replace(args.strings.heal.userIsDead, [targetUser.username])});
                 throw new Error('User is dead');
