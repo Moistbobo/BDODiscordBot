@@ -6,6 +6,7 @@ const statusStrings = {
     combatStrings: `HP: {0}/{1}\nBalance: {2}\nCrit: {3}\nCrit Damage: {4}`,
     skillsTitle: `Skill allocation`,
     skillsStrings: `HP Level: {0}\nStrength: {1}\nIntelligence: {2}`,
+    skillsStringsUnused: `\nUnused skill points: {0}`,
     statusTitle: `Statuses`,
     statusStrings: `Is AFK: {0}\n`,
     otherStatsTitle: `Other Stats`,

@@ -42,9 +42,9 @@ const status = (args: CommandArgs) => {
                 args.strings.status.combatStrings,
                 [rpgCharacter.hitpoints.current,
                     rpgCharacter.hitpoints.max,
-                    `${rpgCharacter.stats.bal*100}`,
-                    `${rpgCharacter.stats.crit*100}%`,
-                    `${rpgCharacter.stats.critDmgMult*100}%`]
+                    `${rpgCharacter.stats.bal * 100}`,
+                    `${rpgCharacter.stats.crit * 100}%`,
+                    `${rpgCharacter.stats.critDmgMult * 100}%`]
             );
 
             const expToNextLevel = RPGCharacterManager.CalculateXPNeededForLevel(RPGCharacterManager.CalculatePlayerLevel(rpgCharacter));
@@ -57,14 +57,20 @@ const status = (args: CommandArgs) => {
                 ]
             )
 
-            const skillsStrings = replace(
+            let skillsStrings = replace(
                 args.strings.status.skillsStrings,
                 [
                     rpgCharacter.stats.hpLevel,
                     rpgCharacter.stats.str,
-                    rpgCharacter.stats.int
+                    rpgCharacter.stats.int,
                 ]
             );
+
+            if (rpgCharacter.skillPoints > 0) {
+                skillsStrings +=
+                    replace(args.strings.status.skillsStringsUnused,
+                        [rpgCharacter.skillPoints])
+            }
 
             const statusStrings = replace(
                 args.strings.status.statusStrings,
