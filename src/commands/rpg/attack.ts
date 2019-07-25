@@ -67,6 +67,19 @@ const attack = (args: CommandArgs) => {
                 throw new Error('Attacker is still on attack cooldown')
             }
 
+            // PVP level threshold = 10
+            if(RPGCharacterManager.CalculatePlayerLevel(source) < 10){
+                const contents = replace(args.strings.attack.attackPVPMinLevelError,[sourceUser.username]);
+                args.sendErrorEmbed({contents});
+                throw new Error('Attacker is below PVP level limit');
+            }
+
+            if(RPGCharacterManager.CalculatePlayerLevel(target) < 10){
+                const contents = replace(args.strings.attack.attackPVPMinLevelError,[targetUser.username]);
+                args.sendErrorEmbed({contents});
+                throw new Error(`Target is below PVP level limit`);
+            }
+
             if (source.hitpoints.current <= 0) {
                 args.sendErrorEmbed({contents: replace(args.strings.attack.attackerIsDead, [sourceUser.username])});
                 throw new Error('Attacker is dead');
