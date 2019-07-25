@@ -2,7 +2,7 @@ import {Document, Schema, model} from 'mongoose';
 import Item, {IItem, ItemSchema} from "./Item";
 
 export const DefaultStats = {
-    hp: 125,
+    hp: 150,
     str: 1,
     int: 1,
     hpLevel: 1,
@@ -73,17 +73,17 @@ export const RPGCharacterSchema = new Schema({
     hitpoints: {
         max: {
             type: Number,
-            default: 75
+            default: 150
         },
         current: {
             type: Number,
-            default: 75
+            default: 150
         }
     },
     stats: {
         hpLevel: {
             type: Number,
-            default: 1
+            default: 0
         },
         bal: {
             type: Number,
@@ -137,7 +137,7 @@ export const RPGCharacterSchema = new Schema({
     },
     skillPoints: {
         type: Number,
-        default: 0
+        default: 1
     },
     inventory: [ItemSchema],
     equippedWeapon: ItemSchema,
