@@ -15,7 +15,7 @@ const CalculatePlayerLevel = (rpgChar: IRPGCharacter) => {
         rpgChar.skillPoints +
         rpgChar.stats.str - 1 +
         rpgChar.stats.int - 1 +
-        rpgChar.stats.hpLevel - 1
+        rpgChar.stats.hpLevel
     )
 };
 
