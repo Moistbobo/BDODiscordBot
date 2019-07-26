@@ -17,6 +17,9 @@ const dungeonSpawnRates = {
             monsterID: 'DMON0005',
             chance: 10
         }
+    ],
+    2:[
+        
     ]
 };
 

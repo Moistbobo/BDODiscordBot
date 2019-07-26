@@ -9,6 +9,7 @@ import RPGDropTable from "../../models/rpg/RPGDropTable";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
 import {FindOrCreateRPGServerStats, IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import RPGCharacterManager, {maxLevel, maxLevelPenalty} from "../../tools/rpg/RPGCharacterManager";
+import dungeonUnlockRules from "../../resources/rpg/monsters/dungeonUnlockRules";
 
 const attackEmoji = '⚔';
 const runEmoji = '🏃';
@@ -26,6 +27,8 @@ const dungeon = (args: CommandArgs) => {
     let rpgTimer = null;
     let rpgServerStats = null;
     let acceptReactions = true;
+
+
     const collectorFilter = (reaction, user) => {
         return [attackEmoji, runEmoji].includes(reaction.emoji.name) &&
             user.id === args.message.author.id;
@@ -58,7 +61,35 @@ const dungeon = (args: CommandArgs) => {
 
             rpgTimer.lastDungeon = Date.now() / 1000;
 
-            const spawnTable = dungeonSpawnRates[rpgCharacter.dungeonLevel];
+            const dungeonFloor = parseInt(args.message.content) || rpgCharacter.dungeonLevel;
+            if (isNaN(dungeonFloor) || dungeonFloor > Object.keys(dungeonSpawnRates).length) {
+                args.sendErrorEmbed({
+                    contents: replace(args.strings.dungeon.dungeonInvalidFloor,
+                        [author.username,
+                            dungeonFloor])
+                });
+                throw new Error(`User ${author.username} specified invalid dungeon floor ${dungeonFloor}`);
+            }
+
+            if (dungeonFloor > rpgCharacter.dungeonLevel) {
+
+                let unlockMonster = dungeonUnlockRules.find((x) => x.unlocks === dungeonFloor);
+                // unlockMonster = unlockMonster[0];
+                console.log(unlockMonster);
+                args.sendErrorEmbed({
+                    contents: replace(args.strings.dungeon.dungeonFloorNotUnlocked,
+                        [author.username,
+                            dungeonFloor]),
+                    footer: replace(args.strings.dungeon.dungeonUnlockTerms,
+                        [dungeonFloor, RPGTools.GetMonsterStrings(unlockMonster.monster).name,
+                            unlockMonster.floor],
+                        false
+                    )
+                });
+                throw new Error(`User ${author.username} has not unlocked floor ${dungeonFloor} yet`);
+            }
+
+            const spawnTable = dungeonSpawnRates[dungeonFloor];
             const monsterIDToSpawn = RPGTools.GetMonsterIDFromTable(spawnTable);
             mStrings = RPGTools.GetMonsterStrings(monsterIDToSpawn);
             return Promise.all([RPGMonster.findOne({monsterID: monsterIDToSpawn}), rpgTimer.save()]);
@@ -77,9 +108,6 @@ const dungeon = (args: CommandArgs) => {
             message = msg;
             return msg.react(attackEmoji);
         })
-        // .then((msg) => {
-        //     return message.react(runEmoji)
-        // })
         .then(() => {
             collector = message.createReactionCollector(collectorFilter, {
                 time: battleTime,
@@ -89,7 +117,7 @@ const dungeon = (args: CommandArgs) => {
             collector.on('end', onEnd);
         })
         .catch((err) => {
-            console.log('[DUNGEON COMMAND]: ', err);
+            console.log('[DUNGEON COMMAND]: ', err.toString());
         });
 
     // This is also the "Player turn"
@@ -99,11 +127,7 @@ const dungeon = (args: CommandArgs) => {
         FindOrCreateNewRPGCharacter(author.id)
             .then((rpgChar) => {
                 rpgCharacter = rpgChar;
-
                 acceptReactions = false;
-
-                // const playerDamage = RPGTools.DamageCalculation(rpgCharacter.stats.str, rpgCharacter.stats.bal);
-
                 const {isCrit, damage} = RPGCombatTools.CalculatePlayerDamage(rpgCharacter);
 
                 const attackString = isCrit ? replace(args.strings.attack.attackCritical, [author.username, mStrings.name]) : '';
@@ -130,7 +154,6 @@ const dungeon = (args: CommandArgs) => {
 
                     Promise.all([
                         RPGCharacterManager.AddXPPlayer(rpgCharacter, monster.exp, args),
-                        // RPGCharacterManager.ProcessStrUpMonsterKill(rpgCharacter, args, author.username, mStrings, monster),
                         rpgServerStats.save(),
                     ])
                         .then(() => {
@@ -178,18 +201,38 @@ const dungeon = (args: CommandArgs) => {
                             })
                         }
 
-                        return message.edit(
-                            args.bot.createOKEmbed({
-                                contents: newMessage,
-                                image: mStrings.imgDead,
-                                extraFields,
-                                thumbnail: author.avatarURL()
-                            })
-                        )
-                    })
+                        let promises = [];
 
+                        // See if the monster unlocked a new dungeon floor for the player
+                        const floorUnlockRule = dungeonUnlockRules.find((x) => x.monster === monster.monsterID);
+                        if (floorUnlockRule &&
+                            floorUnlockRule.unlocks > rpgCharacter.dungeonLevel) {
+                            rpgCharacter.dungeonLevel = floorUnlockRule.unlocks;
+                            extraFields.push({
+                                name: args.strings.dungeon.dungeonFloorUnlockedTitle,
+                                value: replace(args.strings.dungeon.dungeonFloorUnlockedString,
+                                    [author.username,
+                                        floorUnlockRule.unlocks])
+                            });
+                            promises.push(rpgCharacter.save());
+                        }
+
+                        promises.push(
+                            message.edit(
+                                args.bot.createOKEmbed({
+                                    contents: newMessage,
+                                    image: mStrings.imgDead,
+                                    extraFields,
+                                    thumbnail: author.avatarURL()
+                                })
+                            )
+                        );
+
+
+                        return Promise.all(promises);
+                    })
                         .catch((err) => {
-                            console.log('[DUNGEON COMMAND]:', err);
+                            console.log('[DUNGEON COMMAND PLAYER TURN]:', err);
                         });
 
 
