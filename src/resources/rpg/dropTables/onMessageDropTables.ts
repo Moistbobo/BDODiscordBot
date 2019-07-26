@@ -1,19 +1,15 @@
 const OnMessageDropTables = {
     ONMSG_NORMAL_01: [
         {
-            itemID: 'WPN1001',
-            chance: 55
-        },
-        {
-            itemID: 'WPN1002',
-            chance: 20
-        },
-        {
-            itemID: 'WPN1003',
-            chance: 20
+            itemID: 'MAT0002',
+            chance: 40
         },
         {
             itemID: 'MAT0001',
+            chance: 10
+        },
+        {
+            itemID: 'CONS0001',
             chance: 5
         }
     ],

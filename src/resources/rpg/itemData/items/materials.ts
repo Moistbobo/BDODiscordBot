@@ -10,6 +10,11 @@ const Materials =[
         itemID: 'MAT0002',
         itemType: ItemTypes[2],
         rarity:2
+    },
+    {
+        itemID: 'MAT0003',
+        itemType: ItemTypes[3],
+        rarity:5
     }
 ];
 

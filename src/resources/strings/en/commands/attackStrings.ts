@@ -9,8 +9,8 @@ const attackStrings = {
     ],
     attackTargetLives:'__{0} attacked {1} for {2} damage!__\n\n' +
         '{1} has {3}/{4} HP left!',
-    attackTargetKilled: '{0} has been killed!',
-    attackCritical: '__{0} dealt a mortal blow to {1}!__\n\n',
+    attackTargetKilled: '💀 {0} has been killed!',
+    attackCritical: '__💥 {0} dealt a mortal blow to {1}!__\n\n',
     attackSelf:[
         '{0} brings the gun to their head but ends up shitting themself instead of pulling the trigger',
         `{0} brings the knife to their throat but realize it's a butter knife so they use it to make some avocado toast because it's healthy`,

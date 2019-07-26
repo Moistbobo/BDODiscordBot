@@ -91,6 +91,7 @@ const dungeon = (args: CommandArgs) => {
 
             const spawnTable = dungeonSpawnRates[dungeonFloor];
             const monsterIDToSpawn = RPGTools.GetMonsterIDFromTable(spawnTable);
+            console.log('Spawning', monsterIDToSpawn);
             mStrings = RPGTools.GetMonsterStrings(monsterIDToSpawn);
             return Promise.all([RPGMonster.findOne({monsterID: monsterIDToSpawn}), rpgTimer.save()]);
         })
@@ -168,7 +169,10 @@ const dungeon = (args: CommandArgs) => {
                         }).then((dropTable) => {
                         if (dropTable) {
                             itemID = RPGTools.GetItemIDFromTable(dropTable.table);
-                            return RPGTools.AddItemToUserInventory(author.id, itemID)
+                            if (itemID)
+                                return RPGTools.AddItemToUserInventory(author.id, itemID);
+                            else
+                                return;
                         } else {
                             return;
                         }

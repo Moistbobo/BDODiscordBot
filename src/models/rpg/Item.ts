@@ -9,9 +9,14 @@ export interface IItem extends Document {
     enchantLevel: number
     qty: number,
     stackable: boolean,
-    requirements:{
+    requirements: {
         str: number,
         int: number
+    }
+    weaponStats: {
+        critBonus: number,
+        balBonus: number,
+        critDamageBonus: number
     }
 }
 
@@ -39,17 +44,22 @@ export const ItemSchema = new Schema({
         max: 15
     },
     stackable: Boolean,
-    requirements:{
-        str:{
+    requirements: {
+        str: {
             type: Number,
-            required:true,
+            required: true,
             default: 0
         },
-        int:{
-            type:Number,
-            required:true,
+        int: {
+            type: Number,
+            required: true,
             default: 0
         }
+    },
+    weaponStats: {
+        balBonus: Number,
+        critBonus: Number,
+        critDamageBonus: Number
     }
 });
 

@@ -1,4 +1,4 @@
-import {ItemTypes} from "../../../../models/rpg/Item";
+import Item, {ItemTypes} from "../../../../models/rpg/Item";
 
 const Weapons = [
     {
@@ -54,6 +54,49 @@ const Weapons = [
         baseDamage: 18,
         requirements: {
             str: 4.00
+        }
+    },
+    {
+        itemID: 'WPN4000',
+        itemType: ItemTypes[0],
+        effects: [],
+        rarity: 4,
+        baseDamage: 30,
+        requirements: {
+            str: 8
+        },
+        weaponStats: {
+            balBonus: 0.1,
+            critBonus: 0.05
+        }
+    },
+    {
+        itemID: 'WPN4001',
+        itemType: ItemTypes[0],
+        effects: [],
+        rarity: 4,
+        baseDamage: 35,
+        requirements: {
+            str: 9
+        },
+        weaponStats: {
+            balBonus: 0.1,
+            critBonus: 0.05
+        }
+    },
+    {
+        itemID: 'WPN5000',
+        itemType: ItemTypes[0],
+        effects: [],
+        rarity: 5,
+        baseDamage: 60,
+        requirements: {
+            str: 12
+        },
+        weaponStats: {
+            balBonus: 0.1,
+            critBonus: 0.10,
+            critDamageBonus: 0.1
         }
     }
 ];

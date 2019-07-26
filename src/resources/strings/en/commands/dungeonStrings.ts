@@ -7,10 +7,10 @@ const dungeonStrings = {
     dungeonOnCooldown: `{0}, {1} seconds until next dungeon`,
     dungeonFooter: `{0}'s dungeon exploration`,
     dungeonBattleWinnerStrings: [
-        '{0} was brutally massacred by {1}',
-        '{0} has been defeated by {1}',
-        '{0} has been killed by {1}',
-        '{0} has been obliterated by {1}'
+        '💀 {0} was brutally massacred by {1}',
+        '💀 {0} has been defeated by {1}',
+        '💀 {0} has been killed by {1}',
+        '💀 {0} has been obliterated by {1}'
 
     ],
     dungeonBattleTimeoutStrings:[

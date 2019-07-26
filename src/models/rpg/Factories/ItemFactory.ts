@@ -4,7 +4,8 @@ const CreateNewItem = (itemID: string, qty = 1):Promise<any> => {
     return new Promise((resolve, reject) => {
         Item.findOne({itemID})
             .then((item: any) => {
-                if (!item) reject(new Error(`Item ID ${itemID} not found in database`));
+                // if (!item) reject(new Error(`Item ID ${itemID} not found in database`));
+                if(!item) resolve(null);
                 if(item.itemType === ItemTypes[0]){
                     qty = 1;
                 }

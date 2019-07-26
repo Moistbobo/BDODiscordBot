@@ -38,13 +38,20 @@ const status = (args: CommandArgs) => {
                 ]
             );
 
+            const weaponBalBonus = rpgCharacter.equippedWeapon.weaponStats.balBonus || 0;
+            const weaponCritBonus = rpgCharacter.equippedWeapon.weaponStats.critBonus || 0;
+            const weaponCritDamageBonus = rpgCharacter.equippedWeapon.weaponStats.critDamageBonus || 0;
+            const balBonusString = weaponBalBonus>0? ` +(${weaponBalBonus * 100})`:'';
+            const critBonusString = weaponCritBonus>0? ` +(${weaponCritBonus * 100}%)`:'';
+            const critDamageBonusString = weaponCritDamageBonus>0? ` +(${weaponCritDamageBonus * 100}%)`:'';
+
             const combatStrings = replace(
                 args.strings.status.combatStrings,
                 [rpgCharacter.hitpoints.current,
                     rpgCharacter.hitpoints.max,
-                    `${rpgCharacter.stats.bal * 100}`,
-                    `${rpgCharacter.stats.crit * 100}%`,
-                    `${rpgCharacter.stats.critDmgMult * 100}%`]
+                    `${rpgCharacter.stats.bal * 100}${balBonusString}`,
+                    `${rpgCharacter.stats.crit * 100}%${critBonusString}`,
+                    `${rpgCharacter.stats.critDmgMult * 100}%${critDamageBonusString}`]
             );
 
             const expToNextLevel = RPGCharacterManager.CalculateXPNeededForLevel(RPGCharacterManager.CalculatePlayerLevel(rpgCharacter));
@@ -55,7 +62,7 @@ const status = (args: CommandArgs) => {
                     expToNextLevel,
                     ((rpgCharacter.exp / expToNextLevel) * 100).toPrecision(2)
                 ]
-            )
+            );
 
             let skillsStrings = replace(
                 args.strings.status.skillsStrings,
