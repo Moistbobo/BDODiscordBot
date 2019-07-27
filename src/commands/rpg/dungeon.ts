@@ -290,7 +290,7 @@ const dungeon = (args: CommandArgs) => {
             if (rpgCharacter.hitpoints.current <= 0) {
                 rpgCharacter.deaths++;
                 rpgTimer.lastDeath = Date.now() / 1000;
-
+                rpgCharacter = RPGCharacterManager.ApplyDeathXPPenalty(rpgCharacter);
                 const newMessage =
                     `${prevMessage}` + '\n\n\`=======================================\`\n\n' +
                     replace(args.strings.dungeon.monsterAttack, [mStrings.name]) +

@@ -5,12 +5,12 @@ export const DefaultStats = {
     hp: 150,
     str: 1,
     int: 1,
-    hpLevel: 1,
+    hpLevel: 0,
     level: 1
 };
 
 export const IncrementPerLevel = {
-    hp: 25
+    hp: 10
 };
 
 export interface IRPGCharacter extends Document {

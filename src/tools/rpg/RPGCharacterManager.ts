@@ -32,7 +32,8 @@ const AddXPPlayer = (rpgChar: IRPGCharacter, exp: number, args: CommandArgs) => 
         softCapPenalty = maxLevelPenalty;
     }
 
-    rpgChar.exp += Math.floor(exp * softCapPenalty);
+    rpgChar.exp += exp * softCapPenalty;
+    rpgChar.exp = Math.floor(rpgChar.exp);
 
     if (rpgChar.exp > CalculateXPNeededForLevel(playerLevel)) {
         rpgChar.exp = (rpgChar.exp - CalculateXPNeededForLevel(playerLevel));
@@ -54,7 +55,7 @@ const AddXPPlayer = (rpgChar: IRPGCharacter, exp: number, args: CommandArgs) => 
 // Lose 2% exp on death
 const ApplyDeathXPPenalty = (rpgChar: IRPGCharacter) => {
     const expPenalty = 0.02;
-    rpgChar.exp = Math.min(0, rpgChar.exp - (CalculateXPNeededForLevel(CalculatePlayerLevel(rpgChar) * expPenalty)));
+    rpgChar.exp = Math.floor(Math.max(0, rpgChar.exp - ((CalculateXPNeededForLevel(CalculatePlayerLevel(rpgChar))* expPenalty))));
 
     return rpgChar;
 };

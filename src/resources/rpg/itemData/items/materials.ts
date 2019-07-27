@@ -13,7 +13,7 @@ const Materials =[
     },
     {
         itemID: 'MAT0003',
-        itemType: ItemTypes[3],
+        itemType: ItemTypes[2],
         rarity:5
     }
 ];

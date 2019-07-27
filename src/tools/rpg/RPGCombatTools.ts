@@ -25,14 +25,23 @@ const CalculatePlayerDamage = (rpgChar: IRPGCharacter) => {
     const maxDamage = CalcMaxDamage(rpgChar.stats.str, equipmentBonus, 0);
 
     console.log(`Player max damage: ${maxDamage}`);
-    const weaponBalanceBonus = rpgChar.equippedWeapon.weaponStats.balBonus || 0;
-    const weaponCritBonus = rpgChar.equippedWeapon.weaponStats.critBonus || 0;
-    const weaponCritDamageBonus = rpgChar.equippedWeapon.weaponStats.critDamageBonus || 0;
+    if (rpgChar.equippedWeapon) {
+        const weaponBalanceBonus = rpgChar.equippedWeapon.weaponStats.balBonus || 0;
+        const weaponCritBonus = rpgChar.equippedWeapon.weaponStats.critBonus || 0;
+        const weaponCritDamageBonus = rpgChar.equippedWeapon.weaponStats.critDamageBonus || 0;
 
 
-    const balanceMod = RPGTools.GetRandomFloatRange(rpgChar.stats.bal + weaponBalanceBonus, 1.0);
-    const isCrit = Math.random() < rpgChar.stats.crit + weaponCritBonus;
-    const finalDamage = (maxDamage * balanceMod) * (isCrit ? rpgChar.stats.critDmgMult + weaponCritDamageBonus : 1.0)
+        const balanceMod = RPGTools.GetRandomFloatRange(rpgChar.stats.bal + weaponBalanceBonus, 1.0);
+        const isCrit = Math.random() < rpgChar.stats.crit + weaponCritBonus;
+        const finalDamage = (maxDamage * balanceMod) * (isCrit ? rpgChar.stats.critDmgMult + weaponCritDamageBonus : 1.0)
+
+        return {isCrit, damage: Math.floor(finalDamage)};
+    }
+
+
+    const balanceMod = RPGTools.GetRandomFloatRange(rpgChar.stats.bal, 1.0);
+    const isCrit = Math.random() < rpgChar.stats.crit;
+    const finalDamage = (maxDamage * balanceMod) * (isCrit ? rpgChar.stats.critDmgMult : 1.0)
 
     return {isCrit, damage: Math.floor(finalDamage)};
 };

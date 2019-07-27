@@ -68,6 +68,11 @@ const resetSkills = (args: CommandArgs) => {
         .then((char) => {
             rpgChar = refundSkillPoints(char);
 
+            const equippedWeapon = rpgChar.equippedWeapon;
+            if (equippedWeapon) {
+                rpgChar.inventory.push(equippedWeapon);
+                rpgChar.equippedWeapon = null;
+            }
             return rpgChar.save()
         })
         .then(() => {
@@ -77,7 +82,7 @@ const resetSkills = (args: CommandArgs) => {
                     [author.username,
                         rpgChar.skillPoints
                     ]);
-            args.sendOKEmbed({contents});
+            args.sendOKEmbed({contents, footer: args.strings.resetSkills.weaponUnequipped});
         })
         .catch((err) => {
             console.log('[RESET SKILL COMMAND]:', err.toString());

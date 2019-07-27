@@ -1,5 +1,5 @@
 import CommandArgs from "../../classes/CommandArgs";
-import {FindOrCreateNewRPGCharacter} from "../../models/rpg/RPGCharacter";
+import {DefaultStats, FindOrCreateNewRPGCharacter, IncrementPerLevel} from "../../models/rpg/RPGCharacter";
 import replace from "../../tools/replace";
 import {IsChannelRPGEnabled} from "../../models/rpg/RPGServerStats";
 import {FindOrCreateRPGTimer} from "../../models/rpg/RPGTimer";
@@ -38,12 +38,19 @@ const status = (args: CommandArgs) => {
                 ]
             );
 
-            const weaponBalBonus = rpgCharacter.equippedWeapon.weaponStats.balBonus || 0;
-            const weaponCritBonus = rpgCharacter.equippedWeapon.weaponStats.critBonus || 0;
-            const weaponCritDamageBonus = rpgCharacter.equippedWeapon.weaponStats.critDamageBonus || 0;
-            const balBonusString = weaponBalBonus>0? ` +(${weaponBalBonus * 100})`:'';
-            const critBonusString = weaponCritBonus>0? ` +(${weaponCritBonus * 100}%)`:'';
-            const critDamageBonusString = weaponCritDamageBonus>0? ` +(${weaponCritDamageBonus * 100}%)`:'';
+            rpgCharacter.hitpoints.max = DefaultStats.hp + (rpgCharacter.stats.hpLevel * IncrementPerLevel.hp);
+            rpgCharacter.hitpoints.current = Math.min(rpgCharacter.hitpoints.current, rpgCharacter.hitpoints.max);
+
+            const weapon = rpgCharacter.equippedWeapon;
+
+            let weaponBalBonus = weapon?weapon.weaponStats.balBonus || 0 : 0;
+            let weaponCritBonus = weapon?weapon.weaponStats.critBonus || 0 : 0;
+            let weaponCritDamageBonus = weapon?weapon.weaponStats.critDamageBonus || 0:0;
+
+
+            const balBonusString = weaponBalBonus&&weaponBalBonus>0? ` +(${weaponBalBonus * 100})`:'';
+            const critBonusString = weaponCritBonus&&weaponCritBonus>0? ` +(${weaponCritBonus * 100}%)`:'';
+            const critDamageBonusString = weaponCritDamageBonus&&weaponCritDamageBonus>0? ` +(${weaponCritDamageBonus * 100}%)`:'';
 
             const combatStrings = replace(
                 args.strings.status.combatStrings,
@@ -67,9 +74,9 @@ const status = (args: CommandArgs) => {
             let skillsStrings = replace(
                 args.strings.status.skillsStrings,
                 [
-                    rpgCharacter.stats.hpLevel,
-                    rpgCharacter.stats.str,
-                    rpgCharacter.stats.int,
+                    Math.floor(rpgCharacter.stats.hpLevel),
+                    Math.floor(rpgCharacter.stats.str),
+                    Math.floor(rpgCharacter.stats.int),
                 ]
             );
 
@@ -128,6 +135,8 @@ const status = (args: CommandArgs) => {
                     ]
                 });
             args.stopTyping();
+
+            return rpgCharacter.save();
         })
         .catch((err) => {
             console.log(err.toString());
