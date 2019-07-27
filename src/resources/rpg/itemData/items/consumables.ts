@@ -6,7 +6,7 @@ const Consumables = [
         itemID: 'CONS0001',
         itemType: ItemTypes[1],
         rarity: 2,
-        effects: ['EFF0004'],
+        effects: ['EFF0001'],
     },
     {
         note: 'Choroids',
@@ -20,7 +20,7 @@ const Consumables = [
         itemID: 'CONS0003',
         itemType: ItemTypes[1],
         rarity: 4,
-        effects: ['EFF0001']
+        effects: ['EFF0004']
     }
 ];
 
