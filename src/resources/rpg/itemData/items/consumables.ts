@@ -2,11 +2,11 @@ import {ItemTypes} from "../../../../models/rpg/Item";
 
 const Consumables = [
     {
+        note: 'Rainbow Potion',
         itemID: 'CONS0001',
         itemType: ItemTypes[1],
         rarity: 2,
-        effects: ['EFF0001'],
-        note: 'Rainbow Potion'
+        effects: ['EFF0004'],
     },
     {
         note: 'Choroids',
@@ -14,8 +14,14 @@ const Consumables = [
         itemType: ItemTypes[1],
         rarity: 5,
         effects: ['EFF0002']
+    },
+    {
+        note: 'Concentrated Rainbow Potion',
+        itemID: 'CONS0003',
+        itemType: ItemTypes[1],
+        rarity: 4,
+        effects: ['EFF0001']
     }
-
 ];
 
 export default Consumables;

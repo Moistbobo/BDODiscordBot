@@ -22,6 +22,9 @@ const processItemEffects = (rpgChar: any, effectID: string) => {
             rpgChar.hitpoints.current = Math.min(rpgChar.hitpoints.max,
                 (rpgChar.hitpoints.current += value));
 
+        } else if (e.effect.effectType === healType[1]) {
+            value = e.effect.value;
+            rpgChar.hitpoints.current = Math.min(rpgChar.hitpoints.max, rpgChar.hitpoints.current + value);
         }
     }
 
@@ -29,15 +32,22 @@ const processItemEffects = (rpgChar: any, effectID: string) => {
 };
 
 const useItem = (rpgChar: any, rpgTimer: IRPGTimer, itemIndex: number, args: CommandArgs) => {
-
+    console.log('yes');
     const effectsArray = rpgChar.inventory[itemIndex].effects;
 
     effectsArray.forEach((effect) => {
+        console.log(effect);
         const effectResult = processItemEffects(rpgChar, effect);
         rpgChar = effectResult.rpgChar;
         const appliedEffect = effectResult.effect;
         if (appliedEffect.action === effectActions[0]) {
-            if (appliedEffect.effectType === healType[0]) {
+            if (appliedEffect.effectType === healType[0] ||
+                appliedEffect.effectType === healType[1]) {
+
+                console.log('Use item');
+
+                console.log(rpgChar.inventory[itemIndex].itemID);
+
                 args.sendOKEmbed({
                     contents: replace(
                         args.strings.use.useItemHealed,

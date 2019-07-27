@@ -14,6 +14,10 @@ const RecipeStrings = {
     RCP0004:{
         name: 'Craft Choly Armament Chosusience',
         description: 'Combine 1 Demon Spear Chogganator and 10 Concentrated Flake of Lord Cho to craft'
+    },
+    RCP0005:{
+        name: 'Craft Concentrated Rainbow Potion',
+        description: 'Combine 1 Rainbow Potion with 1 Concentrated Flake of Lord Cho to craft'
     }
 };
 

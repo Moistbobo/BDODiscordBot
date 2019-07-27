@@ -8,10 +8,10 @@ const Effects = [
         effect: {
             action: effectActions[0],
             effectType: healType[0],
-            value: 0.25,
+            value: 0.20,
             length: 0
         },
-        note: 'Heal user 25%',
+        note: 'Heal user 20%',
     },
     {
         effectID: 'EFF0002',
@@ -32,6 +32,15 @@ const Effects = [
             length: 1
         },
         note: 'Buff user Int by 100'
+    },
+    {
+        effectID: 'EFF0004',
+        effect:{
+            action: effectActions[0],
+            effectType: healType[1],
+            value: 40
+        },
+        note: 'Heal user by 40HP'
     }
 ];
 

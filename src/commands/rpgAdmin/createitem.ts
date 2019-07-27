@@ -4,7 +4,7 @@ import RPGTools from "../../tools/rpg/RPGTools";
 const createItem = (args: CommandArgs) => {
     const userID = args.message.author.id;
     const itemID = args.message.content.split(' ')[0];
-    const qty = parseInt(args.message.content.split(' ')[1]);
+    const qty = parseInt(args.message.content.split(' ')[1])||1;
 
     if (!args.message.content || args.message.member.id !== '80300923351465984') return;
     console.log(qty);

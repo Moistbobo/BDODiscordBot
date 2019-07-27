@@ -19,9 +19,15 @@ const Recipes = [
     },
     {
         recipeID: 'RCP0004',
-        materialsID: ['WPN3001','MAT0003'],
-        qty:[1,10],
+        materialsID: ['WPN3001', 'MAT0003'],
+        qty: [1, 10],
         resultItemID: 'WPN5000'
+    },
+    {
+        recipeID: 'RCP0005',
+        materialsID: ['CONS0001', 'MAT0003'],
+        qty: [1, 1],
+        resultItemID: 'CONS0003'
     }
 ];
 
