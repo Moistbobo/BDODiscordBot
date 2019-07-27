@@ -11,7 +11,7 @@ const SetString = (_strings: any) => {
 };
 
 const GetItemName = (itemID: string) => {
-    console.log('[GETITEMNAME]: ', itemID);
+    console.log(itemID);
     return strings.items[itemID].name;
 };
 
