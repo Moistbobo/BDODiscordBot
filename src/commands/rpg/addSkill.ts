@@ -98,7 +98,7 @@ const addSkill = (args: CommandArgs) => {
                 [author.username,
                     allocation,
                     skill,
-                    skillLevel,
+                    Math.floor(skillLevel),
                     rpgChar.skillPoints]);
             args.sendOKEmbed({contents});
         })
