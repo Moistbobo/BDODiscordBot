@@ -242,8 +242,10 @@ const dungeon = (args: CommandArgs) => {
 
                     collector.stop();
                 } else {
+
                     const newMessage =
                         args.strings.dungeon.yourAttack +
+                        attackString +
                         replace(args.strings.attack.attackTargetLives,
                             [args.message.author.username,
                                 mStrings.name,
