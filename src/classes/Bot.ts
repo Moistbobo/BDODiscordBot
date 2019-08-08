@@ -26,7 +26,7 @@ class Bot {
         this.voiceSessions = {};
         this.config = config;
         this.prefix = prefix;
-        this.client.login(token).then(r => console.log('Bot logged in'));
+        this.client.login(token).then(r => console.log('Bot logged in prefix:', this.prefix ));
         DatabaseTools.connectToMongoDB();
     }
 
@@ -59,16 +59,23 @@ class Bot {
                 command.action = require(`.${commandPath}${commandName}`).action;
                 command.trigger = stringResources.trigger.split(',');
                 command.trigger = command.trigger.map((e) => {
-                    e.trim();
-                    e = this.prefix+e;
+                    e = e.trim();
+                    // e = this.prefix+e;
                     return e;});
-                const examples = stringResources.usage.split(',');
-                command.exampleUsage = examples.map((e) =>
-                {
-                    e.trim();
-                    e = this.prefix + e;
-                    return e;
-                });
+                console.log(command.trigger);
+                try{
+                    const examples = stringResources.usage.split(',');
+                    command.exampleUsage = examples.map((e) =>
+                    {
+                        e = e.trim();
+                        // e = this.prefix + e;
+                        return e;
+                    });
+                } catch(err){
+                    // console.log(err.toString());
+                    console.log(`Command ${stringResources.name} does not have usage string. Ensure that this is inteded.`);
+                }
+
                 command.description = stringResources.description;
                 command.name = stringResources.name;
 
@@ -196,17 +203,19 @@ class Bot {
                 return rpgTimer.save();
             })
             .then(() => {
-
+                console.log('run command');
                 if (msg.content[0] !== this.prefix) {
+                    console.log(msg.content[0]);
                     return;
                 }
 
                 const command = msg.content.substring(1).split(' ')[0];
-
+                console.log(command);
 
                 const cmd = this.commands.find((x) =>
                     x.trigger.includes(command.toLowerCase())
                 );
+                console.log(cmd);
                 // Trim the command args off the message contents
                 msg.content = msg.content.substring(1 + command.toLowerCase().length + 1);
 
@@ -223,8 +232,9 @@ class Bot {
                     }
                 }
             })
-
-
+            .catch((err)=>{
+                console.log(err.toString());
+            })
     };
 
     onGuildCreate = (guild) => {
