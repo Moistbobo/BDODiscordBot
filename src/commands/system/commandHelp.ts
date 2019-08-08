@@ -2,7 +2,8 @@ import CommandArgs from "../../classes/CommandArgs";
 import replace from "../../tools/replace";
 
 const commandHelp = (args: CommandArgs) => {
-    const cmdToFind = args.message.content.toLocaleLowerCase();
+    const cmdToFind = args.message.content.toLocaleLowerCase().replace(args.bot.prefix,'');
+
 
     const filteredCommands = args.bot.commands.filter((command) =>
         command.name.toLocaleLowerCase() === cmdToFind ||
@@ -16,9 +17,14 @@ const commandHelp = (args: CommandArgs) => {
         args.sendErrorEmbed({
             contents
         });
-    }
-    else{
+    } else {
         const cmd = filteredCommands[0];
+
+        let triggers = cmd.trigger;
+        let usage = cmd.exampleUsage;
+
+        triggers = triggers.map((e) => args.bot.prefix + e.trim());
+        usage = usage.map((e) => args.bot.prefix + e.trim());
 
         args.sendOKEmbed({
             title: cmd.name,
@@ -26,11 +32,11 @@ const commandHelp = (args: CommandArgs) => {
             extraFields: [
                 {
                     name: args.strings.commandHelp.helpTriggers,
-                    value: cmd.trigger.join('\n')
+                    value: triggers.join('\n')
                 },
                 {
                     name: args.strings.commandHelp.exampleUsage,
-                    value: cmd.exampleUsage.join('\n')
+                    value: usage.join('\n')
                 }
             ]
         })
