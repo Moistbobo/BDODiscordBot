@@ -16,21 +16,22 @@ const sendGayResult = (args: CommandArgs, mentionedUser: any, gayResult: any) =>
 };
 
 const gay = (args: CommandArgs) => {
-    let targetUserID = null;
+    let targetUser = null;
     let mentionedUser = args.bot.getFirstMentionedUserID(args.message);
 
     if (!mentionedUser) {
-        targetUserID = args.message.author.id;
+        targetUser = args.message.author;
     } else {
-        targetUserID = mentionedUser.id;
-        mentionedUser = args.message.author;
+        targetUser = mentionedUser;
     }
 
-    FindOrCreateNewGayResult(targetUserID)
+    console.log(targetUser);
+    FindOrCreateNewGayResult(targetUser.id)
         .then((gayResult) => {
+            console.log(gayResult);
             // Display old result if the cooldown threshold has not been met
-            if ((args.timeNow - gayResult.lastUpdatedTime) < 86400) {
-                sendGayResult(args, mentionedUser, gayResult);
+            if ((args.timeNow - gayResult.lastUpdate) < 86400) {
+                sendGayResult(args, targetUser, gayResult);
                 throw new Error('Gay test cooldown not met');
             }
 
@@ -45,8 +46,12 @@ const gay = (args: CommandArgs) => {
                 }
             }
 
-            return Promise.all([gayResult.save(), sendGayResult(args, mentionedUser, gayResult)])
-        });
+            gayResult.lastUpdate = args.timeNow;
+            return Promise.all([gayResult.save(), sendGayResult(args, targetUser, gayResult)])
+        })
+        .catch((err) => {
+            console.log(err.toString());
+        })
 
 };
 

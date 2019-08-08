@@ -31,7 +31,8 @@ export const GayResultSchema = new Schema({
         unique: true
     },
     lastUpdate: Number,
-    iq: Number
+    iq: Number,
+    gay: Number
 });
 
 const GayResult = model<IGayResult>('GayResult', GayResultSchema);
