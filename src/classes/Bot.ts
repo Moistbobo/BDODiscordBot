@@ -5,7 +5,6 @@ import DatabaseTools from '../tools/DatabaseTools';
 import * as BotConfig from '../config.json'
 import EmbedArgs from '../classes/EmbedArgs';
 import {FindOrCreateRPGTimer} from "../models/rpg/RPGTimer";
-import {FindOrCreateRPGServerStats} from "../models/rpg/RPGServerStats";
 import ProcessOnMessageItemDrop from "../tools/events/onMessage/ProcessOnMessageItemDrop";
 import RPGTools from "../tools/rpg/RPGTools";
 
@@ -16,6 +15,7 @@ class Bot {
     config: any;
     voiceSessions: any;
     helpString: {};
+    prefix: string;
 
     constructor(prefix: string, token: string, config: any) {
         this.client = new Discord.Client();
@@ -23,9 +23,10 @@ class Bot {
         this.setListeners();
         this.strings = require('../resources/strings_en').Strings;
         RPGTools.SetString(this.strings);
-        this.client.login(token);
         this.voiceSessions = {};
         this.config = config;
+        this.prefix = prefix;
+        this.client.login(token).then(r => console.log('Bot logged in'));
         DatabaseTools.connectToMongoDB();
     }
 
@@ -57,7 +58,17 @@ class Bot {
                 let command = new Command;
                 command.action = require(`.${commandPath}${commandName}`).action;
                 command.trigger = stringResources.trigger.split(',');
-                command.trigger = command.trigger.map((e) => e.trim());
+                command.trigger = command.trigger.map((e) => {
+                    e.trim();
+                    e = this.prefix+e;
+                    return e;});
+                const examples = stringResources.usage.split(',');
+                command.exampleUsage = examples.map((e) =>
+                {
+                    e.trim();
+                    e = this.prefix + e;
+                    return e;
+                });
                 command.description = stringResources.description;
                 command.name = stringResources.name;
 
@@ -101,9 +112,9 @@ class Bot {
                     embed.addBlankField(ef.inline);
                 } else {
                     embed.addField(
-                        ef.name||'',
-                        ef.value||'',
-                        ef.inline||false
+                        ef.name || '',
+                        ef.value || '',
+                        ef.inline || false
                     )
                 }
             })
@@ -128,9 +139,9 @@ class Bot {
                     embed.addBlankField(ef.inline);
                 } else {
                     embed.addField(
-                        ef.name||'undefined',
-                        ef.value||'undefined',
-                        ef.inline||false
+                        ef.name || 'undefined',
+                        ef.value || 'undefined',
+                        ef.inline || false
                     )
                 }
             })
@@ -171,7 +182,7 @@ class Bot {
         };
 
         ProcessOnMessageItemDrop(commandArgs)
-            .then((res) => {
+            .then(() => {
                 console.log('Dropped item');
             })
             .catch((err) => {
@@ -186,7 +197,7 @@ class Bot {
             })
             .then(() => {
 
-                if (msg.content[0] !== '.') {
+                if (msg.content[0] !== this.prefix) {
                     return;
                 }
 
@@ -218,11 +229,11 @@ class Bot {
 
     onGuildCreate = (guild) => {
         console.log(guild);
-    }
+    };
 
     getUserByID = (id: string, name: string, msg: Discord.Message): any => {
         const searchByName = msg.guild.members.find((member) => member.user.username.toLowerCase() === name.toLowerCase());
-        const searchByID = msg.guild.members.find((member) => member.id === id.replace(/<|@|>|!/g, ''));
+        const searchByID = msg.guild.members.find((member) => member.id === id.replace(/[<@>!]/g, ''));
 
         if (searchByName) {
             return searchByName.user.id;
