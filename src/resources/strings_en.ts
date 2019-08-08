@@ -26,6 +26,7 @@ import ConsumableStrings from "./strings/en/items/consumableStrings";
 import useStrings from "./strings/en/commands/useStrings";
 import addSkillStrings from "./strings/en/commands/addSkillStrings";
 import resetSkillStrings from "./strings/en/commands/resetSkillStrings";
+import gayStrings from "./strings/en/commands/gayStrings";
 
 const strings = {
     items: {
@@ -242,6 +243,12 @@ const strings = {
         trigger: 'resetskills',
         name: 'Reset Skill',
         ...resetSkillStrings
+    },
+    gay:{
+        description: 'Calculate how gay you are: on a scale of 0 - 300',
+        trigger: 'gay, calcgay, g',
+        name:'Calculate gay',
+        ...gayStrings
     }
     // flag: {
     //     description: 'Enable/Disable PVP mode',
