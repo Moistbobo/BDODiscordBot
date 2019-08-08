@@ -287,7 +287,7 @@ const strings = {
         ...gayStrings
     },
     commandHelp: {
-        description: 'Show Additional help for commands',
+        description: 'Show detailed help for a command, including triggers and example usage',
         trigger: 'chelp, ch, commandhelp',
         name: 'Command Help',
         usage: 'ch [command], ch commandHelp',
