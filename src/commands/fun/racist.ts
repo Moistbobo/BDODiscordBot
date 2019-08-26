@@ -26,7 +26,8 @@ const sendResultMessage = (user: any, racism: number, args: CommandArgs) =>{
     }
 
     return args.sendOKEmbed({
-        contents: resultString
+        contents: resultString,
+        thumbnail: user.avatarURL()
     })
 };
 
