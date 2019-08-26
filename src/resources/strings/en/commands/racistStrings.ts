@@ -5,7 +5,7 @@ const racistStrings = {
     result_veryhigh: `You are super racist`,
     result_ultrahigh: `You are KKK level racist`,
     result_brandon: `You are brandon`,
-    result_base: `{0}, your racism level is: {1}`
+    result_base: `{0}, your racism level is: {1}brandons`
 };
 
 export default racistStrings;
