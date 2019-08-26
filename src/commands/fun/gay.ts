@@ -2,12 +2,13 @@ import CommandArgs from "../../classes/CommandArgs";
 import {FindOrCreateNewGayResult} from "../../models/gayResult";
 import RPGTools from "../../tools/rpg/RPGTools";
 import replace from "../../tools/replace";
+import {FindOrCreateNewFunResult} from "../../models/funResult";
 
 const sendGayResult = (args: CommandArgs, mentionedUser: any, gayResult: any) => {
     const contents =
         replace(args.strings.gay.gayResultTarget,
             [mentionedUser,
-                gayResult.gay]);
+                gayResult.value]);
 
     return args.sendOKEmbed({
         contents,
@@ -26,31 +27,23 @@ const gay = (args: CommandArgs) => {
     }
 
     console.log(targetUser);
-    FindOrCreateNewGayResult(targetUser.id)
-        .then((gayResult) => {
-            console.log(gayResult);
+    FindOrCreateNewFunResult(targetUser.id)
+        .then((res) => {
+            let funRes = res.gay;
             // Display old result if the cooldown threshold has not been met
-            if ((args.timeNow - gayResult.lastUpdate) < 86400) {
-                sendGayResult(args, targetUser, gayResult);
+            if ((args.timeNow - funRes.lastUpdate) < 86400) {
+                sendGayResult(args, targetUser, funRes);
                 throw new Error('Gay test cooldown not met');
             }
 
-            if (!gayResult.gay) {
-                gayResult.gay = RPGTools.GetRandomIntegerFrom(10);
-            } else {
-                const random = RPGTools.GetRandomIntegerFrom(20);
-                if (RPGTools.GetRandomIntegerFrom(2) === 1) {
-                    gayResult.gay += random;
-                } else {
-                    gayResult.gay -= random;
-                }
-            }
+            funRes.value = Math.floor(RPGTools.GetRandomFloatRange(-50, 1000));
 
-            gayResult.lastUpdate = args.timeNow;
-            return Promise.all([gayResult.save(), sendGayResult(args, targetUser, gayResult)])
+            funRes.lastUpdate = args.timeNow;
+            res.fun = funRes;
+            return Promise.all([res.save(), sendGayResult(args, targetUser, funRes)])
         })
         .catch((err) => {
-            console.log(err.toString());
+            console.log(err);
         })
 
 };

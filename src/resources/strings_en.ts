@@ -28,6 +28,7 @@ import addSkillStrings from "./strings/en/commands/addSkillStrings";
 import resetSkillStrings from "./strings/en/commands/resetSkillStrings";
 import gayStrings from "./strings/en/commands/gayStrings";
 import helpStrings from "./strings/en/commands/helpStrings";
+import racistStrings from "./strings/en/commands/racistStrings";
 
 const strings = {
     items: {
@@ -292,6 +293,13 @@ const strings = {
         name: 'Command Help',
         usage: 'ch [command], ch commandHelp',
         ...helpStrings
+    },
+    racist:{
+        description: 'Check how racist you are',
+        trigger :'racist',
+        name: 'Racist',
+        usage: 'racist [user?], racist, racist moistbobo',
+        ...racistStrings
     }
     // flag: {
     //     description: 'Enable/Disable PVP mode',

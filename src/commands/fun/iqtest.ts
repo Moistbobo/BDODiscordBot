@@ -3,80 +3,49 @@ import Images from "../../resources/images";
 import Jimp from 'jimp';
 import IQTestResult, {IIQTestResult} from "../../models/iqtestResult";
 import {successMessageColor} from '../../config.json';
+import {FindOrCreateNewFunResult} from "../../models/funResult";
 
-const iqTest = (args: CommandArgs) => {
-    let iq = 0;
 
-    let userID = args.message.author.id;
+const generateIQImage = async (iq: number) => {
+    const iqMark = await Jimp.read(Images.iqTest.iqMark);
+    const iqChart = await Jimp.read(Images.iqTest.iqChart);
 
-    console.log(userID);
-    const mentionedUser = args.bot.getFirstMentionedUserID(args.message);
-    console.log(mentionedUser);
-    if (mentionedUser) {
-        userID = mentionedUser.id;
-    }
-
-    const typing = args.message.channel.startTyping();
-
-    // Check mongodb if user has run the "iqtest" within the last 24 hours (86400 seconds)
-    IQTestResult.findOne({userID})
-        .then((iqTestResult) => {
-            if (iqTestResult) {
-                const currentTime = Date.now() / 1000;
-                console.log(currentTime - iqTestResult.lastUpdate);
-                return {timeDifference: (currentTime - iqTestResult.lastUpdate), iqTestResult};
-            } else {
-                return {timeDifference: 86400};
-            }
-        })
-        .then((res) => {
-            // If delta from lastUpdated time is less than 24hours, break out of promise chain
-            if (res.timeDifference < 86400) {
-                // 24hour limit on iqtest command
-                sendIQMessage(args.message.channel, res.iqTestResult.iq, userID);
-                throw new Error('IQ Cooldown not met');
-            } else {
-                // Otherwise, load images and continue
-                return loadImages();
-            }
-        })
-        .then((images) => {
-            // Generate random "iq" value and plot marker on graph
-            const iqChart = images[0];
-            const iqMark = images[1];
-            const xPlot = plotIQMark(400);
-            iq = mapPlotPointToIQ(xPlot, 400, 0, iqChart.getWidth(), 0);
-            return iqChart.composite(iqMark, xPlot - iqMark.getWidth() / 2, 5);
-        })
-        .then((compositedImage) => {
-            // Check if folder exists, and create it if it doesn't and then write the picture to a file
-            makeIQFolderIfNotExists();
-            return compositedImage.writeAsync(`./iqtest/${userID}.png`);
-        })
-        .then(() => {
-            return saveIQTestResult(userID, iq);
-        })
-        .then(() => {
-            args.message.channel.stopTyping();
-            return sendIQMessage(args.message.channel, iq, userID);
-        })
-        .catch((err) => {
-            args.message.channel.stopTyping();
-            console.log(err.toString());
-        })
+    return iqChart.composite(iqMark, iq - iqMark.getWidth() / 2, 5);
 };
 
-const loadImages = (): Promise<any> => {
-    return Promise.all([
-        Jimp.read(Images.iqTest.iqChart)
-            .then((iqChart) => {
-                return iqChart;
-            }),
-        Jimp.read(Images.iqTest.iqMark)
-            .then((iqMark) => {
-                return iqMark;
-            })
-    ])
+const iqTest = (args: CommandArgs) => {
+    let targetUser = args.bot.getFirstMentionedUserID(args.message);
+
+    !targetUser ? targetUser = args.message.author : null;
+
+    let funRes = null;
+
+    FindOrCreateNewFunResult(targetUser.id)
+        .then((res) => {
+            makeIQFolderIfNotExists();
+
+            funRes = res;
+
+            if ((args.timeNow - funRes.iq.lastUpdate) < 86400) {
+                // Generate iq message here
+                sendIQMessage(args.message.channel, funRes.iq.value, targetUser.id );
+                throw new Error('IQ test cooldown not met');
+            }
+
+            // Generate new iq value
+            const iq = generateIQ(400);
+            funRes.iq.value = iq;
+            funRes.iq.lastUpdate = args.timeNow;
+
+            return generateIQImage(iq);
+        })
+        .then((compositeImage) => {
+            const saveImagePromise = compositeImage.writeAsync(`./iqTest/${targetUser.id}.png`);
+            return Promise.all([saveImagePromise, funRes.save()]);
+        }).then(() => {
+            return sendIQMessage(args.message.channel, funRes.iq.value, targetUser.id );
+        }
+    )
 };
 
 /**
@@ -91,10 +60,10 @@ const makeIQFolderIfNotExists = () => {
 
 /**
  * Generate random x value to plot the marker
- * @param xMax
+ * @param maxIQ
  */
-const plotIQMark = (xMax: number) => {
-    return Math.floor(Math.random() * Math.floor(xMax));
+const generateIQ = (maxIQ: number) => {
+    return Math.floor(Math.random() * Math.floor(maxIQ));
 };
 
 /**
@@ -108,36 +77,6 @@ const plotIQMark = (xMax: number) => {
 // This is only necessary if the scale on the image does not match the actual dimensions
 const mapPlotPointToIQ = (xPlot: number, iqMax: number, iqMin: number, imageMax: number, imageMin: number) => {
     return ((xPlot - imageMin) / (imageMax - imageMin)) * (iqMax - iqMin) + iqMin;
-};
-
-/**
- * Save IQ test result with timestamp to mongodb
- * @param userID
- * @param iq
- */
-const saveIQTestResult = (userID: string, iq: number): Promise<any> => {
-
-    const currentTime = Date.now() / 1000;
-
-    return new Promise((resolve, reject) => {
-        IQTestResult.findOne(({userID}))
-            .then((iqTestResult: IIQTestResult) => {
-                if (iqTestResult) {
-                    iqTestResult.lastUpdate = currentTime;
-                    iqTestResult.iq = iq;
-                    resolve(iqTestResult.save());
-                } else {
-                    const newIQTestResult = new IQTestResult();
-                    newIQTestResult.lastUpdate = currentTime;
-                    newIQTestResult.userID = userID;
-                    newIQTestResult.iq = iq;
-                    resolve(newIQTestResult.save());
-                }
-            })
-            .catch((err) => {
-                reject(new Error('Error saving iq test result'));
-            })
-    });
 };
 
 /**

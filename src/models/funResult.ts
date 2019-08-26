@@ -42,7 +42,7 @@ export const FunObjectSchema = new Schema({
 
 const defaultFunObject = {
     lastUpdate: 0
-}
+};
 
 export const FunResultSchema = new Schema({
     userID: {
