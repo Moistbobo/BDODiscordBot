@@ -54,8 +54,8 @@ const iqTest = (args: CommandArgs) => {
  */
 const makeIQFolderIfNotExists = () => {
     const fs = require('fs');
-    if (!fs.existsSync('./iqtest')) {
-        fs.mkdirSync('./iqtest');
+    if (!fs.existsSync('./iqTest')) {
+        fs.mkdirSync('./iqTest');
     }
 };
 
@@ -93,8 +93,8 @@ const sendIQMessage = (channel: any, iq: number, authorID: any): Promise<any> =>
             color: successMessageColor
         },
         files: [{
-            attachment: `./iqtest/${authorID}.png`,
-            name: 'iqtest.png'
+            attachment: `./iqTest/${authorID}.png`,
+            name: 'iqTest.png'
         }]
     });
 };
