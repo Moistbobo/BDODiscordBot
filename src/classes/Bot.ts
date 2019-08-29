@@ -62,7 +62,6 @@ class Bot {
                     e = e.trim();
                     // e = this.prefix+e;
                     return e;});
-                console.log(command.trigger);
                 try{
                     const examples = stringResources.usage.split(',');
                     command.exampleUsage = examples.map((e) =>
@@ -215,7 +214,7 @@ class Bot {
                 const cmd = this.commands.find((x) =>
                     x.trigger.includes(command.toLowerCase())
                 );
-                console.log(`User ${msg.author.username} triggered command ${cmd.name}`);
+                if(cmd && cmd.name) console.log(`User ${msg.author.username} triggered command ${cmd.name}`);
                 // Trim the command args off the message contents
                 msg.content = msg.content.substring(1 + command.toLowerCase().length + 1);
 
