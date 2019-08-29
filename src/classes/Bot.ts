@@ -190,10 +190,10 @@ class Bot {
 
         ProcessOnMessageItemDrop(commandArgs)
             .then(() => {
-                console.log('Dropped item');
+                // console.log('Dropped item');
             })
             .catch((err) => {
-                console.log(err.toString());
+                // console.log(err.toString());
             });
 
         FindOrCreateRPGTimer(userID)
@@ -203,19 +203,19 @@ class Bot {
                 return rpgTimer.save();
             })
             .then(() => {
-                console.log('run command');
+                // console.log('run command');
                 if (msg.content[0] !== this.prefix) {
                     console.log(msg.content[0]);
                     return;
                 }
 
                 const command = msg.content.substring(1).split(' ')[0];
-                console.log(command);
+
 
                 const cmd = this.commands.find((x) =>
                     x.trigger.includes(command.toLowerCase())
                 );
-                console.log(cmd);
+                console.log(`User ${msg.author.username} triggered command ${cmd.name}`);
                 // Trim the command args off the message contents
                 msg.content = msg.content.substring(1 + command.toLowerCase().length + 1);
 
