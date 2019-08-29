@@ -8,7 +8,8 @@
     "debug": "node index.js",
     "build": "tsc && cp -r ./src/dockerfiles/. ./dist && cp ./src/package.json ./dist",
     "start": "cd dist && nodemon index.js",
-    "buildItemDatabase": "cd ./dist/tools/rpg && node buildItemDatabase.js"
+    "buildItemDatabase": "cd ./dist/tools/rpg && node buildItemDatabase.js",
+    "copyPackage" : "cp ./package.json ./dist"
   },
   "jest": {
     "roots": [
