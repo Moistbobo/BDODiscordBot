@@ -28,8 +28,9 @@ const iqTest = (args: CommandArgs) => {
 
             if ((args.timeNow - funRes.iq.lastUpdate) < 86400) {
                 // Generate iq message here
-                sendIQMessage(args.message.channel, funRes.iq.value, targetUser.id );
-                throw new Error('IQ test cooldown not met');
+                return generateIQImage(funRes.iq.value);
+                // sendIQMessage(args.message.channel, funRes.iq.value, targetUser.id );
+                // throw new Error('IQ test cooldown not met');
             }
 
             // Generate new iq value
