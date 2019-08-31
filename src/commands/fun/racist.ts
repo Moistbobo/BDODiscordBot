@@ -11,6 +11,11 @@ const sendResultMessage = (user: any, racism: number, args: CommandArgs) =>{
             racism
         ]);
 
+    // If the user is brandon
+    if(user.id === '128031927356620800') {
+        racism *= 1000
+    }
+
     if(racism <= 0){
         resultString += `\n${args.strings.racist.result_low}`
     } else if (racism <= 100){
@@ -21,7 +26,7 @@ const sendResultMessage = (user: any, racism: number, args: CommandArgs) =>{
         resultString += `\n${args.strings.racist.result_veryhigh}`
     } else if (racism <= 750){
         resultString += `\n${args.strings.racist.result_ultrahigh}`
-    } else if (racism <= 1000){
+    } else if (racism > 750){
         resultString += `\n${args.strings.racist.result_brandon}`
     }
 
