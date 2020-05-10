@@ -5,6 +5,12 @@ const googletts = (args: CommandArgs) => {
     const voiceChannel = args.message.member.voice.channel;
     const serverID = args.message.guild.id;
 
+    const hardCodedServerIds = ['159467701113192448','676333485471825938'];
+
+    if(!hardCodedServerIds.includes(serverID)){
+        return args.sendErrorEmbed({contents: 'Google tts is not enabled for this server.'})
+    }
+
     if (!args.message.content || args.message.content.split(' ').length < 1) {
         return args.sendErrorEmbed({contents: 'You need to specify some text to speak'});
     } else if (!voiceChannel) {
@@ -31,12 +37,12 @@ const googletts = (args: CommandArgs) => {
  * @param lang
  * @param text
  */
-const makeTTSRequest = (lang: string, text: string): Promise<any> => {
+const makeTTSRequest = (lang: string, text: string, ssmlVoiceGender?: string): Promise<any> => {
     const googleTTS = require('@google-cloud/text-to-speech');
     const ttsClient = new googleTTS.TextToSpeechClient();
     const request = {
         input: {text: text.replace(lang, '')},
-        voice: {languageCode: lang, ssmlGender: 'MALE'},
+        voice: {languageCode: lang, ssmlGender: ssmlVoiceGender || 'MALE'},
         audioConfig: {audioEncoding: 'LINEAR16'}
     };
     return ttsClient.synthesizeSpeech(request);
@@ -69,13 +75,16 @@ const checkGTTSChannel = (serverID: string) => {
     return GTTSChannel.findOne({serverID});
 };
 
-const googlettsMainFunction = (args: CommandArgs, voiceChannel: any, serverID: string) => {
+const googlettsMainFunction = (args: CommandArgs, voiceChannel: any, serverID: string, gender?: string) => {
     const language = args.message.content.split(' ')[0];
 
     let lang: string;
+
+    let ssmlGender = 'F'?'FEMALE':'MALE';
+
     if (language.length > 5 || !language.includes('-')) {
         // Use australian english as default voice because it sounds cool
-        lang = 'en-AU';
+        lang = 'en-US';
     } else {
         lang = language;
     }
